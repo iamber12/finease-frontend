@@ -5,6 +5,12 @@ import PasswordRules from "@/components/auth/SignUp/PasswordRules";
 type Props = {};
 
 const SignUp = (props: Props) => {
+  const [password, setPassword] = useState("");
+
+  const changePasswordHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(e.currentTarget.value);
+  };
+
   return (
     <div className="box xl:p-6 grid grid-cols-12 gap-4 xxxl:gap-6 items-center shadow-[0px_6px_30px_0px_rgba(0,0,0,0.04)]">
       <div className="col-span-12 lg:col-span-7">
@@ -68,6 +74,8 @@ const SignUp = (props: Props) => {
                 type="password"
                 className="w-full text-sm bg-n0 dark:bg-bg4 border border-n30 dark:border-n500 rounded-3xl px-3 md:px-6 py-2 md:py-3 mb-5"
                 id="email"
+                value={password}
+                onChange={changePasswordHandler}
                 required
               />
             </div>
@@ -87,7 +95,7 @@ const SignUp = (props: Props) => {
             </div>
           </div>
 
-          <PasswordRules />
+          {password && <PasswordRules password={password} />}
 
           <div className="mt-8">
             <button className="btn px-5">Sign Up</button>

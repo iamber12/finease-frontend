@@ -1,7 +1,9 @@
 import React from "react";
 import { IconX } from "@tabler/icons-react";
 
-type Props = {};
+type Props = {
+  password: string;
+};
 
 const PasswordRules = (props: Props) => {
   return (
@@ -10,7 +12,7 @@ const PasswordRules = (props: Props) => {
         <h3>Password must contain the following:</h3>
         <div className="flex items-center gap-x-2">
           <div className="flex-none">
-            <IconX color="red"/>
+            <IconX color="red" />
           </div>
           <div className="flex-initial">
             <span id="letter" className="invalid">
@@ -21,7 +23,7 @@ const PasswordRules = (props: Props) => {
 
         <div className="flex items-center gap-x-2">
           <div className="flex-none">
-            <IconX color="red"/>
+            <IconX color="red" />
           </div>
           <div className="flex-initial">
             <p id="capital" className="invalid">
@@ -32,7 +34,7 @@ const PasswordRules = (props: Props) => {
 
         <div className="flex items-center gap-x-2">
           <div className="flex-none">
-            <IconX color="red"/>
+            <IconX color="red" />
           </div>
           <div className="flex-initial">
             <span id="letter" className="invalid">
@@ -43,7 +45,7 @@ const PasswordRules = (props: Props) => {
 
         <div className="flex items-center gap-x-2">
           <div className="flex-none">
-            <IconX color="red"/>
+            <IconX color="red" />
           </div>
           <div className="flex-initial">
             <p id="number" className="invalid">
