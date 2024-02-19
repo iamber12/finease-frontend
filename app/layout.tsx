@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Next13NProgress } from "nextjs13-progress";
+import ThemeProvider from "@/utils/ThemeProvider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -22,10 +23,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.className} text-n500 dark:text-n30`}>
-        <div>
-          <Next13NProgress color="#20B757" height={3} />
-          {children}
-        </div>
+        <ThemeProvider>
+          <div>
+            <Next13NProgress color="#20B757" height={3} />
+            {children}
+          </div>
+        </ThemeProvider>
       </body>
     </html>
   );
