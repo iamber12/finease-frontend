@@ -53,6 +53,41 @@ const SignUp = (props: Props) => {
             id="email"
             required
           />
+
+          <div className="grid grid-cols-2 gap-x-4 xxxl:gap-x-6">
+            <div className="col-span-2 md:col-span-1">
+              <label
+                htmlFor="password"
+                className="md:text-lg font-medium block mb-4"
+              >
+                Enter Your Password
+              </label>
+              <input
+                type="password"
+                className="w-full text-sm bg-n0 dark:bg-bg4 border border-n30 dark:border-n500 rounded-3xl px-3 md:px-6 py-2 md:py-3 mb-5"
+                id="email"
+                required
+              />
+            </div>
+            <div className="col-span-2 md:col-span-1">
+              <label
+                htmlFor="password"
+                className="md:text-lg font-medium block mb-4"
+              >
+                Verify Your Password
+              </label>
+              <input
+                type="password"
+                className="w-full text-sm bg-n0 dark:bg-bg4 border border-n30 dark:border-n500 rounded-3xl px-3 md:px-6 py-2 md:py-3 mb-5"
+                id="email"
+                required
+              />
+            </div>
+          </div>
+
+          <div className="mt-8">
+            <button className="btn px-5">Sign Up</button>
+          </div>
         </div>
       </div>
     </div>
