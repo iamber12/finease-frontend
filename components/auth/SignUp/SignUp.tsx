@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
+import PasswordRules from "@/components/auth/SignUp/PasswordRules";
 
 type Props = {};
 
@@ -71,7 +73,7 @@ const SignUp = (props: Props) => {
             </div>
             <div className="col-span-2 md:col-span-1">
               <label
-                htmlFor="password"
+                htmlFor="v-password"
                 className="md:text-lg font-medium block mb-4"
               >
                 Verify Your Password
@@ -79,11 +81,13 @@ const SignUp = (props: Props) => {
               <input
                 type="password"
                 className="w-full text-sm bg-n0 dark:bg-bg4 border border-n30 dark:border-n500 rounded-3xl px-3 md:px-6 py-2 md:py-3 mb-5"
-                id="email"
+                id="v-password"
                 required
               />
             </div>
           </div>
+
+          <PasswordRules />
 
           <div className="mt-8">
             <button className="btn px-5">Sign Up</button>
