@@ -1,4 +1,7 @@
+import { useState } from "react";
+
 const SignIn = () => {
+  const [showPass, setShowPass] = useState(false);
   return (
     <div>
       <form>
@@ -18,7 +21,7 @@ const SignIn = () => {
           </label>
           <div>
             <input
-              type="password"
+              type={showPass ? "text" : "password"}
               placeholder="Enter Your Password"
               id="password"
               required
