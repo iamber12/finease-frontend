@@ -5,6 +5,10 @@ const SignIn = () => {
   return (
     <div>
       <form>
+      <h3 className="h3 mb-4">Welcome Back!</h3>
+          <p className="md:mb-6 md:pb-6 mb-4 pb-4 bb-dashed text-sm md:text-base">
+            Sign in to your account and join us
+          </p>
         <div>
           <label htmlFor="email">
             Enter Your Email ID
