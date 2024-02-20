@@ -1,4 +1,7 @@
+"use client";
 import { IconEye, IconEyeOff } from "@tabler/icons-react";
+import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 
 const SignIn = () => {
@@ -6,11 +9,11 @@ const SignIn = () => {
   return (
     <div>
       <form>
-      <h3 className="h3 mb-4">Welcome Back!</h3>
-          <p className="md:mb-6 md:pb-6 mb-4 pb-4 bb-dashed text-sm md:text-base">
+        <div>
+          <h3>Welcome Back!</h3>
+          <p>
             Sign in to your account and join us
           </p>
-        <div>
           <label htmlFor="email">
             Enter Your Email ID
           </label>
@@ -36,13 +39,26 @@ const SignIn = () => {
               {showPass ? <IconEye /> : <IconEyeOff />}
             </span>
           </div>
-          <div className="mt-8 flex gap-6">
-            <button type="submit" className="btn px-5">
+
+          <Link href="#">
+            Forgot Password
+          </Link>
+          <p>
+            Don&apos;t have an account?{" "}
+            <Link href="/auth/sign-up">
+              Signup
+            </Link>
+          </p>
+          <div>
+            <button type="submit">
               Login
             </button>
           </div>
         </div>
       </form>
+      <div>
+        <Image src="/images/auth.png" alt="img" width={533} height={560} />
+      </div>
     </div>
   );
 };
