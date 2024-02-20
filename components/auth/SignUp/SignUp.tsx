@@ -9,6 +9,7 @@ import {
   isUpper,
   isEqual,
 } from "@/utils/utils";
+import Image from "next/image";
 import { IconAlertCircle } from "@tabler/icons-react";
 type Props = {};
 
@@ -167,7 +168,7 @@ const SignUp = (props: Props) => {
 
           {validate.message && (
             <div className="flex p-2 gap-2 items-center flex-initial border border-n30 dark:border-n500 dark:border-red-400 rounded-2xl">
-              <IconAlertCircle   color="red"/>
+              <IconAlertCircle color="red" />
               <h3 className="h3 pt-2 pb-2 text-red-500">{validate.message}</h3>
             </div>
           )}
@@ -182,6 +183,9 @@ const SignUp = (props: Props) => {
             </button>
           </div>
         </div>
+      </div>
+      <div className="col-span-12 lg:col-span-5 flex justify-center items-center">
+        <Image src="/images/logo.jpg" alt="img" width={533} height={560} />
       </div>
     </div>
   );
