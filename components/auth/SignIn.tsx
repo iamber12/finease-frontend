@@ -1,3 +1,4 @@
+import { IconEye, IconEyeOff } from "@tabler/icons-react";
 import { useState } from "react";
 
 const SignIn = () => {
@@ -30,6 +31,10 @@ const SignIn = () => {
               id="password"
               required
             />
+            <span
+              onClick={() => setShowPass(!showPass)}>
+              {showPass ? <IconEye /> : <IconEyeOff />}
+            </span>
           </div>
           <div className="mt-8 flex gap-6">
             <button type="submit" className="btn px-5">
