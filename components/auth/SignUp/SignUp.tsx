@@ -6,9 +6,14 @@ type Props = {};
 
 const SignUp = (props: Props) => {
   const [password, setPassword] = useState("");
+  const [vpassword, setVPassword] = useState("");
 
   const changePasswordHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.currentTarget.value);
+  };
+
+  const changeVPasswordHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setVPassword(e.currentTarget.value);
   };
 
   return (
@@ -72,8 +77,10 @@ const SignUp = (props: Props) => {
               </label>
               <input
                 type="password"
-                className="w-full text-sm bg-n0 dark:bg-bg4 border border-n30 dark:border-n500 rounded-3xl px-3 md:px-6 py-2 md:py-3 mb-5"
-                id="email"
+                className={`w-full text-sm bg-n0 dark:bg-bg4 border border-n30 dark:border-n500 ${
+                  password.length && password === vpassword ? "" : ""
+                } rounded-3xl px-3 md:px-6 py-2 md:py-3 mb-5`}
+                id="password"
                 value={password}
                 onChange={changePasswordHandler}
                 required
@@ -90,6 +97,8 @@ const SignUp = (props: Props) => {
                 type="password"
                 className="w-full text-sm bg-n0 dark:bg-bg4 border border-n30 dark:border-n500 rounded-3xl px-3 md:px-6 py-2 md:py-3 mb-5"
                 id="v-password"
+                onChange={changeVPasswordHandler}
+                value={vpassword}
                 required
               />
             </div>
