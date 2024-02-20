@@ -10,13 +10,27 @@ const PasswordRules = (props: Props) => {
 
   const isLower = (text: string): Array<string> | null => {
     let lowerCaseLetters = /[a-z]/g;
-    console.log(text.match(lowerCaseLetters));
     return text.match(lowerCaseLetters);
   };
 
   const isUpper = (text: string): Array<string> | null => {
-    var upperCaseLetters = /[A-Z]/g;
+    let upperCaseLetters = /[A-Z]/g;
     return text.match(upperCaseLetters);
+  };
+
+  const isNumeric = (text: string): Array<string> | null => {
+    let numbers = /[0-9]/g;
+    return text.match(numbers);
+  };
+
+  const isLength = (text: string): boolean => {
+    return text.length >= 8;
+  };
+
+  const isSpecial = (text: string):  Array<string> | null => {
+    let special = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+    return text.match(special);
+
   };
 
   return (
@@ -55,7 +69,11 @@ const PasswordRules = (props: Props) => {
 
         <div className="flex items-center gap-x-2">
           <div className="flex-none">
-            <IconX color="red" />
+            {isNumeric(password) ? (
+              <IconCheck color="green" />
+            ) : (
+              <IconX color="red" />
+            )}
           </div>
           <div className="flex-initial">
             <span id="letter" className="invalid">
@@ -66,11 +84,30 @@ const PasswordRules = (props: Props) => {
 
         <div className="flex items-center gap-x-2">
           <div className="flex-none">
-            <IconX color="red" />
+            {isLength(password) ? (
+              <IconCheck color="green" />
+            ) : (
+              <IconX color="red" />
+            )}
           </div>
           <div className="flex-initial">
             <p id="number" className="invalid">
               A <b>number</b>
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-x-2">
+          <div className="flex-none">
+            {isSpecial(password) ? (
+              <IconCheck color="green" />
+            ) : (
+              <IconX color="red" />
+            )}
+          </div>
+          <div className="flex-initial">
+            <p id="number" className="invalid">
+              A <b>special</b> character
             </p>
           </div>
         </div>
