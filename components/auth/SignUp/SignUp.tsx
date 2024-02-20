@@ -1,19 +1,81 @@
 "use client";
 import React, { useState } from "react";
 import PasswordRules from "@/components/auth/SignUp/PasswordRules";
-
+import {
+  isLength,
+  isLower,
+  isNumeric,
+  isSpecial,
+  isUpper,
+  isEqual,
+} from "@/utils/utils";
+import { IconAlertCircle } from "@tabler/icons-react";
 type Props = {};
 
 const SignUp = (props: Props) => {
   const [password, setPassword] = useState("");
   const [vpassword, setVPassword] = useState("");
+  const [validate, setValidate] = useState({ type: "", message: "" });
 
   const changePasswordHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setValidate({ type: "", message: "" });
     setPassword(e.currentTarget.value);
   };
 
   const changeVPasswordHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setValidate({ type: "", message: "" });
     setVPassword(e.currentTarget.value);
+  };
+
+  const onClickHandler = (e: React.MouseEvent<HTMLElement>): void => {
+    if (!isLower(password)) {
+      return setValidate({
+        type: "",
+        message: "Password doesn't match the criteria",
+      });
+    }
+
+    if (!isUpper(password)) {
+      return setValidate({
+        type: "",
+        message: "Password doesn't match the criteria",
+      });
+    }
+
+    if (!isLength(password)) {
+      return setValidate({
+        type: "",
+        message: "Password doesn't match the criteria",
+      });
+    }
+
+    if (!isLower(password)) {
+      return setValidate({
+        type: "",
+        message: "Password doesn't match the criteria",
+      });
+    }
+
+    if (!isNumeric(password)) {
+      return setValidate({
+        type: "",
+        message: "Password doesn't match the criteria",
+      });
+    }
+
+    if (!isSpecial(password)) {
+      return setValidate({
+        type: "",
+        message: "Password doesn't match the criteria",
+      });
+    }
+
+    if (!isEqual(password, vpassword)) {
+      return setValidate({
+        type: "",
+        message: "Password doesn't match the criteria",
+      });
+    }
   };
 
   return (
@@ -64,6 +126,7 @@ const SignUp = (props: Props) => {
             className="w-full text-sm bg-n0 dark:bg-bg4 border border-n30 dark:border-n500 rounded-3xl px-3 md:px-6 py-2 md:py-3 mb-5"
             placeholder="Enter Your Email"
             id="email"
+            pattern="^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$"
             required
           />
 
@@ -77,9 +140,7 @@ const SignUp = (props: Props) => {
               </label>
               <input
                 type="password"
-                className={`w-full text-sm bg-n0 dark:bg-bg4 border border-n30 dark:border-n500 ${
-                  password.length && password === vpassword ? "" : ""
-                } rounded-3xl px-3 md:px-6 py-2 md:py-3 mb-5`}
+                className={`w-full text-sm bg-n0 dark:bg-bg4 border border-n30 dark:border-n500  rounded-3xl px-3 md:px-6 py-2 md:py-3 mb-5`}
                 id="password"
                 value={password}
                 onChange={changePasswordHandler}
@@ -104,10 +165,21 @@ const SignUp = (props: Props) => {
             </div>
           </div>
 
-          {password && <PasswordRules password={password} />}
+          {validate.message && (
+            <div className="flex p-2 gap-2 items-center flex-initial border border-n30 dark:border-n500 dark:border-red-400 rounded-2xl">
+              <IconAlertCircle   color="red"/>
+              <h3 className="h3 pt-2 pb-2 text-red-500">{validate.message}</h3>
+            </div>
+          )}
+
+          {password && (
+            <PasswordRules password={password} vpassword={vpassword} />
+          )}
 
           <div className="mt-8">
-            <button className="btn px-5">Sign Up</button>
+            <button onClick={onClickHandler} className="btn px-5">
+              Sign Up
+            </button>
           </div>
         </div>
       </div>
