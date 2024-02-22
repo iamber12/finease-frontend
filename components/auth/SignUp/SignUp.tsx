@@ -169,7 +169,7 @@ const SignUp = (props: Props) => {
           {validate.message && (
             <div className="flex p-2 gap-2 items-center flex-initial border border-n30 dark:border-n500 dark:border-red-400 rounded-2xl">
               <IconAlertCircle color="red" />
-              <h3 className="h3 pt-2 pb-2 text-red-500">{validate.message}</h3>
+              <p className="pt-2 pb-2 text-red-500 md:text-base">{validate.message}</p>
             </div>
           )}
 
