@@ -13,7 +13,7 @@ import {
   useRef,
   useState,
 } from "react";
-import ModeSwitcher from "../topbar/TopbarThree/ModeSwitcher";
+import ModeSwitcher from "@/components/topbar/TopbarThree/ModeSwitcher";
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
