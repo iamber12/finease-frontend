@@ -8,15 +8,25 @@ import {
   isSpecial,
   isUpper,
   isEqual,
+  getYear,
+  getMonth,
 } from "@/utils/utils";
+import Dropdown from "@/components/shared/Dropdown";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import Image from "next/image";
+import { months, years } from "@/utils/constants";
 import { IconAlertCircle } from "@tabler/icons-react";
 type Props = {};
 
 const SignUp = (props: Props) => {
+  const payForlist = ["Borrower", "Lender"];
   const [password, setPassword] = useState("");
   const [vpassword, setVPassword] = useState("");
   const [validate, setValidate] = useState({ type: "", message: "" });
+  const [type, setType] = useState(payForlist[0]);
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
 
   const changePasswordHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValidate({ type: "", message: "" });
@@ -77,6 +87,11 @@ const SignUp = (props: Props) => {
         message: "Password doesn't match the criteria",
       });
     }
+
+    return setValidate({
+      type: "",
+      message: "",
+    });
   };
 
   return (
@@ -85,7 +100,7 @@ const SignUp = (props: Props) => {
         <div className="box bg-primary/5 dark:bg-bg3 lg:p-6 xl:p-8 border border-n30 rounded-3xl dark:border-n500 ">
           <h3 className="h3 mb-4">Let&apos;s Get Started!</h3>
           <p className="md:mb-6 pb-4 mb-4 md:pb-6 bb-dashed text-sm md:text-base">
-            Please Enter your Email Address to Start your FinEase Application
+            Please Enter your details to Start your FinEase Application
           </p>
           <div className="grid grid-cols-2 gap-x-4 xxxl:gap-x-6">
             <div className="col-span-2 md:col-span-1">
@@ -131,6 +146,120 @@ const SignUp = (props: Props) => {
             required
           />
 
+          <label
+            htmlFor="address"
+            className="md:text-lg font-medium block mb-4"
+          >
+            Enter Your Address
+          </label>
+          <input
+            type="text"
+            className="w-full text-sm bg-n0 dark:bg-bg4 border border-n30 dark:border-n500 rounded-3xl px-3 md:px-6 py-2 md:py-3 mb-5"
+            placeholder="Enter Your Address"
+            id="address"
+            required
+          />
+
+          <div className="grid grid-cols-2 gap-x-4 xxxl:gap-x-6">
+            <div className="col-span-2 md:col-span-1">
+              <div className="col-span-2 md:col-span-1">
+                <label
+                  htmlFor="payfor"
+                  className="mb-4 md:text-lg font-medium block"
+                >
+                  Select your account type
+                </label>
+                <Dropdown
+                  items={payForlist}
+                  setSelected={setType}
+                  selected={type}
+                  btnClass="bg-secondary1/5 rounded-[32px] py-2.5 w-full md:py-3 md:px-5 dark:bg-bg3 mb-4"
+                  contentClass="w-full"
+                />
+              </div>
+            </div>
+
+            <div className="col-span-2 md:col-span-1">
+              <label
+                htmlFor="date"
+                className="md:text-lg font-medium block mb-4"
+              >
+                Date of Birth
+              </label>
+              <div className="relative bg-secondary1/5 dark:bg-bg3 border border-n30 dark:border-n500 rounded-3xl">
+                <DatePicker
+                  placeholderText="Select Date"
+                  selected={startDate}
+                  popperClassName="max-w-[240px] dark:bg-bg4"
+                  onFocus={() => setIsDatePickerOpen(true)}
+                  renderCustomHeader={({
+                    date,
+                    changeYear,
+                    changeMonth,
+                    decreaseMonth,
+                    increaseMonth,
+                    prevMonthButtonDisabled,
+                    nextMonthButtonDisabled,
+                  }) => (
+                    <div
+                      style={{
+                        margin: 10,
+                        display: "flex",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <button
+                        onClick={decreaseMonth}
+                        disabled={prevMonthButtonDisabled}
+                      >
+                        {"<"}
+                      </button>
+                      <select
+                        value={getYear(date)}
+                        onChange={({ target: { value } }) => changeYear(value)}
+                      >
+                        {years.map((option) => (
+                          <option key={option} value={option}>
+                            {option}
+                          </option>
+                        ))}
+                      </select>
+
+                      <select
+                        value={months[getMonth(date)]}
+                        onChange={({ target: { value } }) =>
+                          changeMonth(months.indexOf(value))
+                        }
+                      >
+                        {months.map((option) => (
+                          <option key={option} value={option}>
+                            {option}
+                          </option>
+                        ))}
+                      </select>
+
+                      <button
+                        onClick={increaseMonth}
+                        disabled={nextMonthButtonDisabled}
+                      >
+                        {">"}
+                      </button>
+                    </div>
+                  )}
+                  open={isDatePickerOpen}
+                  wrapperClassName="dark:bg-bg3 rounded-[32px]"
+                  onClickOutside={() => setIsDatePickerOpen(false)}
+                  className="w-full py-2 md:py-3 px-3 lg:px-6 text-sm rounded-[32px] bg-transparent dark:bg-transparent"
+                  onChange={(date) => setStartDate(date)}
+                  onSelect={() => setIsDatePickerOpen(false)}
+                  calendarClassName="dark:bg-bg4 dark:text-n30 dark:border-n500"
+                  dayClassName={(date) => "dark:text-n0"}
+                />
+                <i onClick={() => setIsDatePickerOpen(!isDatePickerOpen)}></i>
+              </div>
+            </div>
+          </div>
+
           <div className="grid grid-cols-2 gap-x-4 xxxl:gap-x-6">
             <div className="col-span-2 md:col-span-1">
               <label
@@ -169,13 +298,13 @@ const SignUp = (props: Props) => {
           {validate.message && (
             <div className="flex p-2 gap-2 items-center flex-initial border border-n30 dark:border-n500 dark:border-red-400 rounded-2xl">
               <IconAlertCircle color="red" />
-              <p className="pt-2 pb-2 text-red-500 md:text-base">{validate.message}</p>
+              <p className="pt-2 pb-2 text-red-500 md:text-base">
+                {validate.message}
+              </p>
             </div>
           )}
 
-          {password && (
-            <PasswordRules password={password} vpassword={vpassword} />
-          )}
+          <PasswordRules password={password} vpassword={vpassword} />
 
           <div className="mt-8">
             <button onClick={onClickHandler} className="btn px-5">
