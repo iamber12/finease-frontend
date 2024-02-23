@@ -1,4 +1,5 @@
 import "@/public/fonts/css/line-awesome.min.css";
+import "@/public/styles/style.scss";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
