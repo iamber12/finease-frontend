@@ -16,3 +16,5 @@ export const months = [
 ];
 
 export const years = range(1900, new Date().getFullYear() + 1, 1);
+
+export const SIGNUP_POST_LINK = "";

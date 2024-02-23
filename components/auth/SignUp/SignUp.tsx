@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useRef, createRef } from "react";
 import PasswordRules from "@/components/auth/SignUp/PasswordRules";
 import {
   isLength,
@@ -15,8 +15,10 @@ import Dropdown from "@/components/shared/Dropdown";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Image from "next/image";
-import { months, years } from "@/utils/constants";
+import { SIGNUP_POST_LINK, months, years } from "@/utils/constants";
 import { IconAlertCircle } from "@tabler/icons-react";
+import axios from "axios";
+
 type Props = {};
 
 const SignUp = (props: Props) => {
@@ -27,7 +29,10 @@ const SignUp = (props: Props) => {
   const [type, setType] = useState(payForlist[0]);
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
-
+  const emailRef = useRef(null);
+  const firstNameRef = useRef(null);
+  const lastNameRef = useRef(null);
+  const addRef = useRef(null);
   const changePasswordHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValidate({ type: "", message: "" });
     setPassword(e.currentTarget.value);
@@ -88,10 +93,25 @@ const SignUp = (props: Props) => {
       });
     }
 
-    return setValidate({
-      type: "",
-      message: "",
-    });
+    axios
+      .post(SIGNUP_POST_LINK, {
+        email: emailRef.current.value,
+        password: password,
+        name: `${firstNameRef.current.value} ${lastNameRef.current.value}`,
+        address: addRef.current.value,
+        date_of_birth: startDate,
+        primary_role: type,
+      })
+      .then(function (response) {
+        console.log(response);
+      })
+      .catch(function (error) {
+        return setValidate({
+          type: "Network error",
+          message: error,
+        });
+        console.log(error);
+      });
   };
 
   return (
@@ -116,6 +136,7 @@ const SignUp = (props: Props) => {
                 placeholder="First name"
                 id="name"
                 required
+                ref={firstNameRef}
               />
             </div>
             <div className="col-span-2 md:col-span-1">
@@ -131,6 +152,7 @@ const SignUp = (props: Props) => {
                 placeholder="Second name"
                 id="lname"
                 required
+                ref={lastNameRef}
               />
             </div>
           </div>
@@ -144,6 +166,7 @@ const SignUp = (props: Props) => {
             id="email"
             pattern="^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$"
             required
+            ref={emailRef}
           />
 
           <label
@@ -158,6 +181,7 @@ const SignUp = (props: Props) => {
             placeholder="Enter Your Address"
             id="address"
             required
+            ref={addRef}
           />
 
           <div className="grid grid-cols-2 gap-x-4 xxxl:gap-x-6">
