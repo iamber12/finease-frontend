@@ -185,7 +185,7 @@ const SignUp = (props: Props) => {
         </div>
       </div>
       <div className="col-span-12 lg:col-span-5 flex justify-center items-center">
-        <Image src="/images/logo.jpg" alt="img" width={533} height={560} />
+        <Image src="/images/auth.png" alt="img" width={533} height={560} />
       </div>
     </div>
   );
