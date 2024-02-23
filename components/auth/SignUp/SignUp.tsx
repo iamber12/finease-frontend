@@ -29,10 +29,12 @@ const SignUp = (props: Props) => {
   const [type, setType] = useState(payForlist[0]);
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
-  const emailRef = useRef(null);
-  const firstNameRef = useRef(null);
-  const lastNameRef = useRef(null);
-  const addRef = useRef(null);
+  const emailRef = useRef<HTMLDivElement>(null);
+  const firstNameRef = useRef<HTMLDivElement>(null);
+  const lastNameRef = useRef<HTMLDivElement>(null);
+  const addRef = useRef<HTMLDivElement>(null);
+
+  
   const changePasswordHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValidate({ type: "", message: "" });
     setPassword(e.currentTarget.value);
