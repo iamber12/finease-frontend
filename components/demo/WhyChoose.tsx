@@ -54,16 +54,6 @@ const whyusData = [
 const WhyChoose = () => {
   return (
     <section id="whyus" className="bg-primary/5 dark:bg-bg3 relative">
-      <Image
-        className="absolute max-md:hidden bottom-5 left-4"
-        src={illustration}
-        alt="banner image"
-      />
-      <Image
-        className="absolute max-md:hidden top-8 right-8"
-        src={chart}
-        alt="banner image"
-      />
       <div className="bg-[url(/images/demo/why-choose-bg.png)] bg-cover bg-no-repeat py-14 xl:py-28">
         <div className="container">
           <div className="max-w-[636px] mx-auto mb-10 lg:mb-14 text-center">
