@@ -16,12 +16,12 @@ const HomePage = () => {
       {/* <StartDesign /> */}
       {/* <CoreFeatures /> */}
       {/* <PrebuiltPages /> */}
-      {/* <WhyChoose /> */}
+      <WhyChoose />
       {/* <CreativeLayouts /> */}
       {/* <PopularDesign /> */}
       <Testimonial />
       {/* <DiscoverApps /> */}
-      {/* <Footer /> */}
+      <Footer />
     </main>
   );
 };
