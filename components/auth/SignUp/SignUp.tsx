@@ -21,10 +21,13 @@ import { redirect } from "next/navigation";
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
 import { useTheme } from "next-themes";
+import { useRouter } from 'next/navigation';
 
 type Props = {};
 
 const SignUp = (props: Props) => {
+    const { push } = useRouter();
+
   const payForlist = ["borrower", "lender"];
   const [password, setPassword] = useState("");
   const [vpassword, setVPassword] = useState("");
@@ -109,13 +112,15 @@ const SignUp = (props: Props) => {
 
     fetch(SIGNUP_POST_LINK, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-      },
+      headers: {},
       body: JSON.stringify(js),
     })
-      .then((res) => res.json())
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        }
+        throw new Error('Something went wrong');
+      })
       .then((res) => {
         Swal.fire({
           title: "Successfully Registered",
@@ -124,15 +129,15 @@ const SignUp = (props: Props) => {
           showCancelButton: false,
           confirmButtonColor: "#20B757",
           cancelButtonColor: "#FF6161",
-          confirmButtonText: "Yes, delete it!",
+          confirmButtonText: "Ok",
           timer: 2000,
           timerProgressBar: true,
           willClose: () => {
-            redirect("/auth/sign-in");
+            push("/auth/sign-in");
           },
         }).then((result) => {
           if (result.isConfirmed) {
-            redirect("/auth/sign-in");
+            push("/auth/sign-in");
           }
         });
       })
