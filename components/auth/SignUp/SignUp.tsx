@@ -22,19 +22,18 @@ import axios from "axios";
 type Props = {};
 
 const SignUp = (props: Props) => {
-  const payForlist = ["Borrower", "Lender"];
+  const payForlist = ["borrower", "lender"];
   const [password, setPassword] = useState("");
   const [vpassword, setVPassword] = useState("");
   const [validate, setValidate] = useState({ type: "", message: "" });
   const [type, setType] = useState(payForlist[0]);
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
-  const emailRef = useRef<HTMLDivElement>(null);
-  const firstNameRef = useRef<HTMLDivElement>(null);
-  const lastNameRef = useRef<HTMLDivElement>(null);
-  const addRef = useRef<HTMLDivElement>(null);
+  const emailRef = useRef<HTMLInputElement>(null);
+  const firstNameRef = useRef<HTMLInputElement>(null);
+  const lastNameRef = useRef<HTMLInputElement>(null);
+  const addRef = useRef<HTMLInputElement>(null);
 
-  
   const changePasswordHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValidate({ type: "", message: "" });
     setPassword(e.currentTarget.value);
@@ -95,24 +94,27 @@ const SignUp = (props: Props) => {
       });
     }
 
-    axios
-      .post(SIGNUP_POST_LINK, {
-        email: emailRef.current.value,
-        password: password,
-        name: `${firstNameRef.current.value} ${lastNameRef.current.value}`,
-        address: addRef.current.value,
-        date_of_birth: startDate,
-        primary_role: type,
-      })
-      .then(function (response) {
-        console.log(response);
-      })
+    const js = {
+      "email": emailRef.current.value,
+      "password": password,
+      "name": `${firstNameRef.current.value} ${lastNameRef.current.value}`,
+      "address": addRef.current.value,
+      "date_of_birth": startDate,
+      "primary_role": type,
+    };
+
+    fetch(SIGNUP_POST_LINK, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        'Access-Control-Allow-Origin':'*',
+      },
+      body: JSON.stringify(js),
+    })
+      .then((res) => res.json())
+      .then((res) => console.log(res))
       .catch(function (error) {
-        return setValidate({
-          type: "Network error",
-          message: error,
-        });
-        console.log(error);
+        console.log("Request failed", error);
       });
   };
 
