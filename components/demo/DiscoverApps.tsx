@@ -20,14 +20,14 @@ const DiscoverApps = () => {
         <div className="container">
           <div className="max-w-[1000px] mx-auto text-center">
             <h2 className="display-4 mt-4 mb-6">
-              Discover Our Dashboard with Mobile Apps Stunning Today.
+              Discover Our Dashboard with Interactive Guide.
             </h2>
             <p className="m-7 lg:mb-10">
               A single license includes free support, free lifetime updates, and
               all the features listed above.
             </p>
             <Link href="/dashboards/style-01" className="btn">
-              View Our Demos
+              Checkout Our Demos
             </Link>
           </div>
         </div>
