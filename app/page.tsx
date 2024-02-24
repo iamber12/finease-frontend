@@ -21,7 +21,7 @@ const HomePage = () => {
       {/* <PopularDesign /> */}
       <Testimonial />
       {/* <DiscoverApps /> */}
-      {/* <Footer /> */}
+      <Footer />
     </main>
   );
 };
