@@ -50,12 +50,12 @@ const SignIn = () => {
           <Link href="#" className="flex justify-end text-primary">
             Forgot Password
           </Link>
-          <p className="mt-3">
+          <div className="mt-3">
             Don&apos;t have an account?{" "}
             <Link className="text-primary" href="/auth/sign-up">
               Signup
             </Link>
-          </p>
+          </div>
           <div className="mt-8 flex gap-6">
             <button type="submit" className="btn px-5">
               Login
