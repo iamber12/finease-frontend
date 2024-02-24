@@ -69,9 +69,9 @@ const WhyChoose = () => {
           <div className="max-w-[636px] mx-auto mb-10 lg:mb-14 text-center">
             <span className="btn-outline font-semibold py-2 px-4">
               {" "}
-              <i className="las la-rocket"></i> Why you choose us
+              <i className="las la-rocket"></i> Core features
             </span>
-            <h2 className="h2 mt-4 mb-6">Exclusive Key Features</h2>
+            <h2 className="h2 mt-4 mb-6">What we offer</h2>
           </div>
           <div className="grid grid-cols-12 gap-4 xxl:gap-6 relative z-[2]">
             {whyusData.map(({ id, desc, title }) => (
