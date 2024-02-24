@@ -5,6 +5,8 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Next13NProgress } from "nextjs13-progress";
 import ThemeProvider from "@/utils/ThemeProvider";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const inter = Inter({
   subsets: ["latin"],
@@ -27,6 +29,7 @@ export default function RootLayout({
         <ThemeProvider>
           <div>
             <Next13NProgress color="#20B757" height={3} />
+            <ToastContainer />
             {children}
           </div>
         </ThemeProvider>

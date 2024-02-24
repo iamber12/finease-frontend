@@ -17,7 +17,10 @@ import "react-datepicker/dist/react-datepicker.css";
 import Image from "next/image";
 import { SIGNUP_POST_LINK, months, years } from "@/utils/constants";
 import { IconAlertCircle } from "@tabler/icons-react";
-import axios from "axios";
+import { redirect } from "next/navigation";
+import Swal from "sweetalert2";
+import { toast } from "react-toastify";
+import { useTheme } from "next-themes";
 
 type Props = {};
 
@@ -33,6 +36,7 @@ const SignUp = (props: Props) => {
   const firstNameRef = useRef<HTMLInputElement>(null);
   const lastNameRef = useRef<HTMLInputElement>(null);
   const addRef = useRef<HTMLInputElement>(null);
+  const { theme } = useTheme();
 
   const changePasswordHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValidate({ type: "", message: "" });
@@ -95,26 +99,49 @@ const SignUp = (props: Props) => {
     }
 
     const js = {
-      "email": emailRef.current.value,
-      "password": password,
-      "name": `${firstNameRef.current.value} ${lastNameRef.current.value}`,
-      "address": addRef.current.value,
-      "date_of_birth": startDate,
-      "primary_role": type,
+      email: emailRef.current.value,
+      password: password,
+      name: `${firstNameRef.current.value} ${lastNameRef.current.value}`,
+      address: addRef.current.value,
+      date_of_birth: startDate,
+      primary_role: type,
     };
 
     fetch(SIGNUP_POST_LINK, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        'Access-Control-Allow-Origin':'*',
+        "Access-Control-Allow-Origin": "*",
       },
       body: JSON.stringify(js),
     })
       .then((res) => res.json())
-      .then((res) => console.log(res))
+      .then((res) => {
+        Swal.fire({
+          title: "Successfully Registered",
+          text: "You'll be soon redirected to sign in page.",
+          icon: "success",
+          showCancelButton: false,
+          confirmButtonColor: "#20B757",
+          cancelButtonColor: "#FF6161",
+          confirmButtonText: "Yes, delete it!",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            redirect("/auth/sign-in");
+          }
+        });
+      })
       .catch(function (error) {
-        console.log("Request failed", error);
+        return toast.error(`There was an error registering. Error: ${error}`, {
+          position: "bottom-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: theme,
+        });;
       });
   };
 
