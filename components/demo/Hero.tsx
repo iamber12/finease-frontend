@@ -14,13 +14,6 @@ const Hero = () => {
   const { theme } = useTheme();
   return (
     <div className="bg-[url(/images/demo/hero-bg.png)] relative">
-      {/* 
-      <Image
-      className="absolute max-md:hidden top-20 xxl:top-36 right-5 lg:right-[30%]"
-      src={rocket}
-      alt="banner image"
-      />
-    */}
       <Image
         className="absolute max-md:hidden bottom-0 right-5 xxl:right-14"
         src={chart}
@@ -36,15 +29,11 @@ const Hero = () => {
         <div className="container ">
           <div className="flex flex-col gap-10 lg:gap-16">
             <div className="text-center max-w-3xl mx-auto">
-              {/* <span className="btn-outline font-semibold py-2 px-4">
-                {" "}
-                <i className="las la-rocket"></i> Kick Start Your Project Using
-              </span> */}
               <h1 className="text-3xl sm:text-4xl min-[1650px]:text-[44px] !leading-tight font-semibold mb-4 lg:mb-6 mt-6">
               Canada's innovative platform for peer-to-peer financial empowerment
               </h1>
               <p className="xl:text-xl mb-8 lg:mb-10 text-sm md:text-base max-xxxl:max-w-[600px] mx-auto">
-                Welcome to Finease, where we connect creditworthy Canadians looking for a loan with everyday Canadians looking to invest.
+                Welcome to FinEase, where we connect creditworthy Canadians looking for a loan with everyday Canadians looking to invest.
               </p>
               <div className="flex gap-4 justify-center lg:gap-6">
                 <Link href="#" className="btn">
@@ -55,28 +44,6 @@ const Hero = () => {
                 </Link>
               </div>
             </div>
-            {/* <div className="max-w-7xl mx-auto">
-              <ReactCompareSlider
-                itemOne={
-                  <ReactCompareSliderImage
-                    src="/images/demo/demo-light.png"
-                    width={1842}
-                    height={1014}
-                    alt="Image one"
-                  />
-                }
-                itemTwo={
-                  <ReactCompareSliderImage
-                    src="/images/demo/demo-dark.png"
-                    width={1842}
-                    height={1014}
-                    alt="Image two"
-                  />
-                }
-                boundsPadding={30}
-                className="rounded-xl"
-              />
-            </div> */}
           </div>
         </div>
       </div>

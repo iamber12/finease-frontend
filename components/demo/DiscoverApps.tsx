@@ -6,6 +6,7 @@ import Link from "next/link";
 const DiscoverApps = () => {
   return (
     <section className="bg-primary/5 dark:bg-bg3 relative">
+<<<<<<< Updated upstream
       <Image
         className="absolute max-md:hidden bottom-5 left-4"
         src={illustration}
@@ -16,6 +17,8 @@ const DiscoverApps = () => {
         src={chart}
         alt="banner image"
       />
+=======
+>>>>>>> Stashed changes
       <div className="bg-[url(/images/demo/why-choose-bg.png)] bg-cover bg-no-repeat py-14 xl:py-28">
         <div className="container">
           <div className="max-w-[1000px] mx-auto text-center">
