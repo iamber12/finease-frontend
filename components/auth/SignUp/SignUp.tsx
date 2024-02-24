@@ -125,11 +125,12 @@ const SignUp = (props: Props) => {
           confirmButtonColor: "#20B757",
           cancelButtonColor: "#FF6161",
           confirmButtonText: "Yes, delete it!",
-        }).then((result) => {
-          if (result.isConfirmed) {
+          timer: 2000,
+          timerProgressBar: true,
+          willClose: () => {
             redirect("/auth/sign-in");
-          }
-        });
+          },
+        }).then((result) => {});
       })
       .catch(function (error) {
         return toast.error(`There was an error registering. Error: ${error}`, {
@@ -139,9 +140,8 @@ const SignUp = (props: Props) => {
           closeOnClick: true,
           pauseOnHover: true,
           draggable: true,
-          progress: undefined,
           theme: theme,
-        });;
+        });
       });
   };
 
