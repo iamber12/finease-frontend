@@ -17,7 +17,6 @@ import "react-datepicker/dist/react-datepicker.css";
 import Image from "next/image";
 import { SIGNUP_POST_LINK, months, years } from "@/utils/constants";
 import { IconAlertCircle } from "@tabler/icons-react";
-import { redirect } from "next/navigation";
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
 import { useTheme } from "next-themes";

@@ -1,13 +1,59 @@
 // Sign In
 
 "use client";
+import { SIGNIN_POST_LINK } from "@/utils/constants";
 import { IconEye, IconEyeOff } from "@tabler/icons-react";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
-import { useState } from "react";
+import React, { useState, useRef } from "react";
+import { toast } from "react-toastify";
+import { useTheme } from "next-themes";
+import { useRouter } from "next/navigation";
 
 const SignIn = () => {
+  const emailRef = useRef<HTMLInputElement>(null);
+  const passRef = useRef<HTMLInputElement>(null);
+  const { theme } = useTheme();
+  const { push } = useRouter();
+
+  const onClickHandler = (e: React.MouseEvent<HTMLElement>): void => {
+    e.preventDefault();
+    const js = {
+      email: emailRef.current.value,
+      password: passRef.current.value,
+    };
+
+    fetch(SIGNIN_POST_LINK, {
+      method: "POST",
+      headers: {},
+      body: JSON.stringify(js),
+    })
+      .then((res) => {
+        console.log(res);
+        if (res.ok) {
+          return res.json();
+        } else {
+          return res.json().then((res) => {
+            throw new Error(res.meta.message);
+          });
+        }
+      })
+      .then((res) => {
+        push("/auth/sign-up");
+      })
+      .catch((error) => {
+        return toast.error(`${error}`, {
+          position: "bottom-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          theme: theme,
+        });
+      });
+  };
+
   const [showPass, setShowPass] = useState(false);
   return (
     <div className="box p-3 md:p-4 xl:p-6 grid grid-cols-12 gap-6 items-center">
@@ -26,10 +72,12 @@ const SignIn = () => {
             placeholder="Enter Your Email"
             id="email"
             required
+            ref={emailRef}
           />
           <label
             htmlFor="password"
-            className="md:text-lg font-medium block mb-4">
+            className="md:text-lg font-medium block mb-4"
+          >
             Enter Your Password
           </label>
           <div className=" bg-n0 dark:bg-bg4 border border-n30 dark:border-n500 rounded-3xl px-3 md:px-6 py-2 md:py-3 mb-4 relative">
@@ -39,10 +87,12 @@ const SignIn = () => {
               placeholder="Enter Your Password"
               id="password"
               required
+              ref={passRef}
             />
             <span
               onClick={() => setShowPass(!showPass)}
-              className="absolute ltr:right-5 rtl:left-5 top-1/2 cursor-pointer -translate-y-1/2">
+              className="absolute ltr:right-5 rtl:left-5 top-1/2 cursor-pointer -translate-y-1/2"
+            >
               {showPass ? <IconEye /> : <IconEyeOff />}
             </span>
           </div>
@@ -57,7 +107,7 @@ const SignIn = () => {
             </Link>
           </div>
           <div className="mt-8 flex gap-6">
-            <button type="submit" className="btn px-5">
+            <button onClick={onClickHandler} type="submit" className="btn px-5">
               Login
             </button>
           </div>
