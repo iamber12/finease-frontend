@@ -66,7 +66,7 @@ const Testimonial = () => {
             {" "}
             <i className="las la-rocket"></i> Testimonial
           </span>
-          <h2 className="h2 mb-4 lg:mb-6 mt-4">What People Says</h2>
+          <h2 className="h2 mb-4 lg:mb-6 mt-4">What People Say</h2>
           <p className="text-sm md:text-base">
             Some of our happy customers review regarding our Qualities
             and Supports.
