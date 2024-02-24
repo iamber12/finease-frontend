@@ -5,68 +5,50 @@ import Image from "next/image";
 const whyusData = [
   {
     id: 1,
-    title: "Quality & Clean Code",
-    desc: "Master clean code for amazing team and software excellence.",
-    icon: <i className="las relative text-4xl text-primary z-[2] la-code"></i>,
+    title: "User-Friendly Interface",
+    desc: "Our platform offers an intuitive and easy-to-navigate interface, ensuring that even those new to online finance can manage their investments and loans with ease",
   },
   {
     id: 2,
-    title: "Tailwindcss v3.3.36",
-    desc: "Master clean code for amazing team and software excellence.",
-    icon: <Image src={tailwind} className="relative z-[2]" alt="tailwind" />,
+    title: "Competitive Rates",
+    desc: "We provide some of the most competitive interest rates in the market, whether you're looking to invest or secure a loan.",
   },
   {
     id: 3,
-    title: "Handmade Icons",
-    desc: "Create Icon System using SVG Sprites in BankHub.",
-    icon: (
-      <i className="las relative text-4xl text-primary z-[2] la-pen-nib"></i>
-    ),
+    title: "Community Trust",
+    desc: "Join a community of satisfied customers who trust us with their financial needs and benefit from shared knowledge and experiences.",
   },
   {
     id: 4,
-    title: "Limitless Components",
-    desc: "Vast web design layouts and UI kits in limitless collection.",
-    icon: (
-      <i className="las relative text-4xl text-primary z-[2] la-layer-group"></i>
-    ),
+    title: "Accessible Anywhere",
+    desc: "With our mobile-friendly website and app, manage your finances on the go, anytime, anywhere.",
   },
   {
     id: 5,
-    title: "Easy Customizable",
-    desc: "Customize layout, settings, and content with easy steps.",
-    icon: <i className="las relative text-4xl text-primary z-[2] la-edit"></i>,
+    title: "Fast and Efficient Service",
+    desc: "Enjoy quick loan approvals and investment transactions, so you can move forward without delay.",
   },
   {
     id: 6,
-    title: "Responsive & Friendly",
-    desc: "Use Responsive Design to Connect with all Device Users.",
-    icon: (
-      <i className="las relative text-4xl text-primary z-[2] la-street-view"></i>
-    ),
+    title: "Compliance by design",
+    desc: "Full compliance with regulations is essential to protect both investors and borrowers.",
   },
   {
     id: 7,
-    title: "Premium Support",
-    desc: "Constant support create a ticket for any faced issues.",
-    icon: (
-      <i className="las relative text-4xl text-primary z-[2] la-hands-helping"></i>
-    ),
+    title: "Robust Security",
+    desc: "The safety of your financial information is our top priority. We employ state-of-the-art encryption and cybersecurity measures to protect your data.",
   },
   {
     id: 8,
-    title: "Colors Options",
-    desc: "Alter others via SCSS variables effortlessly.",
-    icon: (
-      <i className="las relative text-4xl text-primary z-[2] la-palette"></i>
-    ),
+    title: "Transparency",
+    desc: "We operate with complete transparency, with no hidden fees or complex terms. Our processes and charges are clear and straightforward.",
   },
   {
     id: 9,
-    title: "Icon Options",
-    desc: "Alter others via SCSS variables effortlessly.",
-    icon: <i className="las relative text-4xl text-primary z-[2] la-robot"></i>,
+    title: "Cross-Platform Accessibility",
+    desc: " Access your financial information across various devices with a consistent and secure experience.",
   },
+
 ];
 
 const WhyChoose = () => {
@@ -90,20 +72,13 @@ const WhyChoose = () => {
               <i className="las la-rocket"></i> Why you choose us
             </span>
             <h2 className="h2 mt-4 mb-6">Exclusive Key Features</h2>
-            <p>
-              Seamless Flow, Uninterrupted Style: Embrace Excellence with
-              Built-in Support.
-            </p>
           </div>
           <div className="grid grid-cols-12 gap-4 xxl:gap-6 relative z-[2]">
-            {whyusData.map(({ id, desc, icon, title }) => (
+            {whyusData.map(({ id, desc, title }) => (
               <div
                 key={id}
                 className="col-span-12 md:col-span-6 lg:col-span-4 box p-3 shadow-[0px_6px_30px_0px_rgba(0,0,0,0.06)]">
                 <div className="flex items-center gap-4 xxl:gap-6 p-4 md:p-5 xl:p-6 rounded-xl bg-primary/5 dark:bg-bg3 border border-n30 dark:border-n500">
-                  <div className="hexagon shrink-0 bg-n0 dark:bg-bg4 flex items-center justify-center shadow-[0px_6px_30px_0px_rgba(0,0,0,0.08)]">
-                    {icon}
-                  </div>
                   <div>
                     <h5 className="h5 mb-4">{title}</h5>
                     <p className="text-sm">{desc}</p>
