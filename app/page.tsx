@@ -20,7 +20,7 @@ const HomePage = () => {
       {/* <CreativeLayouts /> */}
       {/* <PopularDesign /> */}
       <Testimonial />
-      {/* <DiscoverApps /> */}
+      <DiscoverApps />
       <Footer />
     </main>
   );
