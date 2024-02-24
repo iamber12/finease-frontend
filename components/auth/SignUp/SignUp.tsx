@@ -130,7 +130,7 @@ const SignUp = (props: Props) => {
           confirmButtonColor: "#20B757",
           cancelButtonColor: "#FF6161",
           confirmButtonText: "Ok",
-          timer: 2000,
+          timer: 5000,
           timerProgressBar: true,
           willClose: () => {
             push("/auth/sign-in");
