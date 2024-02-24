@@ -119,7 +119,7 @@ const SignUp = (props: Props) => {
       .then((res) => {
         Swal.fire({
           title: "Successfully Registered",
-          text: "You'll be soon redirected to sign in page.",
+          text: "You'll be soon redirected to sign in page or click ok to redirect.",
           icon: "success",
           showCancelButton: false,
           confirmButtonColor: "#20B757",
@@ -130,7 +130,11 @@ const SignUp = (props: Props) => {
           willClose: () => {
             redirect("/auth/sign-in");
           },
-        }).then((result) => {});
+        }).then((result) => {
+          if (result.isConfirmed) {
+            redirect("/auth/sign-in");
+          }
+        });
       })
       .catch(function (error) {
         return toast.error(`There was an error registering. Error: ${error}`, {
