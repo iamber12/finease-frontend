@@ -59,7 +59,7 @@ const userReviews = [
 
 const Testimonial = () => {
   return (
-    <section className="py-14 lg:py-28">
+    <section id="testimonials" className="py-14 lg:py-28">
       <div className="container">
         <div className="max-w-[526px] mx-auto text-center mb-10 lg:mb-14">
           <span className="btn-outline font-semibold py-2 px-4">

@@ -53,7 +53,7 @@ const whyusData = [
 
 const WhyChoose = () => {
   return (
-    <section id="whyus" className="bg-primary/5 dark:bg-bg3 relative">
+    <section id="c-features" className="bg-primary/5 dark:bg-bg3 relative">
       <div className="bg-[url(/images/demo/why-choose-bg.png)] bg-cover bg-no-repeat py-14 xl:py-28">
         <div className="container">
           <div className="max-w-[636px] mx-auto mb-10 lg:mb-14 text-center">

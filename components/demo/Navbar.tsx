@@ -67,10 +67,10 @@ const Navbar = () => {
               : "max-lg:hidden max-lg:-translate-x-full"
           }`}>
           <li>
-            <Link href="#borrow">Core Features</Link>
+            <Link href="#c-features">Core Features</Link>
           </li>
           <li>
-            <Link href="#invest">Testimonials</Link>
+            <Link href="#testimonials">Testimonials</Link>
           </li>
           <li>
             <Link href="#aboutus">About Us</Link>
