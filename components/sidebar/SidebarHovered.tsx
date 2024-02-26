@@ -15,6 +15,7 @@ import React, {
   useState,
 } from "react";
 import AnimateHeight from "react-animate-height";
+import { useAuth } from "../auth/UserContext";
 
 const SidebarHovered = ({
   setSidebar,
@@ -28,12 +29,13 @@ const SidebarHovered = ({
   const { theme } = useTheme();
   const { windowSize } = useWindowSize();
 
+  const { signOut } = useAuth();
+
   const sidebarRef = useRef<HTMLDivElement | null>(null);
 
   const handleClickOutside = useCallback(
     (event: MouseEvent) => {
       const currentWindowSize = window.innerWidth;
-
       if (
         sidebarRef.current &&
         !sidebarRef.current.contains(event.target as Node)
@@ -47,11 +49,17 @@ const SidebarHovered = ({
   );
 
   useEffect(() => {
-    sidebarData.map(({ items }) =>
-      items.map(({ submenus, name }) =>
-        submenus.map(({ url }) => (url == path ? setActiveMenu(name) : ""))
-      )
-    );
+    sidebarData.map(({ items }) => {
+      return items.map(({ submenus, name, url }) => {
+        if (!submenus.length) {
+          return url == path ? setActiveMenu(name) : "";
+        } else {
+          return submenus.map(({ url }) =>
+            url == path ? setActiveMenu(name) : ""
+          );
+        }
+      });
+    });
   }, [path]);
 
   useEffect(() => {
@@ -71,7 +79,8 @@ const SidebarHovered = ({
           ? "translate-x-0 visible"
           : "ltr:-translate-x-full rtl:translate-x-full invisible"
       } duration-300  fixed ltr:left-0 rtl:right-0 shadow-lg h-full bg-n0 dark:bg-bg4 top-0`}
-      ref={sidebarRef}>
+      ref={sidebarRef}
+    >
       <div className={`p-4 xl:p-7 group-hover:lg:p-6 group-hover:xxl:p-[30px]`}>
         <div className="flex justify-between group-hover:justify-between items-center">
           <Link href="/">
@@ -110,15 +119,16 @@ const SidebarHovered = ({
               </p>
               <ul className="mb-5 flex flex-col justify-center items-center gap-4 xxl:gap-6 group-hover:gap-2 pb-24">
                 {items.map(
-                  ({ id, icon, name, submenus }) =>
+                  ({ id, icon, url = "", name, submenus }) =>
                     submenus && (
                       <li
                         key={id}
                         className={`relative w-full xl:flex group-hover:flex-col justify-center ${
                           activeMenu == name &&
                           "group-hover:bg-primary/5 dark:group-hover:bg-bg3 rounded-xl xxl:rounded-full group-hover:rounded-xl"
-                        }`}>
-                        <button
+                        }`}
+                      >
+                        <Link
                           onClick={() =>
                             setActiveMenu((p) => (p == name ? "" : name))
                           }
@@ -126,54 +136,68 @@ const SidebarHovered = ({
                             activeMenu == name && "!bg-primary text-n0"
                           } ${path == name && "!bg-primary text-n0"} ${
                             isActive(submenus) && "!bg-primary text-n0"
-                          }`}>
+                          }`}
+                          href={url}
+                        >
                           <span className="flex items-center max-xl:gap-2 group-hover:gap-2">
                             <span
                               className={`text-primary group-hover/btn:text-n0  ${
                                 activeMenu == name && " !text-n0"
-                              } ${isActive(submenus) && " !text-n0"}`}>
+                              } ${isActive(submenus) && " !text-n0"}`}
+                            >
                               {icon}
                             </span>
                             <span className="font-medium xl:hidden group-hover:block">
                               {name}
                             </span>
                           </span>
-                          <IconChevronRight
-                            className={`xl:hidden group-hover:block ${
-                              activeMenu == name && "rotate-90"
-                            }`}
-                          />
-                        </button>
-                        <AnimateHeight height={activeMenu == name ? "auto" : 0}>
-                          <ul
-                            className={`px-4 xxl:px-5 py-3 xl:hidden group-hover:block`}>
-                            {submenus.map(({ title, url }) => (
-                              <li
-                                onClick={() => {
-                                  setActiveMenu(name);
-                                  windowSize! < 1200 &&
-                                    setSidebar(!sidebarIsOpen);
-                                }}
-                                key={title}>
-                                <Link
-                                  className={`font-medium flex items-center gap-2 py-3 px-6 ${
-                                    path == url && "text-primary"
-                                  }`}
-                                  href={url}>
-                                  <i className="la la-minus"></i>{" "}
-                                  <span>{title}</span>
-                                </Link>
-                              </li>
-                            ))}
-                          </ul>
-                        </AnimateHeight>
+                          {submenus.length ? (
+                            <IconChevronRight
+                              className={`xl:hidden group-hover:block ${
+                                activeMenu == name && "rotate-90"
+                              }`}
+                            />
+                          ) : null}
+                        </Link>
+                        {submenus.length ? (
+                          <AnimateHeight
+                            height={activeMenu == name ? "auto" : 0}
+                          >
+                            <ul
+                              className={`px-4 xxl:px-5 py-3 xl:hidden group-hover:block`}
+                            >
+                              {submenus.map(({ title, url }) => (
+                                <li
+                                  onClick={() => {
+                                    setActiveMenu(name);
+                                    windowSize! < 1200 &&
+                                      setSidebar(!sidebarIsOpen);
+                                  }}
+                                  key={title}
+                                >
+                                  <Link
+                                    className={`font-medium flex items-center gap-2 py-3 px-6 ${
+                                      path == url && "text-primary"
+                                    }`}
+                                    href={url}
+                                  >
+                                    <i className="la la-minus"></i>{" "}
+                                    <span>{title}</span>
+                                  </Link>
+                                </li>
+                              ))}
+                            </ul>
+                          </AnimateHeight>
+                        ) : null}
                       </li>
                     )
                 )}
               </ul>
               <div className="mb-24 flex justify-center">
                 <button
-                  className={`max-xl:px-6 max-xl:w-full max-lx:py-3 group-hover:w-full group/btn group-hover:bg-n0 dark:group-hover:bg-bg4 group-hover:border-none justify-center xl:bg-primary/5 xl:dark:bg-bg3 xl:border xl:border-n30 dark:xl:border-n500 flex max-xl:justify-between group-hover:!justify-between xl:h-12 xl:w-12 items-center group-hover:xl:px-6 py-3 group-hover:xl:py-3 max-xl:rounded-xl lg:rounded-full group-hover:rounded-xl hover:!bg-primary hover:text-n0`}>
+                  className={`max-xl:px-6 max-xl:w-full max-lx:py-3 group-hover:w-full group/btn group-hover:bg-n0 dark:group-hover:bg-bg4 group-hover:border-none justify-center xl:bg-primary/5 xl:dark:bg-bg3 xl:border xl:border-n30 dark:xl:border-n500 flex max-xl:justify-between group-hover:!justify-between xl:h-12 xl:w-12 items-center group-hover:xl:px-6 py-3 group-hover:xl:py-3 max-xl:rounded-xl lg:rounded-full group-hover:rounded-xl hover:!bg-primary hover:text-n0`}
+                  onClick={signOut}
+                >
                   <span className="flex items-center max-xl:gap-2 group-hover:gap-2">
                     <span className={`text-primary group-hover/btn:text-n0 }`}>
                       <i className="las la-sign-out-alt"></i>

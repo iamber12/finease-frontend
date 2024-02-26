@@ -1,14 +1,12 @@
 import MobileSearch from "@/components/shared/MobileSearch";
 import { useLayout } from "@/utils/LayoutContext";
 import { Dispatch, SetStateAction } from "react";
-import ProfileTwo from "../topbarTwo/ProfileTwo";
+import ProfileTwo from "@/components/shared/ProfileTwo";
 import MessageBtn from "./MessageBtn";
 import ModeSwitcher from "./ModeSwitcher";
 import Notification from "./Notification";
 import SearchBar from "./SearchBar";
 import SelectCurrency from "./SelectCurrency";
-import SelectLayout from "./SelectLayout";
-import SwitchLanguage from "./SwitchLanguage";
 
 const TopBarThree = ({
   setSidebar,
@@ -24,14 +22,19 @@ const TopBarThree = ({
         sidebarIsOpen && layout == "Hovered"
           ? "w-full xl:w-[calc(100%-96px)] xl:ltr:ml-24 xl:rtl:mr-24"
           : "w-full"
-      }  md:py-4 xl:py-6 gap-3 bg-lightbg2 dark:bg-bg3 fixed flex justify-between items-center`}>
+      }  md:py-4 xl:py-6 gap-3 bg-lightbg2 dark:bg-bg3 fixed flex justify-between items-center`}
+    >
       <div className="flex grow gap-4 xxl:gap-5 items-center">
         <button
           onClick={() => setSidebar(!sidebarIsOpen)}
-          className="bg-primary text-n0 rounded-e-2xl flex items-center py-3">
-          <i className="las la-angle-left text-xl"></i>
+          className="bg-primary text-n0 rounded-e-2xl flex items-center py-3"
+        >
+          <i
+            className={`las la-angle-${
+              !sidebarIsOpen ? "right" : "left"
+            } text-xl`}
+          />
         </button>
-        <SelectLayout />
         <SearchBar />
         <SelectCurrency />
       </div>
@@ -40,7 +43,6 @@ const TopBarThree = ({
         <ModeSwitcher />
         <MessageBtn />
         <Notification />
-        <SwitchLanguage />
         <ProfileTwo />
       </div>
     </nav>
