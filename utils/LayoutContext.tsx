@@ -10,20 +10,8 @@ const LayoutContext = createContext<LayoutContextType | undefined>(undefined);
 
 export const LayoutProvider = ({ children }: { children: React.ReactNode }) => {
   const [mounted, setMounted] = useState(false);
-  const [dir, setDir] = useState<string>(() => {
-    if (typeof window !== "undefined") {
-      return localStorage.getItem("dir") || "ltr";
-    } else {
-      return "ltr";
-    }
-  });
-  const [layout, setLayout] = useState<string>(() => {
-    if (typeof window !== "undefined") {
-      return localStorage.getItem("layout") || "Vertical";
-    } else {
-      return "Vertical";
-    }
-  });
+  const [dir, setDir] = useState<string>("ltr");
+  const [layout, setLayout] = useState<string>("Hovered");
   const changeDir = (newDir: string) => {
     setDir(newDir);
     localStorage.setItem("dir", newDir);
