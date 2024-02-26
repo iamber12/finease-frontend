@@ -9,12 +9,14 @@ import React, { useState, useRef } from "react";
 import { toast } from "react-toastify";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/components/auth/UserContext";
 
 const SignIn = () => {
   const emailRef = useRef<HTMLInputElement>(null);
   const passRef = useRef<HTMLInputElement>(null);
   const { theme } = useTheme();
   const { push } = useRouter();
+  const { login } = useAuth();
 
   const onClickHandler = (e: React.MouseEvent<HTMLElement>): void => {
     e.preventDefault();
@@ -29,7 +31,6 @@ const SignIn = () => {
       body: JSON.stringify(js),
     })
       .then((res) => {
-        console.log(res);
         if (res.ok) {
           return res.json();
         } else {
@@ -39,7 +40,8 @@ const SignIn = () => {
         }
       })
       .then((res) => {
-        push("/auth/sign-up");
+        login({ ...res.payload.user });
+        push("/dashboard");
       })
       .catch((error) => {
         return toast.error(`${error}`, {

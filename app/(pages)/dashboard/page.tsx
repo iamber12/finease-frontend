@@ -1,7 +1,7 @@
-import IncomeExpences from "@/components/dashboards/style-02/IncomeExpences";
-import LatestTransactions from "@/components/dashboards/style-02/LatestTransactions";
-import MyWallet from "@/components/dashboards/style-02/MyWallet";
-import Statistics from "@/components/dashboards/style-02/Statistics";
+import IncomeExpences from "@/components/dashboard/IncomeExpences";
+import LatestTransactions from "@/components/dashboard/LatestTransactions";
+import MyWallet from "@/components/dashboard/MyWallet";
+import Statistics from "@/components/dashboard/Statistics";
 import Banner from "@/components/shared/Banner";
 
 const page = () => {
