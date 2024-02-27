@@ -20,7 +20,7 @@ const OpenAccountForm = ({
 }) => {
   const [duration, setDuration] = useState(durations[0]);
   const [status, setStatus] = useState(statuses[0]);
-  const minAmount = useRef(null);
+  const minAmount = useRef<HTMLInputElement> (null);
   const maxAmount = useRef(null);
   const minInterest = useRef(null);
   const maxInterest = useRef(null);
@@ -67,14 +67,16 @@ const OpenAccountForm = ({
           text: "",
           icon: "success",
           showCancelButton: false,
+          showConfirmButton: false,
           confirmButtonColor: "#20B757",
           cancelButtonColor: "#FF6161",
           confirmButtonText: "Ok",
           timer: 5000,
           timerProgressBar: true,
-          willClose: () => {},
+          willClose: toggleOpen,
         }).then((result) => {
           if (result.isConfirmed) {
+            toggleOpen();
           }
         });
       })

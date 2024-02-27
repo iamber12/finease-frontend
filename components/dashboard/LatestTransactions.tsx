@@ -4,8 +4,14 @@ import SearchBar from "@/components/shared/SearchBar";
 import { IconSelector } from "@tabler/icons-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { toast } from "react-toastify";
+import { useState, useEffect } from "react";
 import Action from "./Action";
+import { useTheme } from "next-themes";
+import { useAuth } from "../auth/UserContext";
+import { PROPOSAL_GET_LINK } from "@/utils/constants";
+import useDropdown from "@/utils/useDropdown";
+
 enum TransactionStatus {
   Available = "available",
   Unavailable = "unavailable",
@@ -16,9 +22,9 @@ type Proposal = {
   amount_end: number;
   min_interest: number;
   max_interest: number;
-  min_duration: number;
-  max_duration: number;
-  desc: string;
+  min_return_duration: number;
+  max_return_duration: number;
+  description: string;
   status: TransactionStatus;
 };
 
@@ -26,21 +32,21 @@ type Order = "ASC" | "DSC";
 
 type SortDataFunction = (col: keyof Transaction) => void;
 
-const proposalData = [
-  {
-    amount_start: 123,
-    amount_end: 123,
-    min_interest: 23,
-    max_interest: 234,
-    min_duration: 4234,
-    max_duration: 2342,
-    status: TransactionStatus.Available,
-    desc: "as",
-  },
-];
 const options = ["Recent", "Name", "Amount"];
-const LatestTransactions = () => {
-  const [tableData, setTableData] = useState<Proposal[]>(proposalData);
+const LatestTransactions = ({open}) => {
+  const dur = {
+    15780096: "6 Months",
+    47340288:"1 Year 6 Months",
+    31560192:"1 Year",
+    60403008: "2 Years",
+  };
+  
+  const { theme } = useTheme();
+
+  const { getToken } = useAuth();
+
+  const [tableData, setTableData] = useState<Proposal[]>([]);
+
   const [order, setOrder] = useState<Order>("ASC");
   const [selected, setSelected] = useState(options[0]);
   const sortData: SortDataFunction = (col) => {
@@ -73,18 +79,41 @@ const LatestTransactions = () => {
     }
   };
 
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const result = proposalData.filter((item) =>
-      item.desc.toLowerCase().includes(e.target.value)
-    );
-    setTableData(result);
-  };
+  useEffect(() => {
+    fetch(PROPOSAL_GET_LINK, {
+      method: "GET",
+      headers: {
+        "X-Access-Token": getToken(),
+      },
+    })
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        }
+        throw new Error("Something went wrong");
+      })
+      .then((res) => {
+        setTableData(res.payload.loan_proposals);
+      })
+      .catch(function (error) {
+        return toast.error(`There was an error fetching proposals. Error: ${error}`, {
+          position: "bottom-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          theme: theme,
+        });
+      });
+  }, [open]);
+
+
   return (
     <div className="box col-span-12 lg:col-span-6">
       <div className="flex flex-wrap gap-4  justify-between items-center bb-dashed mb-4 pb-4 lg:mb-6 lg:pb-6">
         <h4 className="h4">Recent Proposals</h4>
         <div className="flex items-center gap-4">
-          <SearchBar handleSearch={handleSearch} />
           <div className="flex items-center gap-3 whitespace-nowrap">
             <span>Sort By : </span>
             <Dropdown
@@ -105,7 +134,7 @@ const LatestTransactions = () => {
                 onClick={() => sortData("title")}
                 className="text-start py-5 px-6 cursor-pointer min-w-[330px]"
               >
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-1 text-center ">
                   Description <IconSelector size={18} />
                 </div>
               </th>
@@ -170,13 +199,13 @@ const LatestTransactions = () => {
           <tbody>
             {tableData.map((ele, index) => (
               <tr
-                key={ele.desc}
+                key={ele.description}
                 className="even:bg-secondary1/5 dark:even:bg-bg3"
               >
                 <td className="py-2 px-6">
                   <div className="flex items-center gap-3">
                     <div>
-                      <p className="font-medium mb-1">{ele.desc}</p>
+                      <p className="font-medium mb-1">{ele.description}</p>
                       {/* <span className="text-xs">{time}</span> */}
                     </div>
                   </div>
@@ -185,8 +214,8 @@ const LatestTransactions = () => {
                 <td className="py-2">${ele.amount_end}</td>
                 <td className="py-2">{ele.min_interest}%</td>
                 <td className="py-2">{ele.max_interest}%</td>
-                <td className="py-2">{ele.min_duration}</td>
-                <td className="py-2">{ele.max_duration}</td>
+                <td className="py-2">{dur[ele.min_return_duration]}</td>
+                <td className="py-2">{dur[ele.max_return_duration]}</td>
                 <td className="py-2">
                   <span
                     className={`block text-xs w-28 xxl:w-36 text-center rounded-[30px] dark:border-n500 border border-n30 py-2 ${
@@ -200,7 +229,6 @@ const LatestTransactions = () => {
                     {ele.status}
                   </span>
                 </td>
-               
               </tr>
             ))}
           </tbody>

@@ -4,9 +4,18 @@ import cn from "@/utils/cn";
 import useDropdown from "@/utils/useDropdown";
 import OpenAccountForm from "./OpenAccount";
 import { useAuth } from "../auth/UserContext";
-type BannerProps = { title?: string; className?: string };
-const Banner = ({ title = "Dashboard", className }: BannerProps) => {
-  const { open, toggleOpen } = useDropdown();
+type BannerProps = {
+  title?: string;
+  className?: string;
+  open: boolean;
+  toggleOpen: () => void;
+};
+const Banner = ({
+  title = "Dashboard",
+  className,
+  open,
+  toggleOpen,
+}: BannerProps) => {
   return (
     <>
       <div
