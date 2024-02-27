@@ -102,7 +102,7 @@ const OpenAccountForm = ({
         <div className="mt-6 xl:mt-8 grid grid-cols-2 gap-4 xxxl:gap-6">
           <div className="col-span-2 md:col-span-1">
             <label htmlFor="rate" className="md:text-lg font-medium block mb-4">
-              Min. Lending Amt.
+              Min. Lending Amount
             </label>
             <input
               type="number"
@@ -115,7 +115,7 @@ const OpenAccountForm = ({
           </div>
           <div className="col-span-2 md:col-span-1">
             <label htmlFor="rate" className="md:text-lg font-medium block mb-4">
-              Max. Lending Amt.
+              Max. Lending Amount
             </label>
             <input
               type="number"
