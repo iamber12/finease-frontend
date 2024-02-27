@@ -10,6 +10,7 @@ import {
   isEqual,
   getYear,
   getMonth,
+  dateTimeFormat
 } from "@/utils/utils";
 import Dropdown from "@/components/shared/Dropdown";
 import DatePicker from "react-datepicker";
@@ -20,14 +21,14 @@ import { IconAlertCircle } from "@tabler/icons-react";
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
 import { useTheme } from "next-themes";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
 
 type Props = {};
 
 const SignUp = (props: Props) => {
-    const { push } = useRouter();
+  const { push } = useRouter();
 
-  const payForlist = ["borrower", "lender"];
+  const payForlist = ["Borrower", "Lender"];
   const [password, setPassword] = useState("");
   const [vpassword, setVPassword] = useState("");
   const [validate, setValidate] = useState({ type: "", message: "" });
@@ -100,12 +101,13 @@ const SignUp = (props: Props) => {
       });
     }
 
+    
     const js = {
       email: emailRef.current.value,
       password: password,
       name: `${firstNameRef.current.value} ${lastNameRef.current.value}`,
       address: addRef.current.value,
-      date_of_birth: startDate,
+      date_of_birth: dateTimeFormat(startDate),
       primary_role: type,
     };
 
@@ -118,7 +120,7 @@ const SignUp = (props: Props) => {
         if (res.ok) {
           return res.json();
         }
-        throw new Error('Something went wrong');
+        throw new Error("Something went wrong");
       })
       .then((res) => {
         Swal.fire({

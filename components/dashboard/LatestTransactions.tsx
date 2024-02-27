@@ -13,8 +13,8 @@ import { PROPOSAL_GET_LINK } from "@/utils/constants";
 import useDropdown from "@/utils/useDropdown";
 
 enum TransactionStatus {
-  Available = "available",
-  Unavailable = "unavailable",
+  Available = "Available",
+  Unavailable = "Unavailable",
 }
 
 type Proposal = {

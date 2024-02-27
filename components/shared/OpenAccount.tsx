@@ -5,7 +5,7 @@ import { PROPOSAL_POST_LINK } from "@/utils/constants";
 import Image from "next/image";
 import { FocusEvent, useRef, useState } from "react";
 const durations = ["6 Months", "1 Year", "1 Year 6 Months", "2 Years"];
-const statuses = ["available", "unavailable"];
+const statuses = ["Available", "Unavailable"];
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
 import { useTheme } from "next-themes";
