@@ -16,8 +16,8 @@ const DiscoverApps = () => {
               A single license includes free support, free lifetime updates, and
               all the features listed above.
             </p>
-            <Link href="/dashboards/style-01" className="btn">
-              Checkout Our Demos
+            <Link href="/auth/sign-up" className="btn">
+              Sign up for a demo
             </Link>
           </div>
         </div>
