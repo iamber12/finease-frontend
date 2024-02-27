@@ -1,11 +1,11 @@
 "use client";
+import { getRandomInt } from "@/utils/utils";
 import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
 import Image from "next/image";
 import "swiper/css";
 import "swiper/css/pagination";
 import { Autoplay, Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
-
 const userReviews = [
   {
     id: 1,
@@ -57,6 +57,7 @@ const userReviews = [
   }
 ];
 
+
 const Testimonial = () => {
   return (
     <section id="testimonials" className="py-14 lg:py-28">
@@ -97,7 +98,7 @@ const Testimonial = () => {
                 <div className="shadow-[0px_6px_30px_0px_rgba(0,0,0,0.06)] bg-n0 dark:bg-bg4 p-3 rounded-xl">
                   <div className="bg-primary/5 dark:bg-bg3 rounded-xl border border-n30 dark:border-n500 p-4 md:p-6">
                     <ul className="mb-4 flex gap-2">
-                      {Array.from({ length: Math.random()*10 }).map((item, index) => (
+                      {Array.from({ length: getRandomInt(4,6) }).map((item, index) => (
                         <i
                           key={index}
                           className="las la-star text-[#FFC700] text-lg"></i>
