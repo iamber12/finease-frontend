@@ -20,6 +20,7 @@
     "nextjs13-progress": "^1.1.45",
     "nprogress": "^0.2.0",
     "react": "^18.2.0",
+    "react-animate-height": "^3.2.3",
     "react-apexcharts": "^1.4.1",
     "react-datepicker": "^6.1.0",
     "react-dom": "^18.2.0",

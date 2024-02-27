@@ -8,7 +8,7 @@ import { LayoutProvider } from "@/utils/LayoutContext";
 import ThemeProvider from "@/utils/ThemeProvider";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import { AuthProvider } from "@/components/auth/UserContext";
 const inter = Inter({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
@@ -27,15 +27,17 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.className} text-n500 dark:text-n30`}>
-        <ThemeProvider>
-          <LayoutProvider>
-            <div>
-              <Next13NProgress color="#20B757" height={3} />
-              <ToastContainer />
-              {children}
-            </div>
-          </LayoutProvider>
-        </ThemeProvider>
+        <AuthProvider>
+          <ThemeProvider>
+            <LayoutProvider>
+              <div>
+                <Next13NProgress color="#20B757" height={3} />
+                <ToastContainer />
+                {children}
+              </div>
+            </LayoutProvider>
+          </ThemeProvider>
+        </AuthProvider>
       </body>
     </html>
   );
