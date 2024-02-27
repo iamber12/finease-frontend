@@ -19,11 +19,11 @@ const Footer = () => {
         <p className="text-sm lg:text-base max-md:text-center max-md:w-full">
           Copyright ©{new Date().getFullYear()}{" "}
           <Link className="text-primary" href="/">
-            Bankhub
+            FinEase
           </Link>
           . Designed By{" "}
           <Link href="#" className="text-secondary1">
-            Pixelaxis
+            Group 18
           </Link>
         </p>
         <div className="max-md:w-full max-md:flex justify-center">
