@@ -30,14 +30,29 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
 
   function login(user: User): void {
-    setCurrentUser({ ...user });
-    setItem("user", JSON.stringify(user));
+    console.log(user);
+    setCurrentUser({ ...user.payload.user });
+    setItem("user", JSON.stringify(user.payload.user));
+    setItem("token", user.payload.jwt_token);
   }
 
   function signOut(): void {
     setCurrentUser(null);
     setItem("user", "");
+    setItem("token", "");
     push("/auth/sign-in");
+  }
+
+  function setToken(token: string): void {
+    setItem("token", token);
+  }
+
+  function getToken(): string | null {
+    const token = getItem("token");
+    if (!token){
+      push("/auth/sign-in");
+    }
+    return token;
   }
 
   function getUser() {
@@ -53,12 +68,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const x = getItem("user");
     if (x) {
       const user = JSON.parse(x);
-      login({ ...user });
+      setCurrentUser({ ...user });
+      setItem("user", JSON.stringify(user));
     }
   }, []);
 
   const value = {
     currentUser,
+    getToken,
     getUser,
     login,
     signOut,

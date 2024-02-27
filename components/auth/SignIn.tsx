@@ -40,7 +40,7 @@ const SignIn = () => {
         }
       })
       .then((res) => {
-        login({ ...res.payload.user });
+        login({ ...res });
         push("/dashboard");
       })
       .catch((error) => {
