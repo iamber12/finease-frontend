@@ -2,6 +2,7 @@
 import { useLocalStorage } from "@/utils/useLocalStorage";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { setCookie,getCookie } from "@/utils/useCookie";
 
 export function useAuth() {
   return useContext(AuthContext);
@@ -24,7 +25,6 @@ interface AuthContext {
 const AuthContext = createContext<AuthContext | null>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const { setItem, getItem } = useLocalStorage();
   const { push } = useRouter();
 
   const [currentUser, setCurrentUser] = useState<User | null>(null);
@@ -32,23 +32,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   function login(user: User): void {
     console.log(user);
     setCurrentUser({ ...user.payload.user });
-    setItem("user", JSON.stringify(user.payload.user));
-    setItem("token", user.payload.jwt_token);
+    setCookie("user", JSON.stringify(user.payload.user));
+    setToken(user.payload.jwt_token);
   }
 
   function signOut(): void {
     setCurrentUser(null);
-    setItem("user", "");
-    setItem("token", "");
+    setCookie("user", "");
+    setCookie("token", "");
     push("/auth/sign-in");
   }
 
   function setToken(token: string): void {
-    setItem("token", token);
+    setCookie("token", token);
   }
 
   function getToken(): string | null {
-    const token = getItem("token");
+    const token = getCookie("token");
     if (!token){
       push("/auth/sign-in");
     }
@@ -56,7 +56,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   function getUser() {
-    const x = getItem("user");
+    const x = getCookie("user");
     if (x) {
       return JSON.parse(x);
     } else {
@@ -65,11 +65,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   useEffect(() => {
-    const x = getItem("user");
+    const x = getCookie("user");
     if (x) {
       const user = JSON.parse(x);
       setCurrentUser({ ...user });
-      setItem("user", JSON.stringify(user));
+      setCookie("user", JSON.stringify(user));
     }
   }, []);
 
