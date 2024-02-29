@@ -1,5 +1,4 @@
 "use client";
-import { useLocalStorage } from "@/utils/useLocalStorage";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { setCookie, getCookie } from "@/utils/useCookie";

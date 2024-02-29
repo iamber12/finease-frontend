@@ -1,3 +1,4 @@
+import { cookies } from "next/headers";
 import { useCallback, useState } from "react";
 
 const isBrowser = typeof window !== "undefined";
@@ -39,7 +40,6 @@ export const setCookie = (
     path: "/",
     ...options,
   };
-
   const expires = new Date(
     Date.now() + optionsWithDefaults.days * 864e5
   ).toUTCString();
@@ -62,6 +62,10 @@ export const getCookie = (name: string, initialValue = ""): string => {
       }, "")) ||
     initialValue
   );
+};
+
+export const deleteCookie = (name: string): void => {
+  cookies().set(name, "", { expires: new Date(0) });
 };
 
 export default function (key: string, initialValue: string) {
