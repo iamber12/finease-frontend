@@ -2,17 +2,19 @@
 import { useLocalStorage } from "@/utils/useLocalStorage";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { setCookie,getCookie } from "@/utils/useCookie";
+import { setCookie, getCookie } from "@/utils/useCookie";
 
 export function useAuth() {
   return useContext(AuthContext);
 }
 
-export interface User {
-  id: string | undefined;
-  name: string | undefined;
-  email: string | undefined;
-  authToken?: string | undefined;
+export interface User {}
+
+export interface ResponseInter {
+  payload: {
+    user?: {};
+    jwt_token: string;
+  };
 }
 
 interface AuthContext {
@@ -29,7 +31,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const [currentUser, setCurrentUser] = useState<User | null>(null);
 
-  function login(user: User): void {
+  function login(user: ResponseInter): void {
     console.log(user);
     setCurrentUser({ ...user.payload.user });
     setCookie("user", JSON.stringify(user.payload.user));
@@ -49,7 +51,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   function getToken(): string | null {
     const token = getCookie("token");
-    if (!token){
+    if (!token) {
       push("/auth/sign-in");
     }
     return token;
