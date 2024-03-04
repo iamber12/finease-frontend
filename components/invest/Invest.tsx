@@ -42,7 +42,7 @@ Open your free account to explore the platform, no investment required.</p>
         <div className="container flex flex-col lg:flex-row items-center justify-center gap-x-24">
           {/* <!-- Image --> */}
           <div className="flex flex-1 justify-center z-10 mb-10 lg:mb-0">
-            <Image className="w-5/6 h-5/6 sm:w-3/4 sm:h-3/4 md:w-full md:h-full rounded" src="/images/invest/invest6.jpg" alt="" width="50" height="50"/>
+            <Image className="w-5/6 h-5/6 sm:w-3/4 sm:h-3/4 md:w-full md:h-full rounded" src="/images/invest/invest2.jpg" alt="" width="50" height="50"/>
           </div>
           {/* <!-- Content --> */}
           <div className="flex flex-1 flex-col items-center lg:items-start">
@@ -73,7 +73,7 @@ Open your free account to explore the platform, no investment required.</p>
         <div className="container flex flex-col lg:flex-row-reverse items-center justify-center gap-x-24">
           {/* <!-- Image --> */}
           <div className="flex flex-1 justify-center z-10 mb-10 lg:mb-0">
-            <Image className="w-5/6 h-5/6 sm:w-3/4 sm:h-3/4 md:w-full md:h-full rounded" src="/images/invest/invest1.avif" alt="" width="50" height="50"/>
+            <Image className="w-5/6 h-5/6 sm:w-3/4 sm:h-3/4 md:w-full md:h-full rounded" src="/images/invest/invest3.jpg" alt="" width="50" height="50"/>
           </div>
           {/* <!-- Content --> */}
           <div className="flex flex-1 flex-col items-center lg:items-start">
@@ -105,7 +105,7 @@ Open your free account to explore the platform, no investment required.</p>
         <div className="container flex flex-col lg:flex-row items-center justify-center gap-x-24">
           {/* <!-- Image --> */}
           <div className="flex flex-1 justify-center z-10 mb-10 lg:mb-0">
-            <Image className="w-5/6 h-5/6 sm:w-3/4 sm:h-3/4 md:w-full md:h-full rounded" src="/images/invest/invest1.avif" alt="" width="50" height="50"/>
+            <Image className="w-5/6 h-5/6 sm:w-3/4 sm:h-3/4 md:w-full md:h-full rounded" src="/images/invest/invest4.webp" alt="" width="50" height="50"/>
           </div>
           {/* <!-- Content --> */}
           <div className="flex flex-1 flex-col items-center lg:items-start">
