@@ -17,7 +17,7 @@ const Invest = () => {
           </div>
         </div>
         {/* <!-- Image --> */}
-        <div className="flex justify-center flex-1 mb-10 md:mb-16 lg:mb-0 z-10">
+        <div className="flex justify-center flex-1 mb-10 md:mb-16 lg:mb-0 -z-10">
           <Image className="w-5/6 h-5/6 sm:w-3/4 sm:h-3/4 md:w-full md:h-full -z-50 rounded" src="/images/invest/invest1.avif" alt="" width="50" height="50" />
         </div>
       </div>
@@ -41,7 +41,7 @@ Open your free account to explore the platform, no investment required.</p>
       <div className="relative mt-20 lg:mt-24">
         <div className="container flex flex-col lg:flex-row items-center justify-center gap-x-24">
           {/* <!-- Image --> */}
-          <div className="flex flex-1 justify-center z-10 mb-10 lg:mb-0">
+          <div className="flex flex-1 justify-center -z-10 mb-10 lg:mb-0">
             <Image className="w-5/6 h-5/6 sm:w-3/4 sm:h-3/4 md:w-full md:h-full rounded" src="/images/invest/invest2.jpg" alt="" width="50" height="50"/>
           </div>
           {/* <!-- Content --> */}
@@ -72,7 +72,7 @@ Open your free account to explore the platform, no investment required.</p>
       <div className="relative mt-20 lg:mt-52">
         <div className="container flex flex-col lg:flex-row-reverse items-center justify-center gap-x-24">
           {/* <!-- Image --> */}
-          <div className="flex flex-1 justify-center z-10 mb-10 lg:mb-0">
+          <div className="flex flex-1 justify-center -z-10 mb-10 lg:mb-0">
             <Image className="w-5/6 h-5/6 sm:w-3/4 sm:h-3/4 md:w-full md:h-full rounded" src="/images/invest/invest3.jpg" alt="" width="50" height="50"/>
           </div>
           {/* <!-- Content --> */}
@@ -104,7 +104,7 @@ Open your free account to explore the platform, no investment required.</p>
       <div className="relative mt-20 lg:mt-52">
         <div className="container flex flex-col lg:flex-row items-center justify-center gap-x-24">
           {/* <!-- Image --> */}
-          <div className="flex flex-1 justify-center z-10 mb-10 lg:mb-0">
+          <div className="flex flex-1 justify-center -z-10 mb-10 lg:mb-0">
             <Image className="w-5/6 h-5/6 sm:w-3/4 sm:h-3/4 md:w-full md:h-full rounded" src="/images/invest/invest4.webp" alt="" width="50" height="50"/>
           </div>
           {/* <!-- Content --> */}
