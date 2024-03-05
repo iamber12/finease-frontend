@@ -64,9 +64,9 @@ export const getCookie = (name: string, initialValue = ""): string => {
   );
 };
 
-export const deleteCookie = (name: string): void => {
-  cookies().set(name, "", { expires: new Date(0) });
-};
+export async function deleteCookie(name: string) {
+  cookies().delete(name);
+}
 
 export default function (key: string, initialValue: string) {
   const [item, setItem] = useState(() => {

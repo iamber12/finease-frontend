@@ -1,7 +1,7 @@
 "use client";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { setCookie, getCookie } from "@/utils/useCookie";
+import { setCookie, getCookie,deleteCookie } from "@/utils/useCookie";
 
 export function useAuth() {
   return useContext(AuthContext);
@@ -31,16 +31,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
 
   function login(user: ResponseInter): void {
-    console.log(user);
     setCurrentUser({ ...user.payload.user });
     setCookie("user", JSON.stringify(user.payload.user));
     setToken(user.payload.jwt_token);
   }
 
-  function signOut(): void {
+  async function signOut() {
     setCurrentUser(null);
-    setCookie("user", "");
-    setCookie("token", "");
+    await deleteCookie("user")
+    await deleteCookie("token")
     push("/auth/sign-in");
   }
 
