@@ -32,8 +32,8 @@ const features = [
 ];
 
 const Features = () => {
-  return <>
-  <section id="c-features" className="bg-primary/5 dark:bg-bg3 relative">
+  return (
+    <section id="c-features" className="bg-primary/5 dark:bg-bg3 relative">
       <div className="bg-[url(/images/demo/why-choose-bg.png)] bg-cover bg-no-repeat py-14 xl:py-28">
         <div className="container">
           <div className="max-w-[636px] mx-auto mb-10 lg:mb-14 text-center">
@@ -60,40 +60,7 @@ const Features = () => {
         </div>
       </div>
     </section>
-
-    {/* <Risk Mitigation> */}
-    <section className="py-20 mt-10" style={{marginTop: "10px"}}>
-      {/* <!-- Heading --> */}
-      <div className="sm:w-3/4 lg:w-5/12 mx-auto px-2">
-        <h1 className="text-3xl sm:text-4xl min-[1650px]:text-[44px] !leading-tight font-semibold mb-4 lg:mb-6 mt-6 text-center">Mitigating Risks</h1>
-      </div>
-      {/* <!-- Cards --> */}
-      <div className="container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-16 max-w-screen-lg mt-16">
-        {/* <!-- Card 1 --> */}
-        <div className="flex flex-col rounded-md shadow-md lg:mb-16">
-          <div className="p-6 flex flex-col items-center">
-            <h3 className="h3 mb-4 text-center">Thorough Credit Evaluation</h3>
-            <p className="text-base text-center">FinEase leverages cutting-edge technology to meticulously review each application, ensuring only financially responsible individuals are qualified for loans and added to our platform.</p>
-          </div>
-        </div>
-        {/* <!-- Card 2 --> */}
-        <div className="flex flex-col rounded-md shadow-md lg:mb-16">
-          <div className="p-6 flex flex-col items-center">
-            <h3 className="h3 mb-4 text-center">Diversification</h3>
-            <p className="text-base text-center">Starting with a minimum investment of just $10 per loan, you have the freedom to distribute your investments among as many different borrowers as you desire.</p>
-          </div>
-        </div>
-        {/* <!-- Card 3 --> */}
-        <div className="flex flex-col rounded-md shadow-md lg:mb-16">
-          <div className="p-6 flex flex-col items-center">
-            <h3 className="h3 mb-4 text-center">Loan Servicing</h3>
-            <p className="text-base text-center">If a borrower is unable to completely settle their loan, FinEase takes charge on your behalf. The FinEase collections and recovery team is dedicated to salvaging as much as possible to ensure your returns remain maximized.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-  </>
-    
+  );
 };
 
 export default Features;
