@@ -41,7 +41,7 @@ const SignIn = () => {
       })
       .then((res) => {
         login({ ...res });
-        push("/dashboard");
+        push("/main/dashboard");
       })
       .catch((error) => {
         return toast.error(`${error}`, {
