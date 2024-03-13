@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { isUserAuthenticated } from "./utils/utils";
 export function middleware(request: NextRequest) {
   const token = request.cookies.get("token");
   const user = request.cookies.get("user");

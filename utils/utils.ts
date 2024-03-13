@@ -60,17 +60,6 @@ export const getRandomInt = (min: number, max: number): number => {
   return Math.floor(Math.random() * (maxFloored - minCeiled) + minCeiled); // The maximum is exclusive and the minimum is inclusive
 };
 
-export async function isUserAuthenticated() {
-  const token = await getCookie("token");
-  const user = await getCookie("user");
-
-  if (token?.value && user?.value) {
-    return true;
-  }
-
-  return false;
-}
-
 export async function fetchHandler(
   url: string,
   type: string,
