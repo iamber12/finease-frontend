@@ -30,10 +30,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const [currentUser, setCurrentUser] = useState<User | null>(null);
 
-  function login(user: ResponseInter): void {
+  async function login(user: ResponseInter) {
     setCurrentUser({ ...user.payload.user });
-    setCookie("user", JSON.stringify(user.payload.user));
-    setToken(user.payload.jwt_token);
+    await setCookie("user", JSON.stringify(user.payload.user));
+    await setToken(user.payload.jwt_token);
   }
 
   async function signOut() {
@@ -43,34 +43,40 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     push("/auth/sign-in");
   }
 
-  function setToken(token: string): void {
-    setCookie("token", token);
+  async function setToken(token: string) {
+    await setCookie("token", token);
   }
 
-  function getToken(): string | null {
+  function getToken(): string | undefined {
     const token = getCookie("token");
-    if (!token) {
-      push("/auth/sign-in");
-    }
-    return token;
+    return token?.value;
   }
 
   function getUser() {
-    const x = getCookie("user");
-    if (x) {
-      return JSON.parse(x);
+    const token = getToken();
+    if (token) {
+      const x = getCookie("user")?.value;
+      if (x) {
+        return JSON.parse(x);
+      } else {
+        return currentUser;
+      }
     } else {
-      return currentUser;
+      return undefined;
     }
   }
 
   useEffect(() => {
-    const x = getCookie("user");
-    if (x) {
-      const user = JSON.parse(x);
-      setCurrentUser({ ...user });
-      setCookie("user", JSON.stringify(user));
+    const x = getCookie("user")?.value;
+    async function setUser() {
+      if (x) {
+        const user = JSON.parse(x);
+        setCurrentUser({ ...user });
+        await setCookie("user", JSON.stringify(user));
+      }
     }
+
+    setUser();
   }, []);
 
   const value = {
