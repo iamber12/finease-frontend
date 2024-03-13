@@ -1,17 +1,19 @@
 "use client";
-import { useLocalStorage } from "@/utils/useLocalStorage";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { setCookie, getCookie,deleteCookie } from "@/utils/useCookie";
 
 export function useAuth() {
   return useContext(AuthContext);
 }
 
-export interface User {
-  id: string | undefined;
-  name: string | undefined;
-  email: string | undefined;
-  authToken?: string | undefined;
+export interface User {}
+
+export interface ResponseInter {
+  payload: {
+    user?: {};
+    jwt_token: string;
+  };
 }
 
 interface AuthContext {
@@ -24,39 +26,37 @@ interface AuthContext {
 const AuthContext = createContext<AuthContext | null>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const { setItem, getItem } = useLocalStorage();
   const { push } = useRouter();
 
   const [currentUser, setCurrentUser] = useState<User | null>(null);
 
-  function login(user: User): void {
-    console.log(user);
+  function login(user: ResponseInter): void {
     setCurrentUser({ ...user.payload.user });
-    setItem("user", JSON.stringify(user.payload.user));
-    setItem("token", user.payload.jwt_token);
+    setCookie("user", JSON.stringify(user.payload.user));
+    setToken(user.payload.jwt_token);
   }
 
-  function signOut(): void {
+  async function signOut() {
     setCurrentUser(null);
-    setItem("user", "");
-    setItem("token", "");
+    await deleteCookie("user")
+    await deleteCookie("token")
     push("/auth/sign-in");
   }
 
   function setToken(token: string): void {
-    setItem("token", token);
+    setCookie("token", token);
   }
 
   function getToken(): string | null {
-    const token = getItem("token");
-    if (!token){
+    const token = getCookie("token");
+    if (!token) {
       push("/auth/sign-in");
     }
     return token;
   }
 
   function getUser() {
-    const x = getItem("user");
+    const x = getCookie("user");
     if (x) {
       return JSON.parse(x);
     } else {
@@ -65,11 +65,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   useEffect(() => {
-    const x = getItem("user");
+    const x = getCookie("user");
     if (x) {
       const user = JSON.parse(x);
       setCurrentUser({ ...user });
-      setItem("user", JSON.stringify(user));
+      setCookie("user", JSON.stringify(user));
     }
   }, []);
 
