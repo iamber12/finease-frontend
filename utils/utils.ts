@@ -1,3 +1,5 @@
+import { getCookie } from "./useCookie";
+
 export const isLower = (text: string): Array<string> | null => {
   let lowerCaseLetters = /[a-z]/g;
   return text.match(lowerCaseLetters);
@@ -58,9 +60,16 @@ export const getRandomInt = (min: number, max: number): number => {
   return Math.floor(Math.random() * (maxFloored - minCeiled) + minCeiled); // The maximum is exclusive and the minimum is inclusive
 };
 
-export const isUserAuthenticated = (): boolean => {
-  return true;
-};
+export async function isUserAuthenticated() {
+  const token = await getCookie("token");
+  const user = await getCookie("user");
+
+  if (token?.value && user?.value) {
+    return true;
+  }
+
+  return false;
+}
 
 export async function fetchHandler(
   url: string,

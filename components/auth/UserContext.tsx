@@ -60,7 +60,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (x?.value) {
         return JSON.parse(x.value);
       } else {
-        return currentUser;
+        if (currentUser) {
+          return currentUser;
+        } else {
+          return undefined;
+        }
       }
     } else {
       return undefined;
