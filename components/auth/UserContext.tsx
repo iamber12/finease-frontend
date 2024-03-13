@@ -1,7 +1,7 @@
 "use client";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { setCookie, getCookie,deleteCookie } from "@/utils/useCookie";
+import { setCookie, getCookie, deleteCookie } from "@/utils/useCookie";
 
 export function useAuth() {
   return useContext(AuthContext);
@@ -21,6 +21,7 @@ interface AuthContext {
   getUser: () => void;
   login: (user: User) => void;
   signOut: () => void;
+  getToken: () => void;
 }
 
 const AuthContext = createContext<AuthContext | null>(null);
@@ -30,47 +31,53 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const [currentUser, setCurrentUser] = useState<User | null>(null);
 
-  function login(user: ResponseInter): void {
+  async function login(user: ResponseInter) {
     setCurrentUser({ ...user.payload.user });
-    setCookie("user", JSON.stringify(user.payload.user));
-    setToken(user.payload.jwt_token);
+    await setCookie("user", JSON.stringify(user.payload.user));
+    await setToken(user.payload.jwt_token);
   }
 
   async function signOut() {
     setCurrentUser(null);
-    await deleteCookie("user")
-    await deleteCookie("token")
+    await deleteCookie("user");
+    await deleteCookie("token");
     push("/auth/sign-in");
   }
 
-  function setToken(token: string): void {
-    setCookie("token", token);
+  async function setToken(token: string) {
+    await setCookie("token", token);
   }
 
-  function getToken(): string | null {
-    const token = getCookie("token");
-    if (!token) {
-      push("/auth/sign-in");
-    }
-    return token;
+  async function getToken(): string | undefined {
+    const token = await getCookie("token");
+    return token?.value;
   }
 
-  function getUser() {
-    const x = getCookie("user");
-    if (x) {
-      return JSON.parse(x);
+  async function getUser() {
+    const token = getToken();
+    if (token) {
+      const x = await getCookie("user");
+      if (x?.value) {
+        return JSON.parse(x.value);
+      } else {
+        if (currentUser) {
+          return currentUser;
+        } else {
+          return undefined;
+        }
+      }
     } else {
-      return currentUser;
+      return undefined;
     }
   }
 
   useEffect(() => {
-    const x = getCookie("user");
-    if (x) {
-      const user = JSON.parse(x);
+    async function asyncuser() {
+      const user = await getUser();
       setCurrentUser({ ...user });
-      setCookie("user", JSON.stringify(user));
     }
+
+    asyncuser();
   }, []);
 
   const value = {

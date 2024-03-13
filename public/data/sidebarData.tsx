@@ -11,7 +11,7 @@ export const sidebarData = [
         name: "My Dashboard",
         icon: <i className="las la-home"></i>,
         submenus: [],
-        url: "/dashboard",
+        url: "/main/dashboard",
       },
       {
         id: 2,

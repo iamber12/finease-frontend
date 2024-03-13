@@ -20,7 +20,7 @@ const SystemError = () => {
           An error has occurred. If the problem persists, please contact a
           system administrator or try again later.
         </p>
-        <Link href="/dashboard" className="btn">
+        <Link href="/main/dashboard" className="btn">
           Back to Home
         </Link>
       </div>
