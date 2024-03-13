@@ -1,7 +1,7 @@
 "use client";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { setCookie, getCookie,deleteCookie } from "@/utils/useCookie";
+import { setCookie, getCookie, deleteCookie } from "@/utils/useCookie";
 
 export function useAuth() {
   return useContext(AuthContext);
@@ -38,8 +38,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   async function signOut() {
     setCurrentUser(null);
-    await deleteCookie("user")
-    await deleteCookie("token")
+    await deleteCookie("user");
+    await deleteCookie("token");
     push("/auth/sign-in");
   }
 

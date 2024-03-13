@@ -57,3 +57,7 @@ export const getRandomInt = (min: number, max: number): number => {
   const maxFloored = Math.floor(max);
   return Math.floor(Math.random() * (maxFloored - minCeiled) + minCeiled); // The maximum is exclusive and the minimum is inclusive
 };
+
+export const isUserAuthenticated = (): boolean => {
+  return true;
+};
