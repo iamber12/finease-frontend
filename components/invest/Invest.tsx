@@ -3,6 +3,7 @@ import invest1 from "@/public/images/invest/invest1.png";
 import invest2 from "@/public/images/invest/invest2.jpg";
 import invest3 from "@/public/images/invest/invest3.jpg";
 import invest4 from "@/public/images/invest/invest4.webp";
+import Link from "next/link";
 
 const Invest = () => {
   return (
@@ -18,13 +19,10 @@ const Invest = () => {
               9% Average net annualized return to investors. Lend to Canadians
               and earn interest.
             </p>
-            <div className="flex justify-center flex-wrap gap-6">
-              <button
-                type="button"
-                className="btn btn-purple hover:bg-bookmark-white hover:text-black"
-              >
-                Get Started
-              </button>
+            <div className="flex justify-center flex-wrap gap-6 mt-0">
+        <Link className="btn max-md:hidden" href="/auth/sign-up">
+            Get Started
+          </Link>
             </div>
           </div>
           {/* <!-- Image --> */}
