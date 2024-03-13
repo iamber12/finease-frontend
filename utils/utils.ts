@@ -61,3 +61,25 @@ export const getRandomInt = (min: number, max: number): number => {
 export const isUserAuthenticated = (): boolean => {
   return true;
 };
+
+export async function fetchHandler(
+  url: string,
+  type: string,
+  data: any | undefined,
+  headers: any = {}
+) {
+  const res = await fetch(url, {
+    method: type,
+    headers: { ...headers },
+    body: data ? JSON.stringify(data) : "",
+  });
+
+  if (!res.ok) {
+    return res.json().then((res) => {
+      throw new Error(res.meta.message);
+    });
+  }
+
+  const ret = await res.json();
+  return ret;
+}

@@ -10,9 +10,22 @@ import {
   IconSettings,
   IconUser,
 } from "@tabler/icons-react";
+import { useState, useEffect } from "react";
 
 const ProfileTwo = () => {
   const { getUser, signOut } = useAuth();
+
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    async function asyncuser() {
+      const user = await getUser();
+      setUser({ ...user });
+    }
+
+    asyncuser();
+  }, []);
+
   const profileLinks = [
     {
       icon: <IconUser size={18} />,
@@ -41,7 +54,6 @@ const ProfileTwo = () => {
       title: "Logout",
     },
   ];
-  const user = getUser();
   const { open, ref, toggleOpen } = useDropdown();
   return (
     <div

@@ -21,6 +21,7 @@ interface AuthContext {
   getUser: () => void;
   login: (user: User) => void;
   signOut: () => void;
+  getToken: () => void;
 }
 
 const AuthContext = createContext<AuthContext | null>(null);
@@ -47,17 +48,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     await setCookie("token", token);
   }
 
-  function getToken(): string | undefined {
-    const token = getCookie("token");
+  async function getToken(): string | undefined {
+    const token = await getCookie("token");
     return token?.value;
   }
 
-  function getUser() {
+  async function getUser() {
     const token = getToken();
     if (token) {
-      const x = getCookie("user")?.value;
-      if (x) {
-        return JSON.parse(x);
+      const x = await getCookie("user");
+      if (x?.value) {
+        return JSON.parse(x.value);
       } else {
         return currentUser;
       }
@@ -67,16 +68,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   useEffect(() => {
-    const x = getCookie("user")?.value;
-    async function setUser() {
-      if (x) {
-        const user = JSON.parse(x);
-        setCurrentUser({ ...user });
-        await setCookie("user", JSON.stringify(user));
-      }
+    async function asyncuser() {
+      const user = await getUser();
+      setCurrentUser({ ...user });
     }
 
-    setUser();
+    asyncuser();
   }, []);
 
   const value = {

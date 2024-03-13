@@ -10,9 +10,10 @@ export async function setCookie(name: string, value: string) {
   cookies().set(name, value);
 }
 
-export const getCookie = (name: string): GetCookie | undefined => {
-  return cookies().get(name);
-};
+export async function getCookie(name: string) {
+  const pair = cookies().get(name);
+  return pair;
+}
 
 export async function deleteCookie(name: string) {
   cookies().delete(name);
