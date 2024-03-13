@@ -39,7 +39,7 @@ const Hero = () => {
                 <Link href="#" className="btn">
                   Borrow
                 </Link>
-                <Link href="#pages" className="btn-outline">
+                <Link href="/invest" className="btn-outline">
                   Invest
                 </Link>
               </div>
