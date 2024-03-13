@@ -1,5 +1,3 @@
-// Sign In
-
 "use client";
 import { SIGNIN_POST_LINK } from "@/utils/constants";
 import { IconEye, IconEyeOff } from "@tabler/icons-react";
@@ -10,6 +8,7 @@ import { toast } from "react-toastify";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/components/auth/UserContext";
+import { fetchHandler } from "@/utils/utils";
 
 const SignIn = () => {
   const emailRef = useRef<HTMLInputElement>(null);
@@ -18,43 +17,35 @@ const SignIn = () => {
   const { push } = useRouter();
   const { login } = useAuth();
 
-  const onClickHandler = (e: React.MouseEvent<HTMLElement>): void => {
+  async function onClickHandler(e: React.MouseEvent<HTMLElement>) {
     e.preventDefault();
     const js = {
       email: emailRef.current.value,
       password: passRef.current.value,
     };
 
-    fetch(SIGNIN_POST_LINK, {
-      method: "POST",
-      headers: {},
-      body: JSON.stringify(js),
-    })
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        } else {
-          return res.json().then((res) => {
-            throw new Error(res.meta.message);
-          });
-        }
-      })
-      .then((res) => {
-        login({ ...res });
-        push("/dashboard");
-      })
-      .catch((error) => {
-        return toast.error(`${error}`, {
-          position: "bottom-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          theme: theme,
-        });
+    function handleError(error: string) {
+      return toast.error(`${error}`, {
+        position: "bottom-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: theme,
       });
-  };
+    }
+
+    fetchHandler(SIGNIN_POST_LINK, "POST", js)
+      .then((res) => {
+        async function asynclogin(res) {
+          await login({ ...res });
+          push("/main/dashboard");
+        }
+        asynclogin(res);
+      })
+      .catch(handleError);
+  }
 
   const [showPass, setShowPass] = useState(false);
   return (

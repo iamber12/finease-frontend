@@ -33,14 +33,14 @@ type Order = "ASC" | "DSC";
 type SortDataFunction = (col: keyof Transaction) => void;
 
 const options = ["Recent", "Name", "Amount"];
-const LatestTransactions = ({open}) => {
+const LatestTransactions = ({ open }) => {
   const dur = {
     15780096: "6 Months",
-    47340288:"1 Year 6 Months",
-    31560192:"1 Year",
+    47340288: "1 Year 6 Months",
+    31560192: "1 Year",
     60403008: "2 Years",
   };
-  
+
   const { theme } = useTheme();
 
   const { getToken } = useAuth();
@@ -80,34 +80,43 @@ const LatestTransactions = ({open}) => {
   };
 
   useEffect(() => {
-    fetch(PROPOSAL_GET_LINK, {
-      method: "GET",
-      headers: {
-        "X-Access-Token": getToken(),
-      },
-    })
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        throw new Error("Something went wrong");
-      })
-      .then((res) => {
-        setTableData(res.payload.loan_proposals);
-      })
-      .catch(function (error) {
-        return toast.error(`There was an error fetching proposals. Error: ${error}`, {
-          position: "bottom-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          theme: theme,
-        });
-      });
-  }, [open]);
+    async function asyncFetch() {
+      const token = await getToken();
+      if (token) {
+        fetch(PROPOSAL_GET_LINK, {
+          method: "GET",
+          headers: {
+            "X-Access-Token": token,
+          },
+        })
+          .then((res) => {
+            if (res.ok) {
+              return res.json();
+            }
+            throw new Error("Something went wrong");
+          })
+          .then((res) => {
+            setTableData(res.payload.loan_proposals);
+          })
+          .catch(function (error) {
+            return toast.error(
+              `There was an error fetching proposals. Error: ${error}`,
+              {
+                position: "bottom-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                theme: theme,
+              }
+            );
+          });
+      }
+    }
 
+    asyncFetch();
+  }, [open]);
 
   return (
     <div className="box col-span-12 lg:col-span-6">

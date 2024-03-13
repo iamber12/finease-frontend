@@ -20,16 +20,19 @@ const OpenAccountForm = ({
 }) => {
   const [duration, setDuration] = useState(durations[0]);
   const [status, setStatus] = useState(statuses[0]);
-  const minAmount = useRef<HTMLInputElement> (null);
+  const minAmount = useRef<HTMLInputElement>(null);
   const maxAmount = useRef(null);
   const minInterest = useRef(null);
   const maxInterest = useRef(null);
   const desc = useRef(null);
   const { theme } = useTheme();
   const { getToken } = useAuth();
-  const handleSubmit = (e: React.MouseEvent) => {
+
+
+
+  async function handleSubmit(e: React.MouseEvent) {
     e.preventDefault();
-    
+
     const dur = {
       "6 Months": 15780096,
       "1 Year 6 Months": 47340288,
@@ -47,50 +50,57 @@ const OpenAccountForm = ({
       max_return_duration: dur[duration],
       description: desc.current.value,
     };
-    fetch(PROPOSAL_POST_LINK, {
-      method: "POST",
-      headers: {
-        "Content-Type" :"application/json",
-        "X-Access-Token": getToken(),
-      },
-      body: JSON.stringify(js),
-    })
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        throw new Error("Something went wrong");
+
+    const token = await getToken();
+    if (token) {
+      fetch(PROPOSAL_POST_LINK, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Access-Token": token,
+        },
+        body: JSON.stringify(js),
       })
-      .then((res) => {
-        Swal.fire({
-          title: "Successfully Submitted",
-          text: "",
-          icon: "success",
-          showCancelButton: false,
-          showConfirmButton: false,
-          confirmButtonColor: "#20B757",
-          cancelButtonColor: "#FF6161",
-          confirmButtonText: "Ok",
-          timer: 5000,
-          timerProgressBar: true,
-          willClose: toggleOpen,
-        }).then((result) => {
-          if (result.isConfirmed) {
-            toggleOpen();
+        .then((res) => {
+          if (res.ok) {
+            return res.json();
           }
+          throw new Error("Something went wrong");
+        })
+        .then((res) => {
+          Swal.fire({
+            title: "Successfully Submitted",
+            text: "",
+            icon: "success",
+            showCancelButton: false,
+            showConfirmButton: false,
+            confirmButtonColor: "#20B757",
+            cancelButtonColor: "#FF6161",
+            confirmButtonText: "Ok",
+            timer: 5000,
+            timerProgressBar: true,
+            willClose: toggleOpen,
+          }).then((result) => {
+            if (result.isConfirmed) {
+              toggleOpen();
+            }
+          });
+        })
+        .catch(function (error) {
+          return toast.error(
+            `There was an error registering. Error: ${error}`,
+            {
+              position: "bottom-center",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              theme: theme,
+            }
+          );
         });
-      })
-      .catch(function (error) {
-        return toast.error(`There was an error registering. Error: ${error}`, {
-          position: "bottom-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          theme: theme,
-        });
-      });
+    }
   };
 
   return (
