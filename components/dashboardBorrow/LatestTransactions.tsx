@@ -9,12 +9,12 @@ import { useState, useEffect } from "react";
 import Action from "./Action";
 import { useTheme } from "next-themes";
 import { useAuth } from "../auth/UserContext";
-import { PROPOSAL_GET_LINK } from "@/utils/constants";
+import { REQUESTS_GET_LINK } from "@/utils/constants";
 import useDropdown from "@/utils/useDropdown";
 
 enum TransactionStatus {
-  Available = "Available",
-  Unavailable = "Unavailable",
+  Granted = "Granted",
+  Rejected = "Rejected",
 }
 
 type Proposal = {
@@ -83,7 +83,7 @@ const LatestTransactions = ({ open }) => {
     async function asyncFetch() {
       const token = await getToken();
       if (token) {
-        fetch(PROPOSAL_GET_LINK, {
+        fetch(REQUESTS_GET_LINK, {
           method: "GET",
           headers: {
             "X-Access-Token": token,
@@ -152,7 +152,7 @@ const LatestTransactions = ({ open }) => {
                 className="text-start py-5 min-w-[120px] cursor-pointer"
               >
                 <div className="flex items-center gap-1">
-                  Min Amt. <IconSelector size={18} />
+                Amount <IconSelector size={18} />
                 </div>
               </th>
               <th
@@ -160,7 +160,7 @@ const LatestTransactions = ({ open }) => {
                 className="text-start py-5 min-w-[120px] cursor-pointer"
               >
                 <div className="flex items-center gap-1">
-                  Max Amt. <IconSelector size={18} />
+                  Max Interest Rate <IconSelector size={18} />
                 </div>
               </th>
               <th
@@ -168,31 +168,7 @@ const LatestTransactions = ({ open }) => {
                 className="text-start py-5 min-w-[120px] cursor-pointer"
               >
                 <div className="flex items-center gap-1">
-                  Min Interest. <IconSelector size={18} />
-                </div>
-              </th>
-              <th
-                onClick={() => sortData("medium")}
-                className="text-start py-5 min-w-[120px] cursor-pointer"
-              >
-                <div className="flex items-center gap-1">
-                  Max Interest. <IconSelector size={18} />
-                </div>
-              </th>
-              <th
-                onClick={() => sortData("medium")}
-                className="text-start py-5 min-w-[120px] cursor-pointer"
-              >
-                <div className="flex items-center gap-1">
-                  Min Duration. <IconSelector size={18} />
-                </div>
-              </th>
-              <th
-                onClick={() => sortData("medium")}
-                className="text-start py-5 min-w-[120px] cursor-pointer"
-              >
-                <div className="flex items-center gap-1">
-                  Max Duration. <IconSelector size={18} />
+                  Duration to Pay <IconSelector size={18} />
                 </div>
               </th>
               <th
@@ -215,23 +191,19 @@ const LatestTransactions = ({ open }) => {
                   <div className="flex items-center gap-3">
                     <div>
                       <p className="font-medium mb-1">{ele.description}</p>
-                      {/* <span className="text-xs">{time}</span> */}
                     </div>
                   </div>
                 </td>
-                <td className="py-2">${ele.amount_start}</td>
-                <td className="py-2">${ele.amount_end}</td>
-                <td className="py-2">{ele.min_interest}%</td>
-                <td className="py-2">{ele.max_interest}%</td>
-                <td className="py-2">{dur[ele.min_return_duration]}</td>
-                <td className="py-2">{dur[ele.max_return_duration]}</td>
+                <td className="py-2">${ele.amount}</td>
+                <td className="py-2">${ele.max_interest}</td>
+                <td className="py-2">{ele.duration}%</td>
                 <td className="py-2">
                   <span
                     className={`block text-xs w-28 xxl:w-36 text-center rounded-[30px] dark:border-n500 border border-n30 py-2 ${
-                      ele.status === TransactionStatus.Available &&
+                      ele.status === TransactionStatus.Granted &&
                       "bg-primary/10 dark:bg-bg3 text-primary"
                     } ${
-                      ele.status === TransactionStatus.Unavailable &&
+                      ele.status === TransactionStatus.Rejected &&
                       "bg-secondary2/10 dark:bg-bg3 text-secondary2"
                     }`}
                   >
