@@ -85,9 +85,16 @@ export const sidebarDataBorrower = [
         submenus: [],
       },
       {
+        id: 3,
+        name: "Loan Agreements",
+        icon: <i className="las la-file"></i>,
+        submenus: [],
+        url: "/main/agreements",
+      },
+      {
         id: 7,
         name: "Messaging",
-        icon: <i className="las la-file-invoice"></i>,
+        icon: <i className="las la-comments"></i>,
         submenus: [{ title: "Chats", url: "/messaging/chats" }],
       },
       {

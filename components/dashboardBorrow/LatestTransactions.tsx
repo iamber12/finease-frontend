@@ -121,7 +121,7 @@ const LatestTransactions = ({ open }) => {
   return (
     <div className="box col-span-12 lg:col-span-6">
       <div className="flex flex-wrap gap-4  justify-between items-center bb-dashed mb-4 pb-4 lg:mb-6 lg:pb-6">
-        <h4 className="h4">Recent Proposals</h4>
+        <h4 className="h4">Your  Recent Requests</h4>
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-3 whitespace-nowrap">
             <span>Sort By : </span>
