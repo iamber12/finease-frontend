@@ -7,21 +7,22 @@ export function useAuth() {
   return useContext(AuthContext);
 }
 
-export interface User {}
-
-export interface ResponseInter {
-  payload: {
-    user?: {};
-    jwt_token: string;
-  };
+export interface User {
+  uuid: string;
+  name: string;
+  date_of_birth: Date;
+  address: string;
+  primary_role: string;
+  email: string;
+  password: string;
 }
 
 interface AuthContext {
   currentUser: User | null;
-  getUser: () => void;
-  login: (user: User) => void;
-  signOut: () => void;
-  getToken: () => void;
+  getUser: () => Promise<void>;
+  login: (user: User, token: string) => Promise<void>;
+  signOut: () => Promise<void>;
+  getToken: () => Promise<string | undefined>;
 }
 
 const AuthContext = createContext<AuthContext | null>(null);
@@ -31,10 +32,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const [currentUser, setCurrentUser] = useState<User | null>(null);
 
-  async function login(user: ResponseInter) {
-    setCurrentUser({ ...user.payload.user });
-    await setCookie("user", JSON.stringify(user.payload.user));
-    await setToken(user.payload.jwt_token);
+  async function login(user: User, token: string) {
+    setCurrentUser({ ...user });
+    await setCookie("user", JSON.stringify(user));
+    await setToken(token);
   }
 
   async function signOut() {
@@ -48,13 +49,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     await setCookie("token", token);
   }
 
-  async function getToken(): string | undefined {
+  async function getToken() {
     const token = await getCookie("token");
     return token?.value;
   }
 
   async function getUser() {
-    const token = getToken();
+    const token = await getToken();
     if (token) {
       const x = await getCookie("user");
       if (x?.value) {

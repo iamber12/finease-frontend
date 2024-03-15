@@ -39,7 +39,9 @@ const SignIn = () => {
     fetchHandler(SIGNIN_POST_LINK, "POST", js)
       .then((res) => {
         async function asynclogin(res) {
-          await login({ ...res });
+          const token = res.payload.jwt_token;
+          const user = res.payload.user;
+          await login(user,token);
           push("/main/dashboard");
         }
         asynclogin(res);

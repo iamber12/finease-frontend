@@ -1,5 +1,8 @@
 "use client";
-import { sidebarData } from "@/public/data/sidebarData";
+import {
+  sidebarDataBorrower,
+  sidebarDataLender,
+} from "@/public/data/sidebarData";
 import useWindowSize from "@/utils/useWindowSize";
 import { IconChevronRight, IconX } from "@tabler/icons-react";
 import { useTheme } from "next-themes";
@@ -29,7 +32,13 @@ const SidebarHovered = ({
   const { theme } = useTheme();
   const { windowSize } = useWindowSize();
 
-  const { signOut } = useAuth();
+  const { currentUser, signOut } = useAuth();
+
+  const sidebarData = currentUser
+    ? currentUser.primary_role === "Borrower"
+      ? sidebarDataBorrower
+      : sidebarDataLender
+    : [];
 
   const sidebarRef = useRef<HTMLDivElement | null>(null);
 
