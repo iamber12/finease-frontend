@@ -8,7 +8,7 @@ import useDropdown from "@/utils/useDropdown";
 
 type Props = {};
 
-const DashboardBorrow = (props: Props) => {
+const DashboardLender = (props: Props) => {
   const { open, toggleOpen } = useDropdown();
   return (
     <div>
@@ -16,6 +16,7 @@ const DashboardBorrow = (props: Props) => {
         <div></div>
         <Banner
           open={open}
+          buttTitle="Quick Proposal"
           toggleOpen={toggleOpen}
           title=""
           className="mb-0 lg:mb-0"
@@ -35,4 +36,4 @@ const DashboardBorrow = (props: Props) => {
   );
 };
 
-export default DashboardBorrow;
+export default DashboardLender;

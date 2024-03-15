@@ -11,7 +11,7 @@ import { toast } from "react-toastify";
 import { useTheme } from "next-themes";
 import { useAuth } from "../auth/UserContext";
 
-const OpenAccountForm = ({
+const AddLoan = ({
   toggleOpen,
   open,
 }: {
@@ -106,7 +106,7 @@ const OpenAccountForm = ({
   return (
     <Modal open={open} toggleOpen={toggleOpen} height="min-h-[1200px]">
       <div className="flex justify-between items-center mb-4 pb-4 bb-dashed lg:mb-6 lg:pb-6">
-        <h4 className="h4">Create A Loan Proposal</h4>
+        <h4 className="h4">Create A  New Loan Request</h4>
       </div>
       <form>
         <div className="mt-6 xl:mt-8 grid grid-cols-2 gap-4 xxxl:gap-6">
@@ -220,4 +220,4 @@ const OpenAccountForm = ({
   );
 };
 
-export default OpenAccountForm;
+export default AddLoan;

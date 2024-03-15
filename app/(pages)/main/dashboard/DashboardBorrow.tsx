@@ -18,6 +18,7 @@ const DashboardBorrow = (props: Props) => {
           open={open}
           toggleOpen={toggleOpen}
           title=""
+          buttTitle="Quick Loan Request"
           className="mb-0 lg:mb-0"
         />
       </div>
