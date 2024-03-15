@@ -1,8 +1,8 @@
 import React from "react";
-import IncomeExpences from "@/components/dashboardLender/IncomeExpences";
-import LatestTransactions from "@/components/dashboardLender/LatestTransactions";
-import TransactionAccount from "@/components/dashboardLender/TransactionAccount";
-import Statistics from "@/components/dashboardLender/Statistics";
+import IncomeExpences from "@/components/dashboardBorrow/IncomeExpences";
+import LatestTransactions from "@/components/dashboardBorrow/LatestTransactions";
+import TransactionAccount from "@/components/dashboardBorrow/TransactionAccount";
+import Statistics from "@/components/dashboardBorrow/Statistics";
 import Banner from "@/components/shared/Banner";
 import useDropdown from "@/utils/useDropdown";
 

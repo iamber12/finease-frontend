@@ -15,7 +15,7 @@ const IncomeExpences = () => {
   const chartData: ApexOptions = {
     series: [
       {
-        name: "Total Lended",
+        name: "Total Borrowed",
         type: "line",
         data: [20, 38, 38, 73, 55, 63, 44, 75, 53, 80, 40, 80],
       },
@@ -25,7 +25,7 @@ const IncomeExpences = () => {
         data: [85, 66, 76, 38, 86, 35, 62, 40, 40, 64, 50, 87],
       },
       {
-        name: "Net Interest Gained",
+        name: "Net Interest Paid",
         type: "line",
         data: [12, 66, 42, 54, 34, 12, 43, 23, 53, 23, 65, 23],
       },
@@ -125,7 +125,7 @@ const IncomeExpences = () => {
   return (
     <div className="box overflow-x-hidden">
       <div className="flex items-center justify-between flex-wrap gap-3 bb-dashed mb-4 pb-4 lg:mb-6 lg:pb-6">
-        <h4 className="h4">Total Lended,Returned and Net Interest</h4>
+        <h4 className="h4">Total Borrowed,Returned and Net Interest Paid</h4>
         <div className="flex items-center gap-3">
           <span>Sort By : </span>
           <Dropdown

@@ -6,7 +6,7 @@ const ReactApexChart = dynamic(() => import("react-apexcharts"), {
 });
 const statisticsData = [
   {
-    title: "Total Amount Lended",
+    title: "Total Amount Borrowed",
     amount: "$85000",
     growth: "50.8%",
   },
@@ -16,12 +16,12 @@ const statisticsData = [
     growth: "50.8%",
   },
   {
-    title: "Number of Proposals",
+    title: "Number of Requests",
     amount: "25",
     growth: "20%",
   },
   {
-    title: "Net Interest Gained",
+    title: "Net Interest Paid",
     amount: "$5223",
     growth: "50.8%",
   },
