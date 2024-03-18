@@ -17,13 +17,9 @@ enum TransactionStatus {
   Rejected = "Rejected",
 }
 
-type Proposal = {
-  amount_start: number;
-  amount_end: number;
+type LoanRequests = {
   min_interest: number;
   max_interest: number;
-  min_return_duration: number;
-  max_return_duration: number;
   description: string;
   status: TransactionStatus;
 };
@@ -45,7 +41,7 @@ const LatestTransactions = ({ open }) => {
 
   const { getToken } = useAuth();
 
-  const [tableData, setTableData] = useState<Proposal[]>([]);
+  const [tableData, setTableData] = useState<LoanRequests[]>([]);
 
   const [order, setOrder] = useState<Order>("ASC");
   const [selected, setSelected] = useState(options[0]);
@@ -96,7 +92,7 @@ const LatestTransactions = ({ open }) => {
             throw new Error("Something went wrong");
           })
           .then((res) => {
-            setTableData(res.payload.loan_proposals);
+            setTableData(res.payload.loan_requests);
           })
           .catch(function (error) {
             return toast.error(
@@ -152,7 +148,7 @@ const LatestTransactions = ({ open }) => {
                 className="text-start py-5 min-w-[120px] cursor-pointer"
               >
                 <div className="flex items-center gap-1">
-                Amount <IconSelector size={18} />
+                  Min. Interest Rate <IconSelector size={18} />
                 </div>
               </th>
               <th
@@ -160,15 +156,7 @@ const LatestTransactions = ({ open }) => {
                 className="text-start py-5 min-w-[120px] cursor-pointer"
               >
                 <div className="flex items-center gap-1">
-                  Max Interest Rate <IconSelector size={18} />
-                </div>
-              </th>
-              <th
-                onClick={() => sortData("medium")}
-                className="text-start py-5 min-w-[120px] cursor-pointer"
-              >
-                <div className="flex items-center gap-1">
-                  Duration to Pay <IconSelector size={18} />
+                  Max. Interest Rate <IconSelector size={18} />
                 </div>
               </th>
               <th
@@ -194,9 +182,8 @@ const LatestTransactions = ({ open }) => {
                     </div>
                   </div>
                 </td>
-                <td className="py-2">${ele.amount}</td>
+                <td className="py-2">${ele.min_interest}</td>
                 <td className="py-2">${ele.max_interest}</td>
-                <td className="py-2">{ele.duration}%</td>
                 <td className="py-2">
                   <span
                     className={`block text-xs w-28 xxl:w-36 text-center rounded-[30px] dark:border-n500 border border-n30 py-2 ${
