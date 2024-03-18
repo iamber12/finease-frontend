@@ -3,7 +3,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { setCookie, getCookie, deleteCookie } from "@/utils/useCookie";
 
-export function useAuth() {
+export function useAuth(): AuthContext | null {
   return useContext(AuthContext);
 }
 

@@ -24,29 +24,29 @@ const SignIn = () => {
       password: passRef.current.value,
     };
 
-    function handleError(error: string) {
-      return toast.error(`${error}`, {
-        position: "bottom-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        theme: theme,
-      });
-    }
-
     fetchHandler(SIGNIN_POST_LINK, "POST", js)
       .then((res) => {
-        async function asynclogin(res) {
+        async function asynclogin(res: {
+          payload: { jwt_token: any; user: any };
+        }) {
           const token = res.payload.jwt_token;
           const user = res.payload.user;
-          await login(user,token);
+          await login(user, token);
           push("/main/dashboard");
         }
         asynclogin(res);
       })
-      .catch(handleError);
+      .catch((error) =>
+        toast.error(`${error}`, {
+          position: "bottom-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          theme: theme,
+        })
+      );
   }
 
   const [showPass, setShowPass] = useState(false);

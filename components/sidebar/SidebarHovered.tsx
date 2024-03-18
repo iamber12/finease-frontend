@@ -34,11 +34,10 @@ const SidebarHovered = ({
 
   const { currentUser, signOut } = useAuth();
 
-  const sidebarData = currentUser
-    ? currentUser.primary_role === "Borrower"
+  const sidebarData =
+    currentUser.primary_role === "Borrower"
       ? sidebarDataBorrower
-      : sidebarDataLender
-    : [];
+      : sidebarDataLender;
 
   const sidebarRef = useRef<HTMLDivElement | null>(null);
 

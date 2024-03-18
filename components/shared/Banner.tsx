@@ -1,19 +1,20 @@
 "use client";
-
 import cn from "@/utils/cn";
 import useDropdown from "@/utils/useDropdown";
-import OpenAccountForm from "./OpenAccount";
-import { useAuth } from "../auth/UserContext";
+import AddProposal from "./AddProposal";
+import AddLoan from "./AddLoan";
 type BannerProps = {
   title?: string;
   className?: string;
   open: boolean;
   toggleOpen: () => void;
+  buttTitle?: string;
 };
 const Banner = ({
   title = "Dashboard",
   className,
   open,
+  buttTitle = "",
   toggleOpen,
 }: BannerProps) => {
   return (
@@ -24,13 +25,13 @@ const Banner = ({
           className
         )}
       >
-        <h2 className="h2">{title}</h2>
+        <h2 className="h3">{title}</h2>
         <button className="btn" onClick={toggleOpen}>
           <i className="las la-plus-circle text-base md:text-lg"></i>
-          Quick Proposal
+          {buttTitle}
         </button>
       </div>
-      <OpenAccountForm open={open} toggleOpen={toggleOpen} />
+      <AddLoan open={open} toggleOpen={toggleOpen} />
     </>
   );
 };
