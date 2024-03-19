@@ -212,7 +212,7 @@ const LatestTransactions = ({ open }: { open: boolean }) => {
             </tr>
           </thead>
           <tbody>
-            {tableData.map((ele, index) => (
+            {tableData.slice(0, 10).map((ele, index) => (
               <tr
                 key={ele.description}
                 className="even:bg-secondary1/5 dark:even:bg-bg3"
@@ -278,13 +278,16 @@ const LatestTransactions = ({ open }: { open: boolean }) => {
         )}
       </div>
       {tableData.length > 0 && (
-        <Link
-          className="text-primary font-semibold inline-flex gap-1 items-center mt-6 group"
-          href="#"
-        >
-          See More{" "}
-          <i className="las la-arrow-right group-hover:pl-2 duration-300"></i>
-        </Link>
+        <div className="flex items-center gap-1">
+          <div className="mt-6">Showing top 10 entries. Click to</div>
+          <Link
+            className="text-primary font-semibold inline-flex gap-1 items-center mt-6 group"
+            href="#"
+          >
+            See More{" "}
+            <i className="las la-arrow-right group-hover:pl-2 duration-300"></i>
+          </Link>
+        </div>
       )}
     </div>
   );
