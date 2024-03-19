@@ -7,9 +7,11 @@ import Swal from "sweetalert2";
 const Action = ({
   fromBottom,
   onDelete,
+  onEdit,
 }: {
   fromBottom: boolean;
   onDelete: () => void;
+  onEdit: () => void;
 }) => {
   const { open, ref, toggleOpen } = useDropdown();
 
@@ -22,11 +24,25 @@ const Action = ({
       confirmButtonColor: "#20B757",
       cancelButtonColor: "#FF6161",
       confirmButtonText: "Yes, delete it!",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        onDelete();
-        toast.success("Item Deleted Successfully", {
-          position: "bottom-left",
+    })
+      .then((result) => {
+        if (result.isConfirmed) {
+          onDelete();
+          toast.success("Item Deleted Successfully", {
+            position: "top-right",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+        }
+      })
+      .catch((err) => {
+        toast.error("Error deleting item." + err, {
+          position: "top-right",
           autoClose: 2000,
           hideProgressBar: false,
           closeOnClick: true,
@@ -35,9 +51,10 @@ const Action = ({
           progress: undefined,
           theme: "light",
         });
-      }
-    });
+      });
   };
+
+  const handleEdit = () => {};
   return (
     <div className="relative top-0" ref={ref}>
       <IconDotsVertical
@@ -53,7 +70,10 @@ const Action = ({
             : "top-0 ltr:origin-top-right rtl:origin-top-left"
         } ltr:right-5 rtl:left-5  z-[15] min-w-[122px] duration-300 dark:border dark:border-n600 shadow-[0px_6px_30px_0px_rgba(0,0,0,0.08)] p-1.5 rounded-md bg-n0 dark:bg-bg4`}
       >
-        <button className="py-1.5 hover:bg-primary/5 w-full text-start rounded-md duration-300 block px-3">
+        <button
+          onClick={handleEdit}
+          className="py-1.5 hover:bg-primary/5 w-full text-start rounded-md duration-300 block px-3"
+        >
           Edit
         </button>
         <button

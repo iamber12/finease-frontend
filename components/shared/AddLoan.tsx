@@ -194,7 +194,7 @@ const AddLoan = ({
               className="btn flex w-full justify-center"
               type="submit"
             >
-              Create Proposal
+              Create Request
             </button>
           </div>
         </div>

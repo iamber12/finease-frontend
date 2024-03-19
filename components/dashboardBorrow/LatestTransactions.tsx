@@ -5,10 +5,9 @@ import Link from "next/link";
 import { toast } from "react-toastify";
 import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
-import { useAuth, AuthContext } from "../auth/UserContext";
-import { REQUESTS_GET_LINK } from "@/utils/constants";
-import OptionsVertical from "../shared/OptionsVertical";
+import { REQUESTS_DELETE_LINK, REQUESTS_GET_LINK } from "@/utils/constants";
 import Action from "./Action";
+import { fetchHandler } from "@/utils/utils";
 
 enum TransactionStatus {
   Granted = "Granted",
@@ -16,6 +15,7 @@ enum TransactionStatus {
 }
 
 type LoanRequests = {
+  uuid: string;
   amount: number;
   min_interest: number;
   max_interest: number;
@@ -29,6 +29,12 @@ type SortDataFunction = (col: keyof Transaction) => void;
 
 const options = ["Recent", "Name", "Amount"];
 const LatestTransactions = ({ open }: { open: boolean }) => {
+  const [forceRefresh, setForceRefresh] = useState(false);
+
+  const toggleRefresh = () => {
+    setForceRefresh((prev) => !prev);
+  };
+
   const dur = {
     15780096: "6 Months",
     47340288: "1 Year 6 Months",
@@ -36,9 +42,25 @@ const LatestTransactions = ({ open }: { open: boolean }) => {
     60403008: "2 Years",
   };
 
-  const { theme } = useTheme();
+  const onDelete = (id: string) => {
+    fetchHandler(`${REQUESTS_DELETE_LINK}${id}`, "DELETE", null)
+      .then((res) => {
+        toggleRefresh();
+      })
+      .catch((err) => {
+        return toast.error(`There was an error delete loan. Error: ${err}`, {
+          position: "bottom-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          theme: theme,
+        });
+      });
+  };
 
-  const { getToken } = useAuth() as AuthContext;
+  const { theme } = useTheme();
 
   const [tableData, setTableData] = useState<LoanRequests[]>([]);
 
@@ -75,43 +97,25 @@ const LatestTransactions = ({ open }: { open: boolean }) => {
   };
 
   useEffect(() => {
-    async function asyncFetch() {
-      const token = await getToken();
-      if (token) {
-        fetch(REQUESTS_GET_LINK, {
-          method: "GET",
-          headers: {
-            "X-Access-Token": token,
-          },
-        })
-          .then((res) => {
-            if (res.ok) {
-              return res.json();
-            }
-            throw new Error("Something went wrong");
-          })
-          .then((res) => {
-            setTableData(res.payload.loan_requests);
-          })
-          .catch(function (error) {
-            return toast.error(
-              `There was an error fetching proposals. Error: ${error}`,
-              {
-                position: "bottom-center",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                theme: theme,
-              }
-            );
-          });
-      }
-    }
-
-    asyncFetch();
-  }, [open]);
+    fetchHandler(REQUESTS_GET_LINK, "GET", null)
+      .then((res) => {
+        setTableData(res.payload.loan_requests);
+      })
+      .catch(function (error) {
+        return toast.error(
+          `There was an error fetching proposals. Error: ${error}`,
+          {
+            position: "bottom-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            theme: theme,
+          }
+        );
+      });
+  }, [open, forceRefresh]);
 
   return (
     <div className="box col-span-12 lg:col-span-6">
@@ -207,7 +211,10 @@ const LatestTransactions = ({ open }: { open: boolean }) => {
                 <td className="py-2">
                   <div className="flex justify-center">
                     <Action
-                      onDelete={() => {}}
+                      onDelete={() => {
+                        onDelete(ele.uuid);
+                      }}
+                      onEdit={() => {}}
                       fromBottom={
                         index == tableData.length - 1 ||
                         index == tableData.length - 2

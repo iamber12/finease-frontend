@@ -22,3 +22,4 @@ export const SIGNIN_POST_LINK = "http://3.15.22.52:8000/v1/auth/login";
 export const PROPOSAL_POST_LINK = "http://3.15.22.52:8000/v1/loan/proposals/";
 export const PROPOSAL_GET_LINK = "http://3.15.22.52:8000/v1/loan/proposals/";
 export const REQUESTS_GET_LINK = "http://3.15.22.52:8000/v1/loan/request/";
+export const REQUESTS_DELETE_LINK = "http://3.15.22.52:8000/v1/loan/request/";
