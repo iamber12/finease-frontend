@@ -103,7 +103,7 @@ const LatestTransactions = ({ open }: { open: boolean }) => {
       })
       .catch(function (error) {
         return toast.error(
-          `There was an error fetching proposals. Error: ${error}`,
+          `There was an error fetching requests. Error: ${error}`,
           {
             position: "bottom-center",
             autoClose: 5000,

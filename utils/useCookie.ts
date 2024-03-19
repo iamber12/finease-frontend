@@ -21,6 +21,5 @@ export async function deleteCookie(name: string) {
 
 export async function getToken() {
   const token = await getCookie("token");
-  console.log(token);
   return token?.value;
 }

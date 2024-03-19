@@ -1,17 +1,12 @@
 "use client";
 import Dropdown from "@/components/shared/Dropdown";
-import SearchBar from "@/components/shared/SearchBar";
 import { IconSelector } from "@tabler/icons-react";
-import Image from "next/image";
 import Link from "next/link";
 import { toast } from "react-toastify";
 import { useState, useEffect } from "react";
-import Action from "./Action";
 import { useTheme } from "next-themes";
-import { useAuth } from "../auth/UserContext";
 import { PROPOSAL_GET_LINK } from "@/utils/constants";
-import useDropdown from "@/utils/useDropdown";
-
+import { fetchHandler } from "@/utils/utils";
 enum TransactionStatus {
   Available = "Available",
   Unavailable = "Unavailable",
@@ -42,8 +37,6 @@ const LatestTransactions = ({ open }) => {
   };
 
   const { theme } = useTheme();
-
-  const { getToken } = useAuth();
 
   const [tableData, setTableData] = useState<Proposal[]>([]);
 
@@ -80,42 +73,24 @@ const LatestTransactions = ({ open }) => {
   };
 
   useEffect(() => {
-    async function asyncFetch() {
-      const token = await getToken();
-      if (token) {
-        fetch(PROPOSAL_GET_LINK, {
-          method: "GET",
-          headers: {
-            "X-Access-Token": token,
-          },
-        })
-          .then((res) => {
-            if (res.ok) {
-              return res.json();
-            }
-            throw new Error("Something went wrong");
-          })
-          .then((res) => {
-            setTableData(res.payload.loan_proposals);
-          })
-          .catch(function (error) {
-            return toast.error(
-              `There was an error fetching proposals. Error: ${error}`,
-              {
-                position: "bottom-center",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                theme: theme,
-              }
-            );
-          });
-      }
-    }
-
-    asyncFetch();
+    fetchHandler(PROPOSAL_GET_LINK, "GET", null)
+      .then((res) => {
+        setTableData(res.payload.loan_proposals);
+      })
+      .catch(function (error) {
+        return toast.error(
+          `There was an error fetching proposals. Error: ${error}`,
+          {
+            position: "bottom-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            theme: theme,
+          }
+        );
+      });
   }, [open]);
 
   return (
