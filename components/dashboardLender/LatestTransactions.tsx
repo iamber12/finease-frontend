@@ -206,6 +206,9 @@ const LatestTransactions = ({ open }: { open: boolean }) => {
                   Status <IconSelector size={18} />
                 </div>
               </th>
+              <th className="text-start py-5 min-w-[120px] cursor-pointer">
+                <div className="flex items-center gap-1">Action</div>
+              </th>
             </tr>
           </thead>
           <tbody>
