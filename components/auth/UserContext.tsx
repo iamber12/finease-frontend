@@ -17,7 +17,7 @@ export interface User {
   password: string;
 }
 
-interface AuthContext {
+export interface AuthContext {
   currentUser: User | null;
   getUser: () => Promise<void>;
   login: (user: User, token: string) => Promise<void>;

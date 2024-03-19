@@ -1,16 +1,14 @@
 "use client";
 import Dropdown from "@/components/shared/Dropdown";
-import SearchBar from "@/components/shared/SearchBar";
 import { IconSelector } from "@tabler/icons-react";
-import Image from "next/image";
 import Link from "next/link";
 import { toast } from "react-toastify";
 import { useState, useEffect } from "react";
-import Action from "./Action";
 import { useTheme } from "next-themes";
-import { useAuth } from "../auth/UserContext";
+import { useAuth, AuthContext } from "../auth/UserContext";
 import { REQUESTS_GET_LINK } from "@/utils/constants";
-import useDropdown from "@/utils/useDropdown";
+import OptionsVertical from "../shared/OptionsVertical";
+import Action from "./Action";
 
 enum TransactionStatus {
   Granted = "Granted",
@@ -18,6 +16,7 @@ enum TransactionStatus {
 }
 
 type LoanRequests = {
+  amount: number;
   min_interest: number;
   max_interest: number;
   description: string;
@@ -29,7 +28,7 @@ type Order = "ASC" | "DSC";
 type SortDataFunction = (col: keyof Transaction) => void;
 
 const options = ["Recent", "Name", "Amount"];
-const LatestTransactions = ({ open }) => {
+const LatestTransactions = ({ open }: { open: boolean }) => {
   const dur = {
     15780096: "6 Months",
     47340288: "1 Year 6 Months",
@@ -39,7 +38,7 @@ const LatestTransactions = ({ open }) => {
 
   const { theme } = useTheme();
 
-  const { getToken } = useAuth();
+  const { getToken } = useAuth() as AuthContext;
 
   const [tableData, setTableData] = useState<LoanRequests[]>([]);
 
@@ -117,7 +116,7 @@ const LatestTransactions = ({ open }) => {
   return (
     <div className="box col-span-12 lg:col-span-6">
       <div className="flex flex-wrap gap-4  justify-between items-center bb-dashed mb-4 pb-4 lg:mb-6 lg:pb-6">
-        <h4 className="h4">Your  Recent Requests</h4>
+        <h4 className="h4">Your Recent Requests</h4>
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-3 whitespace-nowrap">
             <span>Sort By : </span>
@@ -144,6 +143,14 @@ const LatestTransactions = ({ open }) => {
                 </div>
               </th>
               <th
+                onClick={() => sortData("title")}
+                className="text-start py-5 px-6 cursor-pointer min-w-[330px]"
+              >
+                <div className="flex items-center gap-1 text-center ">
+                  Amount <IconSelector size={18} />
+                </div>
+              </th>
+              <th
                 onClick={() => sortData("medium")}
                 className="text-start py-5 min-w-[120px] cursor-pointer"
               >
@@ -167,6 +174,9 @@ const LatestTransactions = ({ open }) => {
                   Status <IconSelector size={18} />
                 </div>
               </th>
+              <th className="text-start py-5 cursor-pointer">
+                <div className="flex items-center gap-1">Action</div>
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -176,14 +186,11 @@ const LatestTransactions = ({ open }) => {
                 className="even:bg-secondary1/5 dark:even:bg-bg3"
               >
                 <td className="py-2 px-6">
-                  <div className="flex items-center gap-3">
-                    <div>
-                      <p className="font-medium mb-1">{ele.description}</p>
-                    </div>
-                  </div>
+                  <p className="font-medium mb-1">{ele.description}</p>
                 </td>
-                <td className="py-2">${ele.min_interest}</td>
-                <td className="py-2">${ele.max_interest}</td>
+                <td className="py-2 px-2">${ele.amount}</td>
+                <td className="py-2">{ele.min_interest}</td>
+                <td className="py-2">{ele.max_interest}</td>
                 <td className="py-2">
                   <span
                     className={`block text-xs w-28 xxl:w-36 text-center rounded-[30px] dark:border-n500 border border-n30 py-2 ${
@@ -196,6 +203,17 @@ const LatestTransactions = ({ open }) => {
                   >
                     {ele.status}
                   </span>
+                </td>
+                <td className="py-2">
+                  <div className="flex justify-center">
+                    <Action
+                      onDelete={() => {}}
+                      fromBottom={
+                        index == tableData.length - 1 ||
+                        index == tableData.length - 2
+                      }
+                    />
+                  </div>
                 </td>
               </tr>
             ))}

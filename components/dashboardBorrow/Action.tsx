@@ -51,17 +51,16 @@ const Action = ({
           fromBottom
             ? "bottom-0 ltr:origin-bottom-right rtl:origin-bottom-left"
             : "top-0 ltr:origin-top-right rtl:origin-top-left"
-        } ltr:right-5 rtl:left-5  z-[15] min-w-[122px] duration-300 dark:border dark:border-n600 shadow-[0px_6px_30px_0px_rgba(0,0,0,0.08)] p-1.5 rounded-md bg-n0 dark:bg-bg4`}>
+        } ltr:right-5 rtl:left-5  z-[15] min-w-[122px] duration-300 dark:border dark:border-n600 shadow-[0px_6px_30px_0px_rgba(0,0,0,0.08)] p-1.5 rounded-md bg-n0 dark:bg-bg4`}
+      >
         <button className="py-1.5 hover:bg-primary/5 w-full text-start rounded-md duration-300 block px-3">
           Edit
         </button>
         <button
           onClick={handleDelete}
-          className="py-1.5 hover:bg-primary/5 w-full text-start rounded-md duration-300 block px-3">
+          className="py-1.5 hover:bg-primary/5 w-full text-start rounded-md duration-300 block px-3"
+        >
           Delete
-        </button>
-        <button className="py-1.5 hover:bg-primary/5 w-full text-start rounded-md duration-300 block px-3">
-          Share
         </button>
       </div>
     </div>
