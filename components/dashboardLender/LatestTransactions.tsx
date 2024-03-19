@@ -7,12 +7,14 @@ import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
 import { PROPOSAL_GET_LINK } from "@/utils/constants";
 import { fetchHandler } from "@/utils/utils";
+import Action from "./Action";
 enum TransactionStatus {
   Available = "Available",
   Unavailable = "Unavailable",
 }
 
 type Proposal = {
+  uuid: string;
   amount_start: number;
   amount_end: number;
   min_interest: number;
@@ -28,12 +30,38 @@ type Order = "ASC" | "DSC";
 type SortDataFunction = (col: keyof Transaction) => void;
 
 const options = ["Recent", "Name", "Amount"];
-const LatestTransactions = ({ open }) => {
+const LatestTransactions = ({ open }: { open: boolean }) => {
+  const [forceRefresh, setForceRefresh] = useState(false);
+
+  const toggleRefresh = () => {
+    setForceRefresh((prev) => !prev);
+  };
   const dur = {
     15780096: "6 Months",
     47340288: "1 Year 6 Months",
     31560192: "1 Year",
     60403008: "2 Years",
+  };
+
+  const onDelete = (id: string) => {
+    fetchHandler(`${PROPOSAL_GET_LINK}${id}`, "DELETE", null)
+      .then((res) => {
+        toggleRefresh();
+      })
+      .catch((err) => {
+        return toast.error(
+          `There was an error deleting proposal. Error: ${err}`,
+          {
+            position: "bottom-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            theme: theme,
+          }
+        );
+      });
   };
 
   const { theme } = useTheme();
@@ -91,7 +119,7 @@ const LatestTransactions = ({ open }) => {
           }
         );
       });
-  }, [open]);
+  }, [open, forceRefresh]);
 
   return (
     <div className="box col-span-12 lg:col-span-6">
@@ -212,6 +240,20 @@ const LatestTransactions = ({ open }) => {
                   >
                     {ele.status}
                   </span>
+                </td>
+                <td className="py-2">
+                  <div className="flex justify-center">
+                    <Action
+                      onDelete={() => {
+                        onDelete(ele.uuid);
+                      }}
+                      onEdit={() => {}}
+                      fromBottom={
+                        index == tableData.length - 1 ||
+                        index == tableData.length - 2
+                      }
+                    />
+                  </div>
                 </td>
               </tr>
             ))}

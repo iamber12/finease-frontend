@@ -48,7 +48,7 @@ const LatestTransactions = ({ open }: { open: boolean }) => {
         toggleRefresh();
       })
       .catch((err) => {
-        return toast.error(`There was an error delete loan. Error: ${err}`, {
+        return toast.error(`There was an error deleting loan. Error: ${err}`, {
           position: "bottom-center",
           autoClose: 5000,
           hideProgressBar: false,

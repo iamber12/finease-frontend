@@ -47,11 +47,12 @@ export const dateTimeFormat = (startDate: Date): string => {
   let mm = startDate.getMonth() + 1; // Months start at 0!
   let dd = startDate.getDate();
 
-  if (dd < 10) dd = "0" + dd;
-  if (mm < 10) mm = "0" + mm;
+  let strDD, strMM;
 
-  const formattedToday = dd + "/" + mm + "/" + yyyy;
-  return formattedToday;
+  if (dd < 10) strDD = "0" + dd;
+  if (mm < 10) strMM = "0" + mm;
+
+  return dd + "/" + mm + "/" + yyyy;
 };
 
 export const getRandomInt = (min: number, max: number): number => {
