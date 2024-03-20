@@ -5,9 +5,8 @@ import ProfileTwo from "@/components/shared/ProfileTwo";
 import MessageBtn from "./MessageBtn";
 import ModeSwitcher from "./ModeSwitcher";
 import Notification from "./Notification";
-import SearchBar from "./SearchBar";
-import SelectCurrency from "./SelectCurrency";
-
+import Image from "next/image";
+import { useTheme } from "next-themes";
 const TopBarThree = ({
   setSidebar,
   sidebarIsOpen,
@@ -16,6 +15,7 @@ const TopBarThree = ({
   sidebarIsOpen: boolean;
 }) => {
   const { layout } = useLayout();
+  const { theme } = useTheme();
   return (
     <nav
       className={`ltr:pr-4 ltr:xxl:pr-6 rtl:pl-4 rtl:xxl:pl-6 py-3 duration-300 dark:border-b dark:border-n700 navbar-top z-20  ${
@@ -35,9 +35,19 @@ const TopBarThree = ({
             } text-xl`}
           />
         </button>
-        <SearchBar />
-        <SelectCurrency />
+        <Image
+          width={174}
+          height={38}
+          src={
+            theme == "dark"
+              ? "/images/logo-with-text-dark.png"
+              : "/images/logo-with-text.png"
+          }
+          alt="logo"
+          className=""
+        />
       </div>
+
       <div className="flex items-center gap-3 shrink-0 justify-end sm:gap-4 xxl:gap-5">
         <MobileSearch btnClass="bg-n0 dark:bg-bg4 border-none" />
         <ModeSwitcher />
