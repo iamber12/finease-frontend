@@ -139,7 +139,7 @@ const LatestTransactions = ({ open }: { open: boolean }) => {
           <thead>
             <tr className="bg-secondary1/5 dark:bg-bg3">
               <th
-                onClick={() => sortData("title")}
+                onClick={() => sortData("description")}
                 className="text-start py-5 px-6 cursor-pointer min-w-[330px]"
               >
                 <div className="flex items-center gap-1 text-center ">
@@ -147,7 +147,7 @@ const LatestTransactions = ({ open }: { open: boolean }) => {
                 </div>
               </th>
               <th
-                onClick={() => sortData("title")}
+                onClick={() => sortData("amount")}
                 className="text-start py-5 px-6 cursor-pointer min-w-[330px]"
               >
                 <div className="flex items-center gap-1 text-center ">
@@ -155,7 +155,7 @@ const LatestTransactions = ({ open }: { open: boolean }) => {
                 </div>
               </th>
               <th
-                onClick={() => sortData("medium")}
+                onClick={() => sortData("min_interest")}
                 className="text-start py-5 min-w-[120px] cursor-pointer"
               >
                 <div className="flex items-center gap-1">
@@ -163,7 +163,7 @@ const LatestTransactions = ({ open }: { open: boolean }) => {
                 </div>
               </th>
               <th
-                onClick={() => sortData("medium")}
+                onClick={() => sortData("max_interest")}
                 className="text-start py-5 min-w-[120px] cursor-pointer"
               >
                 <div className="flex items-center gap-1">
