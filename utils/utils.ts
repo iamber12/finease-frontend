@@ -1,4 +1,4 @@
-import { getCookie } from "./useCookie";
+import { getToken } from "./useCookie";
 
 export const isLower = (text: string): Array<string> | null => {
   let lowerCaseLetters = /[a-z]/g;
@@ -47,11 +47,12 @@ export const dateTimeFormat = (startDate: Date): string => {
   let mm = startDate.getMonth() + 1; // Months start at 0!
   let dd = startDate.getDate();
 
-  if (dd < 10) dd = "0" + dd;
-  if (mm < 10) mm = "0" + mm;
+  let strDD, strMM;
 
-  const formattedToday = dd + "/" + mm + "/" + yyyy;
-  return formattedToday;
+  if (dd < 10) strDD = "0" + dd;
+  if (mm < 10) strMM = "0" + mm;
+
+  return dd + "/" + mm + "/" + yyyy;
 };
 
 export const getRandomInt = (min: number, max: number): number => {
@@ -66,10 +67,15 @@ export async function fetchHandler(
   data: any | undefined,
   headers: any = {}
 ) {
+  const token = await getToken();
+  let thisheaders = {
+    "X-Access-Token": token,
+    ...headers,
+  };
   const res = await fetch(url, {
     method: type,
-    headers: { ...headers },
-    body: data ? JSON.stringify(data) : "",
+    headers: thisheaders,
+    body: data ? JSON.stringify(data) : null,
   });
 
   if (!res.ok) {

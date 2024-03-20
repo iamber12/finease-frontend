@@ -1,23 +1,20 @@
 "use client";
 import Dropdown from "@/components/shared/Dropdown";
-import SearchBar from "@/components/shared/SearchBar";
 import { IconSelector } from "@tabler/icons-react";
-import Image from "next/image";
 import Link from "next/link";
 import { toast } from "react-toastify";
 import { useState, useEffect } from "react";
-import Action from "./Action";
 import { useTheme } from "next-themes";
-import { useAuth } from "../auth/UserContext";
 import { PROPOSAL_GET_LINK } from "@/utils/constants";
-import useDropdown from "@/utils/useDropdown";
-
+import { fetchHandler } from "@/utils/utils";
+import Action from "./Action";
 enum TransactionStatus {
   Available = "Available",
   Unavailable = "Unavailable",
 }
 
 type Proposal = {
+  uuid: string;
   amount_start: number;
   amount_end: number;
   min_interest: number;
@@ -33,7 +30,12 @@ type Order = "ASC" | "DSC";
 type SortDataFunction = (col: keyof Transaction) => void;
 
 const options = ["Recent", "Name", "Amount"];
-const LatestTransactions = ({ open }) => {
+const LatestTransactions = ({ open }: { open: boolean }) => {
+  const [forceRefresh, setForceRefresh] = useState(false);
+
+  const toggleRefresh = () => {
+    setForceRefresh((prev) => !prev);
+  };
   const dur = {
     15780096: "6 Months",
     47340288: "1 Year 6 Months",
@@ -41,9 +43,28 @@ const LatestTransactions = ({ open }) => {
     60403008: "2 Years",
   };
 
-  const { theme } = useTheme();
+  const onDelete = (id: string) => {
+    fetchHandler(`${PROPOSAL_GET_LINK}${id}`, "DELETE", null)
+      .then((res) => {
+        toggleRefresh();
+      })
+      .catch((err) => {
+        return toast.error(
+          `There was an error deleting proposal. Error: ${err}`,
+          {
+            position: "bottom-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            theme: theme,
+          }
+        );
+      });
+  };
 
-  const { getToken } = useAuth();
+  const { theme } = useTheme();
 
   const [tableData, setTableData] = useState<Proposal[]>([]);
 
@@ -80,43 +101,25 @@ const LatestTransactions = ({ open }) => {
   };
 
   useEffect(() => {
-    async function asyncFetch() {
-      const token = await getToken();
-      if (token) {
-        fetch(PROPOSAL_GET_LINK, {
-          method: "GET",
-          headers: {
-            "X-Access-Token": token,
-          },
-        })
-          .then((res) => {
-            if (res.ok) {
-              return res.json();
-            }
-            throw new Error("Something went wrong");
-          })
-          .then((res) => {
-            setTableData(res.payload.loan_proposals);
-          })
-          .catch(function (error) {
-            return toast.error(
-              `There was an error fetching proposals. Error: ${error}`,
-              {
-                position: "bottom-center",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                theme: theme,
-              }
-            );
-          });
-      }
-    }
-
-    asyncFetch();
-  }, [open]);
+    fetchHandler(PROPOSAL_GET_LINK, "GET", null)
+      .then((res) => {
+        setTableData(res.payload.loan_proposals);
+      })
+      .catch(function (error) {
+        return toast.error(
+          `There was an error fetching proposals. Error: ${error}`,
+          {
+            position: "bottom-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            theme: theme,
+          }
+        );
+      });
+  }, [open, forceRefresh]);
 
   return (
     <div className="box col-span-12 lg:col-span-6">
@@ -203,10 +206,13 @@ const LatestTransactions = ({ open }) => {
                   Status <IconSelector size={18} />
                 </div>
               </th>
+              <th className="text-start py-5 min-w-[120px] cursor-pointer">
+                <div className="flex items-center gap-1">Action</div>
+              </th>
             </tr>
           </thead>
           <tbody>
-            {tableData.map((ele, index) => (
+            {tableData.slice(0, 10).map((ele, index) => (
               <tr
                 key={ele.description}
                 className="even:bg-secondary1/5 dark:even:bg-bg3"
@@ -238,6 +244,20 @@ const LatestTransactions = ({ open }) => {
                     {ele.status}
                   </span>
                 </td>
+                <td className="py-2">
+                  <div className="flex justify-center">
+                    <Action
+                      onDelete={() => {
+                        onDelete(ele.uuid);
+                      }}
+                      onEdit={() => {}}
+                      fromBottom={
+                        index == tableData.length - 1 ||
+                        index == tableData.length - 2
+                      }
+                    />
+                  </div>
+                </td>
               </tr>
             ))}
           </tbody>
@@ -258,13 +278,16 @@ const LatestTransactions = ({ open }) => {
         )}
       </div>
       {tableData.length > 0 && (
-        <Link
-          className="text-primary font-semibold inline-flex gap-1 items-center mt-6 group"
-          href="#"
-        >
-          See More{" "}
-          <i className="las la-arrow-right group-hover:pl-2 duration-300"></i>
-        </Link>
+        <div className="flex items-center gap-1">
+          <div className="mt-6">Showing top 10 entries. Click to</div>
+          <Link
+            className="text-primary font-semibold inline-flex gap-1 items-center mt-6 group"
+            href="#"
+          >
+            See More{" "}
+            <i className="las la-arrow-right group-hover:pl-2 duration-300"></i>
+          </Link>
+        </div>
       )}
     </div>
   );

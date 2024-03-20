@@ -1,15 +1,13 @@
 import Dropdown from "@/components/shared/Dropdown";
 import Modal from "@/components/shared/Modal";
-import placeholder from "@/public/images/placeholder.png";
 import { PROPOSAL_POST_LINK } from "@/utils/constants";
-import Image from "next/image";
-import { FocusEvent, useRef, useState } from "react";
+import { useRef, useState } from "react";
 const durations = ["6 Months", "1 Year", "1 Year 6 Months", "2 Years"];
 const statuses = ["Available", "Unavailable"];
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
 import { useTheme } from "next-themes";
-import { useAuth } from "../auth/UserContext";
+import { fetchHandler } from "@/utils/utils";
 
 const AddProposal = ({
   toggleOpen,
@@ -26,9 +24,6 @@ const AddProposal = ({
   const maxInterest = useRef(null);
   const desc = useRef(null);
   const { theme } = useTheme();
-  const { getToken } = useAuth();
-
-
 
   async function handleSubmit(e: React.MouseEvent) {
     e.preventDefault();
@@ -51,57 +46,38 @@ const AddProposal = ({
       description: desc.current.value,
     };
 
-    const token = await getToken();
-    if (token) {
-      fetch(PROPOSAL_POST_LINK, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-Access-Token": token,
-        },
-        body: JSON.stringify(js),
-      })
-        .then((res) => {
-          if (res.ok) {
-            return res.json();
+    fetchHandler(PROPOSAL_POST_LINK, "POST", js)
+      .then(() => {
+        Swal.fire({
+          title: "Successfully Submitted",
+          text: "",
+          icon: "success",
+          showCancelButton: false,
+          showConfirmButton: false,
+          confirmButtonColor: "#20B757",
+          cancelButtonColor: "#FF6161",
+          confirmButtonText: "Ok",
+          timer: 5000,
+          timerProgressBar: true,
+          willClose: toggleOpen,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            toggleOpen();
           }
-          throw new Error("Something went wrong");
-        })
-        .then((res) => {
-          Swal.fire({
-            title: "Successfully Submitted",
-            text: "",
-            icon: "success",
-            showCancelButton: false,
-            showConfirmButton: false,
-            confirmButtonColor: "#20B757",
-            cancelButtonColor: "#FF6161",
-            confirmButtonText: "Ok",
-            timer: 5000,
-            timerProgressBar: true,
-            willClose: toggleOpen,
-          }).then((result) => {
-            if (result.isConfirmed) {
-              toggleOpen();
-            }
-          });
-        })
-        .catch(function (error) {
-          return toast.error(
-            `There was an error registering. Error: ${error}`,
-            {
-              position: "bottom-center",
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              theme: theme,
-            }
-          );
         });
-    }
-  };
+      })
+      .catch((error) => {
+        return toast.error(`There was an error registering. Error: ${error}`, {
+          position: "bottom-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          theme: theme,
+        });
+      });
+  }
 
   return (
     <Modal open={open} toggleOpen={toggleOpen} height="min-h-[1200px]">

@@ -1,16 +1,13 @@
 "use client";
 import Dropdown from "@/components/shared/Dropdown";
-import SearchBar from "@/components/shared/SearchBar";
 import { IconSelector } from "@tabler/icons-react";
-import Image from "next/image";
 import Link from "next/link";
 import { toast } from "react-toastify";
 import { useState, useEffect } from "react";
-import Action from "./Action";
 import { useTheme } from "next-themes";
-import { useAuth } from "../auth/UserContext";
-import { REQUESTS_GET_LINK } from "@/utils/constants";
-import useDropdown from "@/utils/useDropdown";
+import { REQUESTS_DELETE_LINK, REQUESTS_GET_LINK } from "@/utils/constants";
+import Action from "./Action";
+import { fetchHandler } from "@/utils/utils";
 
 enum TransactionStatus {
   Granted = "Granted",
@@ -18,6 +15,8 @@ enum TransactionStatus {
 }
 
 type LoanRequests = {
+  uuid: string;
+  amount: number;
   min_interest: number;
   max_interest: number;
   description: string;
@@ -29,7 +28,13 @@ type Order = "ASC" | "DSC";
 type SortDataFunction = (col: keyof Transaction) => void;
 
 const options = ["Recent", "Name", "Amount"];
-const LatestTransactions = ({ open }) => {
+const LatestTransactions = ({ open }: { open: boolean }) => {
+  const [forceRefresh, setForceRefresh] = useState(false);
+
+  const toggleRefresh = () => {
+    setForceRefresh((prev) => !prev);
+  };
+
   const dur = {
     15780096: "6 Months",
     47340288: "1 Year 6 Months",
@@ -37,9 +42,25 @@ const LatestTransactions = ({ open }) => {
     60403008: "2 Years",
   };
 
-  const { theme } = useTheme();
+  const onDelete = (id: string) => {
+    fetchHandler(`${REQUESTS_DELETE_LINK}${id}`, "DELETE", null)
+      .then((res) => {
+        toggleRefresh();
+      })
+      .catch((err) => {
+        return toast.error(`There was an error deleting loan. Error: ${err}`, {
+          position: "bottom-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          theme: theme,
+        });
+      });
+  };
 
-  const { getToken } = useAuth();
+  const { theme } = useTheme();
 
   const [tableData, setTableData] = useState<LoanRequests[]>([]);
 
@@ -76,48 +97,30 @@ const LatestTransactions = ({ open }) => {
   };
 
   useEffect(() => {
-    async function asyncFetch() {
-      const token = await getToken();
-      if (token) {
-        fetch(REQUESTS_GET_LINK, {
-          method: "GET",
-          headers: {
-            "X-Access-Token": token,
-          },
-        })
-          .then((res) => {
-            if (res.ok) {
-              return res.json();
-            }
-            throw new Error("Something went wrong");
-          })
-          .then((res) => {
-            setTableData(res.payload.loan_requests);
-          })
-          .catch(function (error) {
-            return toast.error(
-              `There was an error fetching proposals. Error: ${error}`,
-              {
-                position: "bottom-center",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                theme: theme,
-              }
-            );
-          });
-      }
-    }
-
-    asyncFetch();
-  }, [open]);
+    fetchHandler(REQUESTS_GET_LINK, "GET", null)
+      .then((res) => {
+        setTableData(res.payload.loan_requests);
+      })
+      .catch(function (error) {
+        return toast.error(
+          `There was an error fetching requests. Error: ${error}`,
+          {
+            position: "bottom-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            theme: theme,
+          }
+        );
+      });
+  }, [open, forceRefresh]);
 
   return (
     <div className="box col-span-12 lg:col-span-6">
       <div className="flex flex-wrap gap-4  justify-between items-center bb-dashed mb-4 pb-4 lg:mb-6 lg:pb-6">
-        <h4 className="h4">Your  Recent Requests</h4>
+        <h4 className="h4">Your Recent Requests</h4>
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-3 whitespace-nowrap">
             <span>Sort By : </span>
@@ -144,6 +147,14 @@ const LatestTransactions = ({ open }) => {
                 </div>
               </th>
               <th
+                onClick={() => sortData("title")}
+                className="text-start py-5 px-6 cursor-pointer min-w-[330px]"
+              >
+                <div className="flex items-center gap-1 text-center ">
+                  Amount <IconSelector size={18} />
+                </div>
+              </th>
+              <th
                 onClick={() => sortData("medium")}
                 className="text-start py-5 min-w-[120px] cursor-pointer"
               >
@@ -167,23 +178,23 @@ const LatestTransactions = ({ open }) => {
                   Status <IconSelector size={18} />
                 </div>
               </th>
+              <th className="text-start py-5 cursor-pointer">
+                <div className="flex items-center gap-1">Action</div>
+              </th>
             </tr>
           </thead>
           <tbody>
-            {tableData.map((ele, index) => (
+            {tableData.slice(0, 10).map((ele, index) => (
               <tr
                 key={ele.description}
                 className="even:bg-secondary1/5 dark:even:bg-bg3"
               >
                 <td className="py-2 px-6">
-                  <div className="flex items-center gap-3">
-                    <div>
-                      <p className="font-medium mb-1">{ele.description}</p>
-                    </div>
-                  </div>
+                  <p className="font-medium mb-1">{ele.description}</p>
                 </td>
-                <td className="py-2">${ele.min_interest}</td>
-                <td className="py-2">${ele.max_interest}</td>
+                <td className="py-2 px-2">${ele.amount}</td>
+                <td className="py-2">{ele.min_interest}</td>
+                <td className="py-2">{ele.max_interest}</td>
                 <td className="py-2">
                   <span
                     className={`block text-xs w-28 xxl:w-36 text-center rounded-[30px] dark:border-n500 border border-n30 py-2 ${
@@ -196,6 +207,20 @@ const LatestTransactions = ({ open }) => {
                   >
                     {ele.status}
                   </span>
+                </td>
+                <td className="py-2">
+                  <div className="flex justify-center">
+                    <Action
+                      onDelete={() => {
+                        onDelete(ele.uuid);
+                      }}
+                      onEdit={() => {}}
+                      fromBottom={
+                        index == tableData.length - 1 ||
+                        index == tableData.length - 2
+                      }
+                    />
+                  </div>
                 </td>
               </tr>
             ))}
@@ -217,13 +242,16 @@ const LatestTransactions = ({ open }) => {
         )}
       </div>
       {tableData.length > 0 && (
-        <Link
-          className="text-primary font-semibold inline-flex gap-1 items-center mt-6 group"
-          href="#"
-        >
-          See More{" "}
-          <i className="las la-arrow-right group-hover:pl-2 duration-300"></i>
-        </Link>
+        <div className="flex items-center gap-1">
+          <div className="mt-6">Showing top 10 entries. Click to</div>
+          <Link
+            className="text-primary font-semibold inline-flex gap-1 items-center mt-6 group"
+            href="#"
+          >
+            See More{" "}
+            <i className="las la-arrow-right group-hover:pl-2 duration-300"></i>
+          </Link>
+        </div>
       )}
     </div>
   );

@@ -1,7 +1,12 @@
 "use client";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { setCookie, getCookie, deleteCookie } from "@/utils/useCookie";
+import {
+  setCookie,
+  getCookie,
+  deleteCookie,
+  getToken,
+} from "@/utils/useCookie";
 
 export function useAuth(): AuthContext | null {
   return useContext(AuthContext);
@@ -17,7 +22,7 @@ export interface User {
   password: string;
 }
 
-interface AuthContext {
+export interface AuthContext {
   currentUser: User | null;
   getUser: () => Promise<void>;
   login: (user: User, token: string) => Promise<void>;
@@ -47,11 +52,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   async function setToken(token: string) {
     await setCookie("token", token);
-  }
-
-  async function getToken() {
-    const token = await getCookie("token");
-    return token?.value;
   }
 
   async function getUser() {
