@@ -72,6 +72,17 @@ Your data remains confidential and protected. Investors will have no access to y
             Register
           </Link>
             </div>
+            <div className="sm:w-3/4 lg:w-5/12 mx-auto px-2">
+        <h2 className="text-2xl sm:text-3xl min-[1650px]:text-[44px] !leading-tight font-normal mb-4 lg:mb-6 mt-20 text-center">
+        How much would you like to borrow?
+        </h2>   
+        </div>
+        <div style={{marginTop: "55px", marginLeft:"300px"}}>
+          <AmountSlider/>
+          <center><Link className="btn max-md:hidden" href="/auth/sign-up" style={{marginRight:"290px"}}>
+            Continue
+          </Link></center>
+        </div>
         </div>
       </div>
 
@@ -231,6 +242,7 @@ Restructure your credit card debt with a more favorable interest rate to acceler
           ></div>
         </div>
       </section>
+
     </div>
     </>
 };
