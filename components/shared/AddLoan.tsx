@@ -1,14 +1,12 @@
 import { REQUESTS_GET_LINK } from "@/utils/constants";
 import { useRef, useState } from "react";
 const durations = ["6 Months", "1 Year", "1 Year 6 Months", "2 Years"];
-const statuses = ["Granted", "Rejected"];
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
 import { useTheme } from "next-themes";
 import { fetchHandler } from "@/utils/utils";
 import Modal from "./Modal";
 import Dropdown from "./Dropdown";
-fetchHandler;
 const AddLoan = ({
   toggleOpen,
   open,
@@ -17,7 +15,6 @@ const AddLoan = ({
   open: boolean;
 }) => {
   const [duration, setDuration] = useState(durations[0]);
-  const [status, setStatus] = useState(statuses[0]);
   const amount = useRef<HTMLInputElement>(null);
   const minInterest = useRef(null);
   const maxInterest = useRef(null);
@@ -38,7 +35,7 @@ const AddLoan = ({
       amount: parseInt(amount.current.value),
       min_interest: parseInt(minInterest.current.value),
       max_interest: parseInt(maxInterest.current.value),
-      status: status,
+      status: "In Process",
       min_return_duration: dur[duration],
       max_return_duration: dur[duration],
       description: desc.current.value,
@@ -65,15 +62,18 @@ const AddLoan = ({
         });
       })
       .catch((error) => {
-        return toast.error(`There was an error adding a request. Error: ${error}`, {
-          position: "bottom-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          theme: theme,
-        });
+        return toast.error(
+          `There was an error adding a request. Error: ${error}`,
+          {
+            position: "bottom-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            theme: theme,
+          }
+        );
       });
   }
 
@@ -144,26 +144,11 @@ const AddLoan = ({
             </label>
             <textarea
               className="w-full  bg-secondary1/5 dark:bg-bg3 border border-n30 dark:border-n500 rounded-3xl px-6 py-2.5 md:py-3"
-              placeholder="Enter a desc. for the proposal"
+              placeholder="Enter a desc. for the loan request"
               id="desc"
               minLength={2}
               required
               ref={desc}
-            />
-          </div>
-          <div className="col-span-2">
-            <label
-              htmlFor="status"
-              className="md:text-lg font-medium block mb-4"
-            >
-              Select Status
-            </label>
-            <Dropdown
-              items={statuses}
-              setSelected={setStatus}
-              selected={status}
-              btnClass="rounded-[32px] bg-primary/5 dark:bg-bg3 md:py-3 md:px-5 text-primary"
-              contentClass="w-full"
             />
           </div>
           <div className="col-span-2 mt-4">

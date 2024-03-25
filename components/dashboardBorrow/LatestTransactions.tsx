@@ -12,6 +12,7 @@ import { fetchHandler } from "@/utils/utils";
 enum TransactionStatus {
   Granted = "Granted",
   Rejected = "Rejected",
+  Process = "In Process"
 }
 
 type LoanRequests = {

@@ -15,8 +15,8 @@ export const sidebarDataLender = [
         name: "My Proposals",
         icon: <i className="las la-file-invoice"></i>,
         submenus: [
-          { title: "Proposal Dashboard", url: "/proposals" },
-          { title: "New Proposal", url: "/proposals/new" },
+          { title: "Proposal Dashboard", url: "/main/proposals" },
+          { title: "New Proposal", url: "/main/proposals/new" },
         ],
       },
       {

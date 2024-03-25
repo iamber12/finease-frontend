@@ -3,7 +3,6 @@ import Modal from "@/components/shared/Modal";
 import { PROPOSAL_POST_LINK } from "@/utils/constants";
 import { useRef, useState } from "react";
 const durations = ["6 Months", "1 Year", "1 Year 6 Months", "2 Years"];
-const statuses = ["Available", "Unavailable"];
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
 import { useTheme } from "next-themes";
@@ -17,7 +16,6 @@ const AddProposal = ({
   open: boolean;
 }) => {
   const [duration, setDuration] = useState(durations[0]);
-  const [status, setStatus] = useState(statuses[0]);
   const minAmount = useRef<HTMLInputElement>(null);
   const maxAmount = useRef(null);
   const minInterest = useRef(null);
@@ -40,7 +38,7 @@ const AddProposal = ({
       amount_end: parseInt(maxAmount.current.value),
       min_interest: parseInt(minInterest.current.value),
       max_interest: parseInt(maxInterest.current.value),
-      status: status,
+      status: "In Process",
       min_return_duration: dur[duration],
       max_return_duration: dur[duration],
       description: desc.current.value,
@@ -164,21 +162,6 @@ const AddProposal = ({
               minLength={2}
               required
               ref={desc}
-            />
-          </div>
-          <div className="col-span-2">
-            <label
-              htmlFor="status"
-              className="md:text-lg font-medium block mb-4"
-            >
-              Select Status
-            </label>
-            <Dropdown
-              items={statuses}
-              setSelected={setStatus}
-              selected={status}
-              btnClass="rounded-[32px] bg-primary/5 dark:bg-bg3 md:py-3 md:px-5 text-primary"
-              contentClass="w-full"
             />
           </div>
           <div className="col-span-2 mt-4">
