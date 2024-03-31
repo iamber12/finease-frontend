@@ -22,6 +22,7 @@ export const sidebarDataLender = [
       {
         id: 3,
         name: "Transactions",
+        url: "/main/transactions",
         icon: <i className="las la-exchange-alt"></i>,
         submenus: [],
       },
@@ -81,6 +82,7 @@ export const sidebarDataBorrower = [
       {
         id: 3,
         name: "Transactions",
+        url: "/main/transactions",
         icon: <i className="las la-exchange-alt"></i>,
         submenus: [],
       },

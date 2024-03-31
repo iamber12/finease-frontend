@@ -6,6 +6,7 @@ import { ReactNode } from "react";
 type dropdownProps = {
   items: string[];
   selected?: string;
+  sortFn?: (item:string) => void;
   setSelected: (item: string) => void;
   btnClass?: string;
   contentClass?: string;
@@ -13,6 +14,7 @@ type dropdownProps = {
 };
 const Dropdown = ({
   items,
+  sortFn,
   selected = "Select Option",
   setSelected,
   btnClass,
@@ -49,6 +51,7 @@ const Dropdown = ({
             onClick={() => {
               setSelected(item);
               toggleOpen();
+              if (sortFn) sortFn(item);
             }}
             key={item}
             className={`px-4 py-2 cursor-pointer text-sm rounded-md duration-300 ${
