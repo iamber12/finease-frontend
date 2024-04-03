@@ -1,14 +1,13 @@
-import Dropdown from "@/components/shared/Dropdown";
-import Modal from "@/components/shared/Modal";
-import { PROPOSAL_POST_LINK } from "@/utils/constants";
+import { PROPOSAL_POST_LINK, REQUESTS_GET_LINK } from "@/utils/constants";
 import { useRef, useState } from "react";
 const durations = ["6 Months", "1 Year", "1 Year 6 Months", "2 Years"];
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
 import { useTheme } from "next-themes";
 import { fetchHandler } from "@/utils/utils";
-
-const AddProposal = ({
+import Modal from "./Modal";
+import Dropdown from "./Dropdown";
+const AddLoan = ({
   toggleOpen,
   open,
 }: {
@@ -16,8 +15,7 @@ const AddProposal = ({
   open: boolean;
 }) => {
   const [duration, setDuration] = useState(durations[0]);
-  const minAmount = useRef<HTMLInputElement>(null);
-  const maxAmount = useRef(null);
+  const amount = useRef<HTMLInputElement>(null);
   const minInterest = useRef(null);
   const maxInterest = useRef(null);
   const desc = useRef(null);
@@ -34,8 +32,7 @@ const AddProposal = ({
     };
 
     const js = {
-      amount_start: parseInt(minAmount.current.value),
-      amount_end: parseInt(maxAmount.current.value),
+      amount: parseInt(amount.current.value),
       min_interest: parseInt(minInterest.current.value),
       max_interest: parseInt(maxInterest.current.value),
       status: "In Process",
@@ -65,48 +62,38 @@ const AddProposal = ({
         });
       })
       .catch((error) => {
-        return toast.error(`There was an error registering. Error: ${error}`, {
-          position: "bottom-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          theme: theme,
-        });
+        return toast.error(
+          `There was an error adding a request. Error: ${error}`,
+          {
+            position: "bottom-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            theme: theme,
+          }
+        );
       });
   }
 
   return (
     <Modal open={open} toggleOpen={toggleOpen} height="min-h-[1200px]">
       <div className="flex justify-between items-center mb-4 pb-4 bb-dashed lg:mb-6 lg:pb-6">
-        <h4 className="h4">Create A Loan Request</h4>
+        <h4 className="h4">Create A New Loan Reqeust</h4>
       </div>
       <form>
         <div className="mt-6 xl:mt-8 grid grid-cols-2 gap-4 xxxl:gap-6">
-          <div className="col-span-2 md:col-span-1">
+          <div className="col-span-2">
             <label htmlFor="rate" className="md:text-lg font-medium block mb-4">
-              Min. Lending Amount
+              Borrowing Amount
             </label>
             <input
               type="number"
               className="w-full  bg-secondary1/5 dark:bg-bg3 border border-n30 dark:border-n500 rounded-3xl px-6 py-2.5 md:py-3"
-              placeholder="Min Amount"
+              placeholder="Amount"
               id="rate"
-              ref={minAmount}
-              required
-            />
-          </div>
-          <div className="col-span-2 md:col-span-1">
-            <label htmlFor="rate" className="md:text-lg font-medium block mb-4">
-              Max. Lending Amount
-            </label>
-            <input
-              type="number"
-              className="w-full  bg-secondary1/5 dark:bg-bg3 border border-n30 dark:border-n500 rounded-3xl px-6 py-2.5 md:py-3"
-              placeholder="Max Amount"
-              id="rate"
-              ref={maxAmount}
+              ref={amount}
               required
             />
           </div>
@@ -157,7 +144,7 @@ const AddProposal = ({
             </label>
             <textarea
               className="w-full  bg-secondary1/5 dark:bg-bg3 border border-n30 dark:border-n500 rounded-3xl px-6 py-2.5 md:py-3"
-              placeholder="Enter a desc. for the proposal"
+              placeholder="Enter a desc. for the loan request"
               id="desc"
               minLength={2}
               required
@@ -170,7 +157,7 @@ const AddProposal = ({
               className="btn flex w-full justify-center"
               type="submit"
             >
-              Create Proposal
+              Create Request
             </button>
           </div>
         </div>
@@ -179,4 +166,4 @@ const AddProposal = ({
   );
 };
 
-export default AddProposal;
+export default AddLoan;
