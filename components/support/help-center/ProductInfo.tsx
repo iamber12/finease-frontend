@@ -1,4 +1,3 @@
-import OptionsHorizontal from "@/components/shared/OptionsHorizontal";
 import Link from "next/link";
 const productInfoData = [
   {
