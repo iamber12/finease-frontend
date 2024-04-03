@@ -2,7 +2,6 @@
 import cn from "@/utils/cn";
 import useDropdown from "@/utils/useDropdown";
 import AddProposal from "./AddProposal";
-import AddLoan from "./AddLoan";
 type BannerProps = {
   title?: string;
   className?: string;
@@ -31,7 +30,7 @@ const Banner = ({
           {buttTitle}
         </button>
       </div>
-      <AddLoan open={open} toggleOpen={toggleOpen} />
+      <AddProposal open={open} toggleOpen={toggleOpen} />
     </>
   );
 };

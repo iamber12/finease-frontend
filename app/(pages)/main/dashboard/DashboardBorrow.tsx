@@ -3,7 +3,7 @@ import IncomeExpences from "@/components/dashboardBorrow/IncomeExpences";
 import LatestTransactions from "@/components/dashboardBorrow/LatestTransactions";
 import TransactionAccount from "@/components/dashboardBorrow/TransactionAccount";
 import Statistics from "@/components/dashboardBorrow/Statistics";
-import Banner from "@/components/shared/Banner";
+import BannerLoan from "@/components/shared/BannerLoan";
 import useDropdown from "@/utils/useDropdown";
 
 type Props = {};
@@ -14,7 +14,7 @@ const DashboardBorrow = (props: Props) => {
     <div>
       <div className="flex justify-between flex-wrap items-center gap-4 mb-6 xl:mb-8">
         <div></div>
-        <Banner
+        <BannerLoan
           open={open}
           toggleOpen={toggleOpen}
           title=""

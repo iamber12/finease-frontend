@@ -5,7 +5,7 @@ import Link from "next/link";
 import { toast } from "react-toastify";
 import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
-import { PROPOSAL_GET_LINK } from "@/utils/constants";
+import { PROPOSAL_GET_LINK,PROPOSAL_POST_LINK } from "@/utils/constants";
 import { fetchHandler } from "@/utils/utils";
 import Action from "./Action";
 enum TransactionStatus {
@@ -44,7 +44,7 @@ const LatestTransactions = ({ open }: { open: boolean }) => {
   };
 
   const onDelete = (id: string) => {
-    fetchHandler(`${PROPOSAL_GET_LINK}${id}`, "DELETE", null)
+    fetchHandler(`${PROPOSAL_POST_LINK}${id}`, "DELETE", null)
       .then((res) => {
         toggleRefresh();
       })

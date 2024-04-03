@@ -3,7 +3,7 @@ import IncomeExpences from "@/components/dashboardLender/IncomeExpences";
 import LatestTransactions from "@/components/dashboardLender/LatestTransactions";
 import TransactionAccount from "@/components/dashboardLender/TransactionAccount";
 import Statistics from "@/components/dashboardLender/Statistics";
-import Banner from "@/components/shared/Banner";
+import BannerProposal from "@/components/shared/BannerProposal";
 import useDropdown from "@/utils/useDropdown";
 
 type Props = {};
@@ -14,7 +14,7 @@ const DashboardLender = (props: Props) => {
     <div>
       <div className="flex justify-between flex-wrap items-center gap-4 mb-6 xl:mb-8">
         <div></div>
-        <Banner
+        <BannerProposal
           open={open}
           buttTitle="Quick Proposal"
           toggleOpen={toggleOpen}
