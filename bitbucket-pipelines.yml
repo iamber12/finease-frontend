@@ -3,12 +3,6 @@ image: node:latest
 pipelines:
   default:
     - step:
-        caches:
-          - node
-        script:
-          - npm install
-          - npm run build
-    - step:
         name : Deploy
         deployment: test
 
