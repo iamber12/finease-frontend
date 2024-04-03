@@ -5,7 +5,7 @@ import Link from "next/link";
 import { toast } from "react-toastify";
 import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
-import { PROPOSALWITHREQUEST } from "@/utils/constants";
+import { PROPOSAL_GET_LINK, REQUESTS_UNDER_PROPOSAL } from "@/utils/constants";
 import { fetchHandler } from "@/utils/utils";
 import Action from "@/components/dashboardLender/Action";
 enum TransactionStatus {
@@ -14,7 +14,7 @@ enum TransactionStatus {
 }
 
 type ProposalWRequest = {
-  proposal_uuid: string;
+  uuid: string;
   amount: number;
   min_interest: number;
   max_interest: number;
@@ -31,6 +31,10 @@ type SortDataFunction = (col: keyof Transaction) => void;
 const options = ["Recent", "Name", "Amount"];
 const LatestTransactions = ({ open }: { open: boolean }) => {
   const [forceRefresh, setForceRefresh] = useState(false);
+  const [requestsForProp, setRequestsForProp] = useState(null);
+
+
+  console.log(requestsForProp);
 
   const toggleRefresh = () => {
     setForceRefresh((prev) => !prev);
@@ -40,6 +44,50 @@ const LatestTransactions = ({ open }: { open: boolean }) => {
     47340288: "1 Year 6 Months",
     31560192: "1 Year",
     60403008: "2 Years",
+  };
+
+  const onDelete = (id: string) => {
+    fetchHandler(`${PROPOSAL_GET_LINK}${id}`, "DELETE", null)
+      .then((res) => {
+        toggleRefresh();
+      })
+      .catch((err) => {
+        return toast.error(
+          `There was an error deleting proposal. Error: ${err}`,
+          {
+            position: "bottom-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            theme: theme,
+          }
+        );
+      });
+  };
+
+  const getRequests = (prop_id: string) => {
+    fetchHandler(
+      `${REQUESTS_UNDER_PROPOSAL}?loan_proposal_uuid=${prop_id}`,
+      "GET",
+      null
+    )
+      .then((res) => setRequestsForProp({ [prop_id]: [...res.payload.loan_requests] }))
+      .catch(function (error) {
+        return toast.error(
+          `There was an error fetching proposals. Error: ${error}`,
+          {
+            position: "bottom-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            theme: theme,
+          }
+        );
+      });
   };
 
   const { theme } = useTheme();
@@ -79,9 +127,12 @@ const LatestTransactions = ({ open }: { open: boolean }) => {
   };
 
   useEffect(() => {
-    fetchHandler(PROPOSALWITHREQUEST, "GET", null)
+    fetchHandler(PROPOSAL_GET_LINK, "GET", null)
       .then((res) => {
         setTableData(res.payload.loan_proposals);
+        res.payload.loan_proposals.forEach((ele) => {
+          getRequests(ele.uuid);
+        });
       })
       .catch(function (error) {
         return toast.error(
@@ -129,11 +180,19 @@ const LatestTransactions = ({ open }: { open: boolean }) => {
                 </div>
               </th>
               <th
+                onClick={() => sortData("amount_start")}
+                className="text-start py-5 min-w-[120px] cursor-pointer"
+              >
+                <div className="flex items-center gap-1">
+                  Min Amt. <IconSelector size={18} />
+                </div>
+              </th>
+              <th
                 onClick={() => sortData("amount_end")}
                 className="text-start py-5 min-w-[120px] cursor-pointer"
               >
                 <div className="flex items-center gap-1">
-                  Amount <IconSelector size={18} />
+                  Max Amt. <IconSelector size={18} />
                 </div>
               </th>
               <th
@@ -176,6 +235,14 @@ const LatestTransactions = ({ open }: { open: boolean }) => {
                   Status <IconSelector size={18} />
                 </div>
               </th>
+              <th
+                onClick={() => sortData("status")}
+                className="text-start py-5 cursor-pointer"
+              >
+                <div className="flex items-center gap-1">
+                  Requests <IconSelector size={18} />
+                </div>
+              </th>
               <th className="text-start py-5 min-w-[120px] cursor-pointer">
                 <div className="flex items-center gap-1">Action</div>
               </th>
@@ -195,7 +262,8 @@ const LatestTransactions = ({ open }: { open: boolean }) => {
                     </div>
                   </div>
                 </td>
-                <td className="py-2">${ele.amount}</td>
+                <td className="py-2">${ele.amount_start}</td>
+                <td className="py-2">${ele.amount_end}</td>
                 <td className="py-2">{ele.min_interest}%</td>
                 <td className="py-2">{ele.max_interest}%</td>
                 <td className="py-2">{dur[ele.min_return_duration]}</td>
@@ -212,6 +280,21 @@ const LatestTransactions = ({ open }: { open: boolean }) => {
                   >
                     {ele.status}
                   </span>
+                </td>
+                <td className="py-2 text-center">{requestsForProp?.[ele.uuid].length}</td>
+                <td className="py-2">
+                  <div className="flex justify-center">
+                    <Action
+                      onDelete={() => {
+                        onDelete(ele.uuid);
+                      }}
+                      onEdit={() => {}}
+                      fromBottom={
+                        index == tableData.length - 1 ||
+                        index == tableData.length - 2
+                      }
+                    />
+                  </div>
                 </td>
               </tr>
             ))}
