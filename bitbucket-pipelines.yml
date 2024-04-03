@@ -1,11 +1,10 @@
 image: node:latest
 
 pipelines:
-  branches:
-    release/SIT:
-      - step:
-          caches:
-            - node
-          script:
-            - npm install
-            - npm run build
+  default:
+    - step:
+        caches:
+          - node
+        script:
+          - npm install
+          - npm run build
