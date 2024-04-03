@@ -15,7 +15,7 @@ export const sidebarDataLender = [
         name: "Explore Requests",
         icon: <i className="las la-home"></i>,
         submenus: [],
-        url: "/main/explore_requests",
+        url: "/main/explore/requests",
       },
       {
         id: 2,
