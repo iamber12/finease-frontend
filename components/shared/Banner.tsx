@@ -6,16 +6,16 @@ import AddLoan from "./AddLoan";
 type BannerProps = {
   title?: string;
   className?: string;
-  open: boolean;
-  toggleOpen: () => void;
+  open?: boolean;
+  toggleOpen?: () => void;
   buttTitle?: string;
 };
 const Banner = ({
   title = "Dashboard",
   className,
-  open,
+  open = false,
   buttTitle = "",
-  toggleOpen,
+  toggleOpen = () => {},
 }: BannerProps) => {
   return (
     <>
