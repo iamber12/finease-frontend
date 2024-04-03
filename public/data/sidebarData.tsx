@@ -11,6 +11,13 @@ export const sidebarDataLender = [
         url: "/main/dashboard",
       },
       {
+        id: 1.5,
+        name: "Explore Requests",
+        icon: <i className="las la-home"></i>,
+        submenus: [],
+        url: "/main/explore_requests",
+      },
+      {
         id: 2,
         name: "My Proposals",
         icon: <i className="las la-file-invoice"></i>,
