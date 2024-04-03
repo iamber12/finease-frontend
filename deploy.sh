@@ -4,4 +4,4 @@ git reset --hard HEAD~0
 git pull
 npm run build
 sudo systemctl daemon-reload
-sudo systemctl start finease-backend.service
+sudo systemctl start finease-frontend.service
