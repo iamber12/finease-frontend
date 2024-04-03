@@ -77,6 +77,13 @@ export const sidebarDataBorrower = [
         url: "/main/dashboard",
       },
       {
+        id: 1.5,
+        name: "Explore Proposals",
+        icon: <i className="las la-home"></i>,
+        submenus: [],
+        url: "/main/explore/proposals",
+      },
+      {
         id: 2,
         name: "My Requests",
         icon: <i className="las la-file-invoice"></i>,
