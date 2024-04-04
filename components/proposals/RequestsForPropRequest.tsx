@@ -29,7 +29,7 @@ type Order = "ASC" | "DSC";
 
 type SortDataFunction = (col: keyof Deposit) => void;
 
-const RecentPayments = ({ propData }) => {
+const RecentPayments = ({ propData,toggleOpen }) => {
   const [tableData, setTableData] = useState([]);
   const [userData, setUserData] = useState({});
   const [order, setOrder] = useState<Order>("ASC");
@@ -75,7 +75,7 @@ const RecentPayments = ({ propData }) => {
       loan_prop_uuid: loan_prop_uuid,
       borrower_uuid: borrower_uuid,
       lender_uuid: getCurrUser.uuid,
-      payer_type: getCurrUser.type,
+      payer_type: getCurrUser.primary_role.toLowerCase(),
     });
     const result = await stripe.redirectToCheckout({
       sessionId: checkoutSession.data.id,
@@ -93,6 +93,7 @@ const RecentPayments = ({ propData }) => {
         "PUT",
         null
       );
+      toggleOpen();
     } catch (error) {}
   };
 

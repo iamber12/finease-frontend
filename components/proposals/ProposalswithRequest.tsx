@@ -171,21 +171,22 @@ const LatestTransactions = () => {
           }
         );
       });
-  }, []);
+  }, [open]);
 
   useEffect(() => {
     if (success_stripe && success_stripe == "true") {
       if (req_uuid && loan_prop_uuid && borrower_uuid && lender_uuid) {
         fetchHandler(`${REQUESTS_CONTROL}${req_uuid}/accept`, "PUT", null)
           .then((res) => {
+            const date = new Date().toJSON();
             fetchHandler(TRANSACTIONS_POST, "POST", {
               loan_proposal_uuid: loan_prop_uuid,
               loan_request_uuid: req_uuid,
               borrower_uuid: borrower_uuid,
               lender_uuid: lender_uuid,
               payer_type: payer_type,
-              amount: amount,
-              date_offered: new Date.now(),
+              amount: parseFloat(amount),
+              date_offered: date,
             })
               .then((res) => {
                 Swal.fire({
@@ -194,9 +195,13 @@ const LatestTransactions = () => {
                   icon: "success",
                 });
               })
-              .catch((err) => {});
+              .catch((err) => {
+                console.error(err);
+              });
           })
-          .catch((err) => {});
+          .catch((err) => {
+            console.error(err);
+          });
       }
     }
 
