@@ -9,9 +9,8 @@ import { useState, useEffect } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import axios from "axios";
 enum TransactionStatus {
-  active = "Active",
-  paused = "Paused",
-  cancelled = "Cancelled",
+  Accepted = "accepted",
+  Rejected = "rejected",
 }
 
 type Deposit = {
@@ -192,9 +191,7 @@ const RecentPayments = ({ propData }) => {
                 onClick={() => sortData("status")}
                 className="text-start py-5 cursor-pointer"
               >
-                <div className="flex items-center gap-1">
-                  Action <IconSelector size={18} />
-                </div>
+                <div className="flex items-center gap-1"></div>
               </th>
             </tr>
           </thead>
@@ -227,29 +224,46 @@ const RecentPayments = ({ propData }) => {
                   <span>{ele.max_interest}</span>
                 </td>
                 <td className="py-5">{ele.min_interest}</td>
-                <td className="py-5 flex gap-2">
-                  <button
-                    onClick={async () => {
-                      await AcceptHandler(
-                        userData?.[ele.user_uuid]?.name,
-                        ele.amount,
-                        ele.description,
-                        ele.uuid
-                      );
-                    }}
-                    className="btn bg-primary px-4 py-2"
-                  >
-                    Accept
-                  </button>
-                  <button
-                    onClick={async () => {
-                      await RejectHandler(ele.uuid);
-                    }}
-                    className="btn bg-transparent px-4 py-2"
-                  >
-                    Reject
-                  </button>
-                </td>
+
+                {Object.hasOwn(ele, "status") ? (
+                  <td className="py-5 flex gap-2">
+                    <span
+                      className={`block text-xs w-28 xxl:w-36 text-center rounded-[30px] dark:border-n500 border border-n30 py-2 ${
+                        ele.status === TransactionStatus.Accepted &&
+                        "bg-primary/10 dark:bg-bg3 text-primary"
+                      } ${
+                        ele.status === TransactionStatus.Rejected &&
+                        "bg-secondary2/10 dark:bg-bg3 text-secondary2"
+                      }`}
+                    >
+                      {ele.status}
+                    </span>
+                  </td>
+                ) : (
+                  <td className="py-5 flex gap-2">
+                    <button
+                      onClick={async () => {
+                        await AcceptHandler(
+                          userData?.[ele.user_uuid]?.name,
+                          ele.amount,
+                          ele.description,
+                          ele.uuid
+                        );
+                      }}
+                      className="btn bg-primary px-4 py-2"
+                    >
+                      Accept
+                    </button>
+                    <button
+                      onClick={async () => {
+                        await RejectHandler(ele.uuid);
+                      }}
+                      className="btn bg-transparent px-4 py-2"
+                    >
+                      Reject
+                    </button>
+                  </td>
+                )}
               </tr>
             ))}
           </tbody>
