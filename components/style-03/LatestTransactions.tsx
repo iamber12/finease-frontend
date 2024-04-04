@@ -7,7 +7,7 @@ import { IconSelector } from "@tabler/icons-react";
 import Image from "next/image";
 import Visa from "@/public/images/visa.png";
 import { useState, useEffect } from "react";
-import DetailsModal from "./DetailsModal";
+import DetailsModal from "@/components/transactions/DetailsModal";
 import { fetchHandler, getRandomInt } from "@/utils/utils";
 import { toast } from "react-toastify";
 import { TRANSACTIONS_POST, USER_DATA } from "@/utils/constants";
