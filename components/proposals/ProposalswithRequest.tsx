@@ -359,18 +359,6 @@ const LatestTransactions = () => {
           </div>
         )}
       </div>
-      {tableData.length > 0 && (
-        <div className="flex items-center gap-1">
-          <div className="mt-6">Showing top 10 entries. Click to</div>
-          <Link
-            className="text-primary font-semibold inline-flex gap-1 items-center mt-6 group"
-            href="#"
-          >
-            See More{" "}
-            <i className="las la-arrow-right group-hover:pl-2 duration-300"></i>
-          </Link>
-        </div>
-      )}
     </div>
   );
 };

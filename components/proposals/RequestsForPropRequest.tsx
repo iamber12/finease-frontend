@@ -215,7 +215,7 @@ const RecentPayments = ({ propData }) => {
                   <span>{ele.max_interest}</span>
                 </td>
                 <td className="py-5">{ele.min_interest}</td>
-                <td className="py-5">
+                <td className="py-5 flex gap-2">
                   <button
                     onClick={async () => {
                       await AcceptHandler(
@@ -224,11 +224,11 @@ const RecentPayments = ({ propData }) => {
                         ele.description
                       );
                     }}
-                    className="btn bg-primary"
+                    className="btn bg-primary px-4 py-2"
                   >
                     Accept
                   </button>
-                  <button className="btn bg-transparent">Reject</button>
+                  <button className="btn bg-transparent px-4 py-2">Reject</button>
                 </td>
               </tr>
             ))}

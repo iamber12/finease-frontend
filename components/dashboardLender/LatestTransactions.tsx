@@ -282,7 +282,7 @@ const LatestTransactions = ({ open }: { open: boolean }) => {
           <div className="mt-6">Showing top 10 entries. Click to</div>
           <Link
             className="text-primary font-semibold inline-flex gap-1 items-center mt-6 group"
-            href="#"
+            href="/main/proposals"
           >
             See More{" "}
             <i className="las la-arrow-right group-hover:pl-2 duration-300"></i>
