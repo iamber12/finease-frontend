@@ -7,8 +7,11 @@ import useDropdown from "@/utils/useDropdown";
 import usePagination from "@/utils/usePagination";
 import { IconSelector } from "@tabler/icons-react";
 import Image from "next/image";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import DetailsModal from "./DetailsModal";
+import { fetchHandler } from "@/utils/utils";
+import { toast } from "react-toastify";
+import { TRANSACTIONS_POST } from "@/utils/constants";
 enum TransactionStatus {
   Successful = "Successful",
   Pending = "Pending",
@@ -546,7 +549,34 @@ const LatestTransactions = () => {
     totalPages,
   } = usePagination(tableData.length, itemsPerPage);
 
+  const [forceRefresh, setForceRefresh] = useState(false);
+
+  const toggleRefresh = () => {
+    setForceRefresh((prev) => !prev);
+  };
+
   const displayedData = tableData.slice(startIndex, endIndex + 1);
+
+  useEffect(() => {
+    fetchHandler(TRANSACTIONS_POST, "GET", null)
+      .then((res) => {
+        setTableData(res.payload.transactions);
+      })
+      .catch(function (error) {
+        return toast.error(
+          `There was an error fetching proposals. Error: ${error}`,
+          {
+            position: "bottom-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            theme: "dark",
+          }
+        );
+      });
+  }, [open, forceRefresh]);
 
   const sortData: SortDataFunction = (col) => {
     if (order == "ASC") {
@@ -639,7 +669,8 @@ const LatestTransactions = () => {
               </th>
               <th
                 onClick={() => sortData("title")}
-                className="text-start py-5 px-6 min-w-[310px] cursor-pointer">
+                className="text-start py-5 px-6 min-w-[310px] cursor-pointer"
+              >
                 <div className="flex items-center gap-1">
                   Title <IconSelector size={18} />
                 </div>
@@ -647,21 +678,24 @@ const LatestTransactions = () => {
               <th className="text-start py-5 min-w-[100px]">Invoice</th>
               <th
                 onClick={() => sortData("type")}
-                className="text-start py-5 min-w-[100px] cursor-pointer">
+                className="text-start py-5 min-w-[100px] cursor-pointer"
+              >
                 <div className="flex items-center gap-1">
                   Type <IconSelector size={18} />
                 </div>
               </th>
               <th
                 onClick={() => sortData("amount")}
-                className="text-start py-5 min-w-[130px] cursor-pointer">
+                className="text-start py-5 min-w-[130px] cursor-pointer"
+              >
                 <div className="flex items-center gap-1">
                   Transaction <IconSelector size={18} />
                 </div>
               </th>
               <th
                 onClick={() => sortData("status")}
-                className="text-start py-5 cursor-pointer">
+                className="text-start py-5 cursor-pointer"
+              >
                 <div className="flex items-center gap-1">
                   Status <IconSelector size={18} />
                 </div>
@@ -724,7 +758,8 @@ const LatestTransactions = () => {
                       } ${
                         status == TransactionStatus.Pending &&
                         "bg-secondary3/10 dark:bg-bg3 text-secondary3"
-                      }`}>
+                      }`}
+                    >
                       {status}
                     </span>
                   </td>
