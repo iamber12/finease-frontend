@@ -24,13 +24,13 @@ export const PROPOSAL_POST_LINK = "http://18.226.186.2:8000/v1/loan/proposals/";
 export const PROPOSAL_GET_LINK = "http://18.226.186.2:8000/v1/loan/proposals/available";
 export const PROPOSALWITHREQUEST = "http://18.226.186.2:8000/v1/loan/proposals/my";
 
-export const REQUESTS_GET_LINK = "http://18.226.186.2:8000/v1/loan/requests/available";
+export const REQUESTS_GET_LINK = "http://18.226.186.2:8000/v1/loan/requests/requested";
 export const REQUESTS_DELETE_LINK = "http://18.226.186.2:8000/v1/loan/requests/";
 export const REQUESTS_POST_LINK = "http://18.226.186.2:8000/v1/loan/requests/";
 export const REQUESTS_UNDER_PROPOSAL = "http://18.226.186.2:8000/v1/loan/requests/received";
 
 
-export const REQUESTS_CONTROL = "http://18.226.186.2:8000/v1/loan/requests/request/";
+export const REQUESTS_CONTROL = "http://18.226.186.2:8000/v1/loan/requests/request/";  //accept reject requests from lender side
 
 
 export const USER_DATA = "http://18.226.186.2:8000/v1/user/";
