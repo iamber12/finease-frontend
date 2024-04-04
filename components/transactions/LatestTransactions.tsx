@@ -2,16 +2,17 @@
 import Dropdown from "@/components/shared/Dropdown";
 import Pagination from "@/components/shared/Pagination";
 import SearchBar from "@/components/shared/SearchBar";
-import Action from "@/components/transactions/Action";
 import useDropdown from "@/utils/useDropdown";
 import usePagination from "@/utils/usePagination";
 import { IconSelector } from "@tabler/icons-react";
 import Image from "next/image";
-import { useState,useEffect } from "react";
+import Visa from "@/public/images/visa.png";
+import { useState, useEffect } from "react";
 import DetailsModal from "./DetailsModal";
-import { fetchHandler } from "@/utils/utils";
+import { fetchHandler, getRandomInt } from "@/utils/utils";
 import { toast } from "react-toastify";
 import { TRANSACTIONS_POST } from "@/utils/constants";
+import { useAuth } from "../auth/UserContext";
 enum TransactionStatus {
   Successful = "Successful",
   Pending = "Pending",
@@ -534,10 +535,11 @@ export const latestTransactions = [
 ];
 const options = ["time", "title", "amount"];
 const LatestTransactions = () => {
-  const [tableData, setTableData] = useState<Transaction[]>(latestTransactions);
+  const [tableData, setTableData] = useState<Transaction[]>([]);
   const [order, setOrder] = useState<Order>("ASC");
   const [selected, setSelected] = useState(options[0]);
   const { open, toggleOpen } = useDropdown();
+  const { currentUser } = useAuth();
   const itemsPerPage = 15;
   const {
     currentPage,
@@ -672,7 +674,7 @@ const LatestTransactions = () => {
                 className="text-start py-5 px-6 min-w-[310px] cursor-pointer"
               >
                 <div className="flex items-center gap-1">
-                  Title <IconSelector size={18} />
+                  Payment <IconSelector size={18} />
                 </div>
               </th>
               <th className="text-start py-5 min-w-[100px]">Invoice</th>
@@ -692,15 +694,6 @@ const LatestTransactions = () => {
                   Transaction <IconSelector size={18} />
                 </div>
               </th>
-              <th
-                onClick={() => sortData("status")}
-                className="text-start py-5 cursor-pointer"
-              >
-                <div className="flex items-center gap-1">
-                  Status <IconSelector size={18} />
-                </div>
-              </th>
-              <th className="text-center p-5 ">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -711,7 +704,7 @@ const LatestTransactions = () => {
                   title,
                   amount,
                   icon,
-                  type,
+                  payer_type,
                   time,
                   invoice,
                   status,
@@ -732,7 +725,7 @@ const LatestTransactions = () => {
                   <td className="py-2 px-6">
                     <div className="flex items-center gap-3">
                       <Image
-                        src={icon}
+                        src={Visa}
                         width={32}
                         height={32}
                         className="rounded-full"
@@ -744,37 +737,13 @@ const LatestTransactions = () => {
                       </div>
                     </div>
                   </td>
-                  <td className="py-2">{invoice}</td>
-                  <td className="py-2">{type}</td>
+                  <td className="py-2">#{getRandomInt(1000000,9999999)}</td>
+                  <td className="py-2">
+                    {currentUser.primary_role.toLowerCase() === payer_type
+                      ? "Debit"
+                      : "Credit"}
+                  </td>
                   <td className="py-2">${amount.toLocaleString()}</td>
-                  <td className="py-2">
-                    <span
-                      className={`block text-xs w-28 xxl:w-36 text-center rounded-[30px] dark:border-n500 border border-n30 py-2 ${
-                        status === TransactionStatus.Successful &&
-                        "bg-primary/10 dark:bg-bg3 text-primary"
-                      } ${
-                        status === TransactionStatus.Cancelled &&
-                        "bg-secondary2/10 dark:bg-bg3 text-secondary2"
-                      } ${
-                        status == TransactionStatus.Pending &&
-                        "bg-secondary3/10 dark:bg-bg3 text-secondary3"
-                      }`}
-                    >
-                      {status}
-                    </span>
-                  </td>
-                  <td className="py-2">
-                    <div className="flex justify-center">
-                      <Action
-                        onDelete={() => onDelete(title)}
-                        showDetails={toggleOpen}
-                        fromBottom={
-                          index == displayedData.length - 1 ||
-                          index == displayedData.length - 2
-                        }
-                      />
-                    </div>
-                  </td>
                 </tr>
               )
             )}
