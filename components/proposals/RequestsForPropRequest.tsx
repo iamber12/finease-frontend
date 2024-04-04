@@ -63,6 +63,7 @@ const RecentPayments = ({ propData,toggleOpen }) => {
     const stripePromise = loadStripe(publishableKey);
     const stripe = await stripePromise;
     const getCurrUser = await getUser();
+    console.log(getCurrUser);
     const checkoutSession = await axios.post("/api", {
       item: {
         name: "Paying to : " + name,

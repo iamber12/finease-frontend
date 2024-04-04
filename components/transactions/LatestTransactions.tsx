@@ -181,12 +181,14 @@ const LatestTransactions = () => {
               </th>
               <th
                 onClick={() => sortData("title")}
-                className="text-start py-5 px-6 min-w-[310px] cursor-pointer"
+                className="text-start py-5 px-6 min-w-[50px] cursor-pointer"
               >
                 <div className="flex items-center gap-1">
                   Borrower <IconSelector size={18} />
                 </div>
               </th>
+              <th className="text-start py-5 min-w-[100px]">Proposal</th>
+              <th className="text-start py-5 min-w-[100px]">Request</th>
               <th className="text-start py-5 min-w-[100px]">Invoice</th>
               <th
                 onClick={() => sortData("type")}
@@ -243,10 +245,22 @@ const LatestTransactions = () => {
                         alt="payment type icon"
                       />
                       <div className="flex flex-col">
-                        <p className="font-type mb-1">{userData?.[borrower_uuid]?.name}</p>
+                        <p className="font-type mb-1">
+                          {userData?.[borrower_uuid]?.name}
+                        </p>
                         <span className="text-xs">{date_offered}</span>
                       </div>
                     </div>
+                  </td>
+                  <td className="py-2">
+                    <button className="btn btn-secondary text-xs px-4 py-2">
+                      Proposal
+                    </button>
+                  </td>
+                  <td className="py-2">
+                    <button className="btn btn-secondary text-xs px-4 py-2">
+                      Request
+                    </button>
                   </td>
                   <td className="py-2">#{getRandomInt(1000000, 9999999)}</td>
                   <td className="py-2">

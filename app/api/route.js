@@ -6,8 +6,25 @@ const stripe = require("stripe")(
 
 export async function POST(request) {
   let url = request.url.replace("api", "");
-  const { item, req_uuid, loan_prop_uuid, borrower_uuid, lender_uuid,payer_type } =
-    await request.json();
+  const {
+    item,
+    req_uuid,
+    loan_prop_uuid,
+    borrower_uuid,
+    lender_uuid,
+    payer_type,
+  } = await request.json();
+
+  console.log(
+    item,
+    req_uuid,
+    loan_prop_uuid,
+    borrower_uuid,
+    lender_uuid,
+    payer_type
+  );
+  const amt = item.price > 999999.99 ? 999999.98 : item.price;
+
   const transformedItem = {
     price_data: {
       currency: "usd",
@@ -16,9 +33,9 @@ export async function POST(request) {
         name: item.name,
         description: item.description,
       },
-      unit_amount: item.price * 100,
+      unit_amount: amt * 100,
     },
-    quantity: item.quantity,
+    quantity: 1,
   };
 
   try {
@@ -27,15 +44,13 @@ export async function POST(request) {
       line_items: [transformedItem],
       mode: "payment",
       payment_method_types: ["card"],
-      success_url: `${url}/main/proposals?success=true&req_uuid=${req_uuid}&loan_prop_uuid=${loan_prop_uuid}&borrower_uuid=${borrower_uuid}&lender_uuid=${lender_uuid}&payer_type=${payer_type}&amount=${item.price}`,
-      cancel_url: `${url}/main/proposals?canceled=true&req_uuid=${req_uuid}&loan_prop_uuid=${loan_prop_uuid}&borrower_uuid=${borrower_uuid}&lender_uuid=${lender_uuid}&payer_type=${payer_type}&amount=${item.price}`,
+      success_url: `${url}/main/proposals?success=true&req_uuid=${req_uuid}&loan_prop_uuid=${loan_prop_uuid}&borrower_uuid=${borrower_uuid}&lender_uuid=${lender_uuid}&payer_type=${payer_type}&amount=${amt}`,
+      cancel_url: `${url}/main/proposals?canceled=true&req_uuid=${req_uuid}&loan_prop_uuid=${loan_prop_uuid}&borrower_uuid=${borrower_uuid}&lender_uuid=${lender_uuid}&payer_type=${payer_type}&amount=${amt}`,
     });
 
     return NextResponse.json({ id: session.id });
   } catch (err) {
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
-    );
+    console.log(err);
+    return NextResponse.json({ error: err }, { status: 500 });
   }
 }
