@@ -1,7 +1,9 @@
 "use client";
 import Dropdown from "@/components/shared/Dropdown";
 import Pagination from "@/components/shared/Pagination";
+import { USER_DATA } from "@/utils/constants";
 import usePagination from "@/utils/usePagination";
+import { fetchHandler } from "@/utils/utils";
 import { IconSelector } from "@tabler/icons-react";
 import { useState, useEffect } from "react";
 enum TransactionStatus {
@@ -27,6 +29,7 @@ type SortDataFunction = (col: keyof Deposit) => void;
 const options = ["Recent", "Name", "Amount"];
 const RecentPayments = ({ propData }) => {
   const [tableData, setTableData] = useState([]);
+  const [userData, setUserData] = useState({});
   const [order, setOrder] = useState<Order>("ASC");
   const itemsPerPage = 8;
   const {
@@ -75,8 +78,26 @@ const RecentPayments = ({ propData }) => {
     }
   };
 
+  const getUserData = (user_uuid: string) => {
+    fetchHandler(`${USER_DATA}${user_uuid}`, "GET", null)
+      .then((res) => {
+        setUserData((prevData) => {
+          let val = { ...prevData, [user_uuid]: res.payload.user };
+          return val;
+        });
+      })
+      .catch((err) => {});
+  };
+
   useEffect(() => {
-    setTableData(propData);
+    if (propData.length) {
+      setTableData(propData);
+      propData.forEach((user) => {
+        if (Object.hasOwn(user, "user_uuid")) {
+          getUserData(user.user_uuid);
+        }
+      });
+    }
   }, [propData]);
 
   return (
@@ -88,6 +109,14 @@ const RecentPayments = ({ propData }) => {
         <table className="w-full whitespace-nowrap">
           <thead>
             <tr className="bg-secondary1/5 dark:bg-bg3">
+              <th
+                onClick={() => sortData("title")}
+                className="text-start py-5 px-6 cursor-pointer min-w-[250px]"
+              >
+                <div className="flex items-center gap-1">
+                  User <IconSelector size={18} />
+                </div>
+              </th>
               <th
                 onClick={() => sortData("title")}
                 className="text-start py-5 px-6 cursor-pointer min-w-[250px]"
@@ -120,6 +149,14 @@ const RecentPayments = ({ propData }) => {
                   Min Interest <IconSelector size={18} />
                 </div>
               </th>
+              <th
+                onClick={() => sortData("status")}
+                className="text-start py-5 cursor-pointer"
+              >
+                <div className="flex items-center gap-1">
+                  Action <IconSelector size={18} />
+                </div>
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -130,9 +167,19 @@ const RecentPayments = ({ propData }) => {
               >
                 <td className="py-5 px-6">
                   <div className="flex items-center gap-3">
-                    <i className="las la-file text-primary"></i>
-                    <span className="font-medium">{ele.description}</span>
+                    <i className="las la-user text-primary"></i>
+                    <div className="flex flex-col items-start">
+                      <span className="font-medium">
+                        {userData?.[ele.user_uuid]?.name}
+                      </span>
+                      <span className="text-sm">
+                        {userData?.[ele.user_uuid]?.email}
+                      </span>
+                    </div>
                   </div>
+                </td>
+                <td className="py-5">
+                  <p className="text-medium">{ele.description}</p>
                 </td>
                 <td className="py-5">
                   <p className="font-medium">{ele.amount}</p>
@@ -141,6 +188,14 @@ const RecentPayments = ({ propData }) => {
                   <span>{ele.max_interest}</span>
                 </td>
                 <td className="py-5">{ele.min_interest}</td>
+                <td className="py-5">
+                  <button className="btn bg-primary">
+                    Accept
+                  </button>
+                  <button className="btn bg-transparent">
+                    Reject
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>

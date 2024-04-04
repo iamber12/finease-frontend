@@ -30,3 +30,4 @@ export const REQUESTS_POST_LINK = "http://18.226.186.2:8000/v1/loan/requests/";
 export const REQUESTS_UNDER_PROPOSAL = "http://18.226.186.2:8000/v1/loan/requests/received";
 
 
+export const USER_DATA = "http://18.226.186.2:8000/v1/user/";

@@ -23,7 +23,6 @@ const AddLoan = ({
   const maxInterest = useRef(null);
   const desc = useRef(null);
   const { theme } = useTheme();
-console.log(propData);
   async function handleSubmit(e: React.MouseEvent) {
     e.preventDefault();
 
@@ -81,7 +80,7 @@ console.log(propData);
   }
 
   return (
-    <Modal open={open} toggleOpen={toggleOpen} height="min-h-[1200px]" width="min-w-[1200px]">
+    <Modal open={open} toggleOpen={toggleOpen} height="min-h-[1200px]" width="min-w-[1500px]">
       <RequestsForPropRequest propData={propData}/>
     </Modal>
   );
