@@ -1,4 +1,4 @@
-import { PROPOSAL_POST_LINK, REQUESTS_GET_LINK } from "@/utils/constants";
+import { PROPOSAL_POST_LINK } from "@/utils/constants";
 import { useRef, useState } from "react";
 const durations = ["6 Months", "1 Year", "1 Year 6 Months", "2 Years"];
 import Swal from "sweetalert2";
