@@ -8,6 +8,7 @@ import { IconSelector } from "@tabler/icons-react";
 import { useState, useEffect } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import axios from "axios";
+import Loading from "@/app/loading";
 enum TransactionStatus {
   Accepted = "accepted",
   Rejected = "rejected",
@@ -31,6 +32,7 @@ const RecentPayments = ({ propData }) => {
   const [tableData, setTableData] = useState([]);
   const [userData, setUserData] = useState({});
   const [order, setOrder] = useState<Order>("ASC");
+  const [loading, setLoading] = useState(false);
   const itemsPerPage = 8;
   const {
     currentPage,
@@ -50,6 +52,7 @@ const RecentPayments = ({ propData }) => {
     description: string,
     req_uuid: string
   ) => {
+    setLoading(true);
     const publishableKey =
       "pk_test_51P1GVmRu5bi6eCdLTKJqtLUT8kl23lKNtXgRPZWMArIttwBQiedFpUDchJqsDdCcXf61SAYCLfwxPSzUoJ5XqZWx00TIPZtS0E";
     const stripePromise = loadStripe(publishableKey);
@@ -67,6 +70,7 @@ const RecentPayments = ({ propData }) => {
     const result = await stripe.redirectToCheckout({
       sessionId: checkoutSession.data.id,
     });
+    setLoading(true);
     if (result.error) {
       alert(result.error.message);
     }
@@ -239,6 +243,8 @@ const RecentPayments = ({ propData }) => {
                       {ele.status}
                     </span>
                   </td>
+                ) : loading ? (
+                  <Loading />
                 ) : (
                   <td className="py-5 flex gap-2">
                     <button
