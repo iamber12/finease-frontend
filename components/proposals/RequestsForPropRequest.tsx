@@ -9,6 +9,7 @@ import { useState, useEffect } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import axios from "axios";
 import Loading from "@/app/loading";
+import { useAuth } from "../auth/UserContext";
 enum TransactionStatus {
   Accepted = "accepted",
   Rejected = "rejected",
@@ -33,6 +34,8 @@ const RecentPayments = ({ propData }) => {
   const [userData, setUserData] = useState({});
   const [order, setOrder] = useState<Order>("ASC");
   const [loading, setLoading] = useState(false);
+  const { getUser } = useAuth();
+
   const itemsPerPage = 8;
   const {
     currentPage,
@@ -50,13 +53,16 @@ const RecentPayments = ({ propData }) => {
     name: string,
     amount: string,
     description: string,
-    req_uuid: string
+    req_uuid: string,
+    loan_prop_uuid: string,
+    borrower_uuid: string,
   ) => {
     setLoading(true);
     const publishableKey =
       "pk_test_51P1GVmRu5bi6eCdLTKJqtLUT8kl23lKNtXgRPZWMArIttwBQiedFpUDchJqsDdCcXf61SAYCLfwxPSzUoJ5XqZWx00TIPZtS0E";
     const stripePromise = loadStripe(publishableKey);
     const stripe = await stripePromise;
+    const getCurrUser = await getUser();
     const checkoutSession = await axios.post("/api", {
       item: {
         name: "Paying to : " + name,
@@ -66,6 +72,10 @@ const RecentPayments = ({ propData }) => {
         price: amount,
       },
       req_uuid: req_uuid,
+      loan_prop_uuid: loan_prop_uuid,
+      borrower_uuid: borrower_uuid,
+      lender_uuid: getCurrUser.uuid,
+      payer_type: getCurrUser.type,
     });
     const result = await stripe.redirectToCheckout({
       sessionId: checkoutSession.data.id,
@@ -161,7 +171,7 @@ const RecentPayments = ({ propData }) => {
               </th>
               <th
                 onClick={() => sortData("title")}
-                className="text-start py-5 px-6 cursor-pointer min-w-[250px]"
+                className="text-start py-5 px-6 cursor-pointer"
               >
                 <div className="flex items-center gap-1">
                   Description <IconSelector size={18} />
@@ -228,8 +238,7 @@ const RecentPayments = ({ propData }) => {
                   <span>{ele.max_interest}</span>
                 </td>
                 <td className="py-5">{ele.min_interest}</td>
-
-                {Object.hasOwn(ele, "status") ? (
+                {ele.status.length ? (
                   <td className="py-5 flex gap-2">
                     <span
                       className={`block text-xs w-28 xxl:w-36 text-center rounded-[30px] dark:border-n500 border border-n30 py-2 ${
@@ -253,7 +262,7 @@ const RecentPayments = ({ propData }) => {
                           userData?.[ele.user_uuid]?.name,
                           ele.amount,
                           ele.description,
-                          ele.uuid
+                          ele.uuid,ele.proposal_uuid,ele.user_uuid,
                         );
                       }}
                       className="btn bg-primary px-4 py-2"
