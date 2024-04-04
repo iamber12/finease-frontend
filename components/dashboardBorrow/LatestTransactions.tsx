@@ -28,7 +28,7 @@ type Order = "ASC" | "DSC";
 type SortDataFunction = (col: keyof Transaction) => void;
 
 const options = ["Recent", "Name", "Amount"];
-const LatestTransactions = ({ open }: { open: boolean }) => {
+const LatestTransactions = ({ open,limitRows }: { open: boolean,limitRows:boolean }) => {
   const [forceRefresh, setForceRefresh] = useState(false);
 
   const toggleRefresh = () => {
@@ -192,7 +192,7 @@ const LatestTransactions = ({ open }: { open: boolean }) => {
             </tr>
           </thead>
           <tbody>
-            {tableData.slice(0, 10).map((ele, index) => (
+            {tableData.slice(0, 5).map((ele, index) => (
               <tr
                 key={ele.description}
                 className="even:bg-secondary1/5 dark:even:bg-bg3"
@@ -258,7 +258,7 @@ const LatestTransactions = ({ open }: { open: boolean }) => {
           </div>
         )}
       </div>
-      {tableData.length > 0 && (
+      {limitRows && tableData.length > 0 && (
         <div className="flex items-center gap-1">
           <div className="mt-6">Showing top 10 entries. Click to</div>
           <Link
