@@ -5,9 +5,9 @@ const stripe = require("stripe")(
 );
 
 export async function POST(request) {
-  let url = request.url.replace("api","")
-  const { item,req_uuid } = await request.json();
-
+  let url = request.url.replace("api", "");
+  const { item, req_uuid, loan_prop_uuid, borrower_uuid, lender_uuid,payer_type } =
+    await request.json();
   const transformedItem = {
     price_data: {
       currency: "usd",
@@ -27,8 +27,8 @@ export async function POST(request) {
       line_items: [transformedItem],
       mode: "payment",
       payment_method_types: ["card"],
-      success_url: `${url}/main/proposals?success=true&req_uuid=${req_uuid}`,
-      cancel_url: `${url}/main/proposals?canceled=true&req_uuid=${req_uuid}`,
+      success_url: `${url}/main/proposals?success=true&req_uuid=${req_uuid}&loan_prop_uuid=${loan_prop_uuid}&borrower_uuid=${borrower_uuid}&lender_uuid=${lender_uuid}&payer_type=${payer_type}&amount=${item.price}`,
+      cancel_url: `${url}/main/proposals?canceled=true&req_uuid=${req_uuid}&loan_prop_uuid=${loan_prop_uuid}&borrower_uuid=${borrower_uuid}&lender_uuid=${lender_uuid}&payer_type=${payer_type}&amount=${item.price}`,
     });
 
     return NextResponse.json({ id: session.id });

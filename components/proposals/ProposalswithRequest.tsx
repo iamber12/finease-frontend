@@ -9,6 +9,7 @@ import {
   PROPOSALWITHREQUEST,
   REQUESTS_UNDER_PROPOSAL,
   REQUESTS_CONTROL,
+  TRANSACTIONS_POST,
 } from "@/utils/constants";
 import { fetchHandler } from "@/utils/utils";
 import Action from "@/components/dashboardLender/Action";
@@ -38,13 +39,20 @@ type SortDataFunction = (col: keyof Transaction) => void;
 
 const options = ["Recent", "Name", "Amount"];
 const LatestTransactions = () => {
+  const { open, toggleOpen } = useDropdown();
   const searchParams = useSearchParams();
   const success_stripe = searchParams.get("success");
   const cancel_stripe = searchParams.get("canceled");
   const req_uuid = searchParams.get("req_uuid");
+  const loan_prop_uuid = searchParams.get("loan_prop_uuid");
+  const borrower_uuid = searchParams.get("borrower_uuid");
+  const lender_uuid = searchParams.get("lender_uuid");
+  const amount = searchParams.get("amount");
+  const payer_type = searchParams.get("payer_type");
 
   const [forceRefresh, setForceRefresh] = useState(false);
   const [requestsForProp, setRequestsForProp] = useState(null);
+  const [clicked, setClicked] = useState("");
   const toggleRefresh = () => {
     setForceRefresh((prev) => !prev);
   };
@@ -82,9 +90,13 @@ const LatestTransactions = () => {
       "GET",
       null
     )
-      .then((res) =>
-        setRequestsForProp({ [prop_id]: [...res.payload.loan_requests] })
-      )
+      .then((res) => {
+        setRequestsForProp((prev) => {
+          const x = { [prop_id]: res.payload.loan_requests };
+          const comb = { ...prev, ...x };
+          return comb;
+        });
+      })
       .catch(function (error) {
         return toast.error(
           `There was an error fetching proposals. Error: ${error}`,
@@ -102,7 +114,6 @@ const LatestTransactions = () => {
   };
 
   const { theme } = useTheme();
-  const { open, toggleOpen } = useDropdown();
 
   const [tableData, setTableData] = useState<ProposalWRequest[]>([]);
 
@@ -160,20 +171,37 @@ const LatestTransactions = () => {
           }
         );
       });
-  }, []);
+  }, [open]);
 
   useEffect(() => {
     if (success_stripe && success_stripe == "true") {
-      if (req_uuid) {
+      if (req_uuid && loan_prop_uuid && borrower_uuid && lender_uuid) {
         fetchHandler(`${REQUESTS_CONTROL}${req_uuid}/accept`, "PUT", null)
           .then((res) => {
-            Swal.fire({
-              title: "Payment Successful",
-              text: "Congratulations ! Your payment was successful.",
-              icon: "success",
-            });
+            const date = new Date().toJSON();
+            fetchHandler(TRANSACTIONS_POST, "POST", {
+              loan_proposal_uuid: loan_prop_uuid,
+              loan_request_uuid: req_uuid,
+              borrower_uuid: borrower_uuid,
+              lender_uuid: lender_uuid,
+              payer_type: payer_type,
+              amount: parseFloat(amount),
+              date_offered: date,
+            })
+              .then((res) => {
+                Swal.fire({
+                  title: "Payment Successful",
+                  text: "Congratulations ! Your payment was successful.",
+                  icon: "success",
+                });
+              })
+              .catch((err) => {
+                console.error(err);
+              });
           })
-          .catch((err) => {});
+          .catch((err) => {
+            console.error(err);
+          });
       }
     }
 
@@ -285,10 +313,14 @@ const LatestTransactions = () => {
             </tr>
           </thead>
           <tbody>
-            {tableData.slice(0, 10).map((ele, index) => (
+            {tableData.map((ele, index) => (
               <tr
-                key={ele.description}
-                className="even:bg-secondary1/5 dark:even:bg-bg3"
+                onClick={() => {
+                  setClicked(ele.uuid);
+                  toggleOpen();
+                }}
+                key={ele.uuid}
+                className="even:bg-secondary1/5 dark:even:bg-bg3 dark:hover:bg-gray cursor-pointer"
               >
                 <td onClick={toggleOpen} className="py-2 px-6">
                   <div className="flex items-center gap-3">
@@ -317,22 +349,8 @@ const LatestTransactions = () => {
                     {ele.status}
                   </span>
                 </td>
-                <td
-                  onClick={toggleOpen}
-                  className="py-2 text-center cursor-pointer"
-                >
+                <td className="py-2 text-center 0">
                   {requestsForProp?.[ele.uuid]?.length}
-                  <>
-                    <RequestsForPropModal
-                      open={open}
-                      toggleOpen={toggleOpen}
-                      propData={
-                        requestsForProp?.[ele.uuid]
-                          ? requestsForProp?.[ele.uuid]
-                          : []
-                      }
-                    />
-                  </>
                 </td>
                 <td className="py-2">
                   <div className="flex justify-center">
@@ -352,6 +370,13 @@ const LatestTransactions = () => {
             ))}
           </tbody>
         </table>
+        <RequestsForPropModal
+          open={open}
+          toggleOpen={toggleOpen}
+          propData={
+            requestsForProp?.[clicked] ? requestsForProp?.[clicked] : []
+          }
+        />
         {tableData.length < 1 && (
           <div className="text-center py-10">
             <div className="text-center mx-auto max-w-[500px] max-md:flex flex-col items-center">

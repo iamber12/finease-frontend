@@ -81,7 +81,7 @@ const AddLoan = ({
 
   return (
     <Modal open={open} toggleOpen={toggleOpen} height="min-h-[1200px]" width="min-w-[1500px]">
-      <RequestsForPropRequest propData={propData}/>
+      <RequestsForPropRequest toggleOpen={toggleOpen} propData={propData}/>
     </Modal>
   );
 };
