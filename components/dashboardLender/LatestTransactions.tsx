@@ -5,7 +5,7 @@ import Link from "next/link";
 import { toast } from "react-toastify";
 import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
-import { PROPOSAL_GET_LINK,PROPOSAL_POST_LINK } from "@/utils/constants";
+import { PROPOSALWITHREQUEST,PROPOSAL_POST_LINK } from "@/utils/constants";
 import { fetchHandler } from "@/utils/utils";
 import Action from "./Action";
 enum TransactionStatus {
@@ -101,7 +101,7 @@ const LatestTransactions = ({ open }: { open: boolean }) => {
   };
 
   useEffect(() => {
-    fetchHandler(PROPOSAL_GET_LINK, "GET", null)
+    fetchHandler(PROPOSALWITHREQUEST, "GET", null)
       .then((res) => {
         setTableData(res.payload.loan_proposals);
       })

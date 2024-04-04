@@ -5,9 +5,11 @@ import Link from "next/link";
 import { toast } from "react-toastify";
 import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
-import { PROPOSAL_GET_LINK, REQUESTS_UNDER_PROPOSAL } from "@/utils/constants";
+import { PROPOSALWITHREQUEST, REQUESTS_UNDER_PROPOSAL } from "@/utils/constants";
 import { fetchHandler } from "@/utils/utils";
 import Action from "@/components/dashboardLender/Action";
+import RequestsForPropModal from "./RequestsForPropModal";
+import useDropdown from "@/utils/useDropdown";
 enum TransactionStatus {
   Available = "Available",
   Unavailable = "Unavailable",
@@ -29,13 +31,9 @@ type Order = "ASC" | "DSC";
 type SortDataFunction = (col: keyof Transaction) => void;
 
 const options = ["Recent", "Name", "Amount"];
-const LatestTransactions = ({ open }: { open: boolean }) => {
+const LatestTransactions = () => {
   const [forceRefresh, setForceRefresh] = useState(false);
   const [requestsForProp, setRequestsForProp] = useState(null);
-
-
-  console.log(requestsForProp);
-
   const toggleRefresh = () => {
     setForceRefresh((prev) => !prev);
   };
@@ -73,7 +71,9 @@ const LatestTransactions = ({ open }: { open: boolean }) => {
       "GET",
       null
     )
-      .then((res) => setRequestsForProp({ [prop_id]: [...res.payload.loan_requests] }))
+      .then((res) =>
+        setRequestsForProp({ [prop_id]: [...res.payload.loan_requests] })
+      )
       .catch(function (error) {
         return toast.error(
           `There was an error fetching proposals. Error: ${error}`,
@@ -91,6 +91,7 @@ const LatestTransactions = ({ open }: { open: boolean }) => {
   };
 
   const { theme } = useTheme();
+  const {open,toggleOpen} = useDropdown();
 
   const [tableData, setTableData] = useState<ProposalWRequest[]>([]);
 
@@ -127,7 +128,7 @@ const LatestTransactions = ({ open }: { open: boolean }) => {
   };
 
   useEffect(() => {
-    fetchHandler(PROPOSAL_GET_LINK, "GET", null)
+    fetchHandler(PROPOSALWITHREQUEST, "GET", null)
       .then((res) => {
         setTableData(res.payload.loan_proposals);
         res.payload.loan_proposals.forEach((ele) => {
@@ -252,6 +253,7 @@ const LatestTransactions = ({ open }: { open: boolean }) => {
             {tableData.slice(0, 10).map((ele, index) => (
               <tr
                 key={ele.description}
+                onClick={toggleOpen}
                 className="even:bg-secondary1/5 dark:even:bg-bg3"
               >
                 <td className="py-2 px-6">
@@ -281,7 +283,12 @@ const LatestTransactions = ({ open }: { open: boolean }) => {
                     {ele.status}
                   </span>
                 </td>
-                <td className="py-2 text-center">{requestsForProp?.[ele.uuid].length}</td>
+                <td className="py-2 text-center cursor-pointer">
+                  {requestsForProp?.[ele.uuid]?.length}
+                  <>
+                    <RequestsForPropModal open={open} toggleOpen={toggleOpen} propData={requestsForProp?.[ele.uuid] ? requestsForProp?.[ele.uuid] : []}/>
+                  </>
+                </td>
                 <td className="py-2">
                   <div className="flex justify-center">
                     <Action
