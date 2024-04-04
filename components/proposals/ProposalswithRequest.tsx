@@ -158,7 +158,9 @@ const LatestTransactions = () => {
           }
         );
       });
+  }, []);
 
+  useEffect(() => {
     if (success_stripe && success_stripe == "true") {
       Swal.fire({
         title: "Payment Successful",
