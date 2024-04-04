@@ -11,7 +11,7 @@ import { useState, useEffect } from "react";
 import DetailsModal from "./DetailsModal";
 import { fetchHandler, getRandomInt } from "@/utils/utils";
 import { toast } from "react-toastify";
-import { TRANSACTIONS_POST } from "@/utils/constants";
+import { TRANSACTIONS_POST, USER_DATA } from "@/utils/constants";
 import { useAuth } from "../auth/UserContext";
 enum TransactionStatus {
   Successful = "Successful",
@@ -34,510 +34,12 @@ type Order = "ASC" | "DSC";
 
 type SortDataFunction = (col: keyof Transaction) => void;
 
-export const latestTransactions = [
-  {
-    id: 1,
-    title: "Hooli INV-79820",
-    icon: "/images/paypal.png",
-    time: "11 Aug, 24. 10:36 am",
-    type: "Credit",
-    invoice: "#521452",
-    status: TransactionStatus.Successful,
-    amount: 1121212,
-    isChecked: false,
-  },
-  {
-    id: 2,
-    title: "Initech INV-24792",
-    icon: "/images/paypal.png",
-    time: "11 Aug, 24. 10:36 am",
-    type: "Credit",
-    invoice: "#521452",
-    status: TransactionStatus.Cancelled,
-    amount: 8921212,
-    isChecked: false,
-  },
-  {
-    id: 3,
-    title: "Bluth Company INV-84732",
-    icon: "/images/paypal.png",
-    time: "11 Aug, 24. 10:36 am",
-    type: "Credit",
-    invoice: "#521452",
-    status: TransactionStatus.Pending,
-    amount: 2141212,
-    isChecked: false,
-  },
-
-  {
-    id: 7,
-    title: "DOGE Yearly Return Invest.",
-    icon: "/images/payoneer.png",
-    time: "11 Aug, 24. 10:36 am",
-    type: "Debit",
-    invoice: "#521452",
-    status: TransactionStatus.Cancelled,
-    amount: 782332,
-    isChecked: false,
-  },
-  {
-    id: 8,
-    title: "Globex Corporation INV-24398",
-    icon: "/images/paypal.png",
-    time: "11 Aug, 24. 10:36 am",
-    type: "Credit",
-    invoice: "#521452",
-    status: TransactionStatus.Successful,
-    amount: 8521212,
-    isChecked: false,
-  },
-  {
-    id: 9,
-    title: "Trade Corp INV-24398",
-    icon: "/images/paypal.png",
-    time: "11 Aug, 24. 10:36 am",
-    type: "Credit",
-    invoice: "#521452",
-    status: TransactionStatus.Successful,
-    amount: 8521212,
-    isChecked: false,
-  },
-  {
-    id: 10,
-    title: "Minhaz Corporation INV-24398",
-    icon: "/images/paypal.png",
-    time: "11 Aug, 24. 10:36 am",
-    type: "Credit",
-    invoice: "#521452",
-    status: TransactionStatus.Successful,
-    amount: 8521212,
-    isChecked: false,
-  },
-  {
-    id: 11,
-    title: "Hooli INV-795580",
-    icon: "/images/paypal.png",
-    time: "11 Aug, 24. 10:36 am",
-    type: "Credit",
-    invoice: "#521452",
-    status: TransactionStatus.Successful,
-    amount: 1121212,
-    isChecked: false,
-  },
-  {
-    id: 4,
-    title: "Salaries",
-    icon: "/images/paypal.png",
-    time: "11 Aug, 24. 10:36 am",
-    type: "Credit",
-    invoice: "#521452",
-    status: TransactionStatus.Successful,
-    amount: 2521212,
-    isChecked: false,
-  },
-  {
-    id: 5,
-    title: "Massive Dynamic INV-90874",
-    icon: "/images/visa.png",
-    time: "11 Aug, 24. 10:36 am",
-    type: "Credit",
-    invoice: "#521452",
-    status: TransactionStatus.Pending,
-    amount: 554100,
-    isChecked: false,
-  },
-  {
-    id: 6,
-    title: "Jack Collingwood Card reload",
-    icon: "/images/payoneer.png",
-    time: "11 Aug, 24. 10:36 am",
-    type: "Debit",
-    invoice: "#521452",
-    status: TransactionStatus.Successful,
-    amount: 1420012,
-    isChecked: false,
-  },
-  {
-    id: 12,
-    title: "Initech INV-200212",
-    icon: "/images/paypal.png",
-    time: "11 Aug, 24. 10:36 am",
-    type: "Credit",
-    invoice: "#521452",
-    status: TransactionStatus.Cancelled,
-    amount: 8921212,
-    isChecked: false,
-  },
-  {
-    id: 13,
-    title: "Bluth Company INV-84124",
-    icon: "/images/paypal.png",
-    time: "11 Aug, 24. 10:36 am",
-    type: "Credit",
-    invoice: "#521452",
-    status: TransactionStatus.Pending,
-    amount: 2141212,
-    isChecked: false,
-  },
-
-  {
-    id: 18,
-    title: "Globex Inc INV-239801",
-    icon: "/images/paypal.png",
-    time: "11 Aug, 24. 10:36 am",
-    type: "Credit",
-    invoice: "#521452",
-    status: TransactionStatus.Successful,
-    amount: 8521212,
-    isChecked: false,
-  },
-  {
-    id: 19,
-    title: "Hooli INV-000121",
-    icon: "/images/paypal.png",
-    time: "11 Aug, 24. 10:36 am",
-    type: "Credit",
-    invoice: "#521452",
-    status: TransactionStatus.Successful,
-    amount: 1121212,
-    isChecked: false,
-  },
-  {
-    id: 20,
-    title: "Maven INV-200112",
-    icon: "/images/paypal.png",
-    time: "11 Aug, 24. 10:36 am",
-    type: "Credit",
-    invoice: "#521452",
-    status: TransactionStatus.Cancelled,
-    amount: 8921212,
-    isChecked: false,
-  },
-  {
-    id: 21,
-    title: "Gravity IVM-0132",
-    icon: "/images/paypal.png",
-    time: "11 Aug, 24. 10:36 am",
-    type: "Credit",
-    invoice: "#521452",
-    status: TransactionStatus.Pending,
-    amount: 2141212,
-    isChecked: false,
-  },
-  {
-    id: 14,
-    title: "Salaries",
-    icon: "/images/paypal.png",
-    time: "11 Aug, 24. 10:36 am",
-    type: "Credit",
-    invoice: "#521452",
-    status: TransactionStatus.Successful,
-    amount: 2521212,
-    isChecked: false,
-  },
-  {
-    id: 15,
-    title: "Massive Dynamic INV-001244",
-    icon: "/images/visa.png",
-    time: "11 Aug, 24. 10:36 am",
-    type: "Credit",
-    invoice: "#521452",
-    status: TransactionStatus.Pending,
-    amount: 554100,
-    isChecked: false,
-  },
-  {
-    id: 16,
-    title: "Jack Ma Card reload",
-    icon: "/images/payoneer.png",
-    time: "11 Aug, 24. 10:36 am",
-    type: "Debit",
-    invoice: "#521452",
-    status: TransactionStatus.Successful,
-    amount: 1420012,
-    isChecked: false,
-  },
-  {
-    id: 17,
-    title: "DOGE Monthly Invest.",
-    icon: "/images/payoneer.png",
-    time: "11 Aug, 24. 10:36 am",
-    type: "Debit",
-    invoice: "#521452",
-    status: TransactionStatus.Cancelled,
-    amount: 782332,
-    isChecked: false,
-  },
-  {
-    id: 22,
-    title: "Solar Company 0124",
-    icon: "/images/paypal.png",
-    time: "11 Aug, 24. 10:36 am",
-    type: "Credit",
-    invoice: "#521452",
-    status: TransactionStatus.Successful,
-    amount: 2521212,
-    isChecked: false,
-  },
-  {
-    id: 23,
-    title: "Massive ERV-90874",
-    icon: "/images/visa.png",
-    time: "11 Aug, 24. 10:36 am",
-    type: "Credit",
-    invoice: "#521452",
-    status: TransactionStatus.Pending,
-    amount: 554100,
-    isChecked: false,
-  },
-  {
-    id: 24,
-    title: "Jack MA Card reload",
-    icon: "/images/payoneer.png",
-    time: "11 Aug, 24. 10:36 am",
-    type: "Debit",
-    invoice: "#521452",
-    status: TransactionStatus.Successful,
-    amount: 1420012,
-    isChecked: false,
-  },
-  {
-    id: 25,
-    title: "DOGE Yearly Invest 01.",
-    icon: "/images/payoneer.png",
-    time: "11 Aug, 24. 10:36 am",
-    type: "Debit",
-    invoice: "#521452",
-    status: TransactionStatus.Cancelled,
-    amount: 782332,
-    isChecked: false,
-  },
-  {
-    id: 26,
-    title: "Globex Corporation IGV-00198",
-    icon: "/images/paypal.png",
-    time: "11 Aug, 24. 10:36 am",
-    type: "Credit",
-    invoice: "#521452",
-    status: TransactionStatus.Successful,
-    amount: 8521212,
-    isChecked: false,
-  },
-  {
-    id: 27,
-    title: "Trade Corp IRU-24398",
-    icon: "/images/paypal.png",
-    time: "11 Aug, 24. 10:36 am",
-    type: "Credit",
-    invoice: "#521452",
-    status: TransactionStatus.Successful,
-    amount: 8521212,
-    isChecked: false,
-  },
-  {
-    id: 28,
-    title: "Minhaz Corporation RVV-24398",
-    icon: "/images/paypal.png",
-    time: "11 Aug, 24. 10:36 am",
-    type: "Credit",
-    invoice: "#521452",
-    status: TransactionStatus.Successful,
-    amount: 8521212,
-    isChecked: false,
-  },
-  {
-    id: 29,
-    title: "Hooli INR-732080",
-    icon: "/images/paypal.png",
-    time: "11 Aug, 24. 10:36 am",
-    type: "Credit",
-    invoice: "#521452",
-    status: TransactionStatus.Successful,
-    amount: 1121212,
-    isChecked: false,
-  },
-  {
-    id: 30,
-    title: "Initech INE-200212",
-    icon: "/images/paypal.png",
-    time: "11 Aug, 24. 10:36 am",
-    type: "Credit",
-    invoice: "#521452",
-    status: TransactionStatus.Cancelled,
-    amount: 8921212,
-    isChecked: false,
-  },
-  {
-    id: 31,
-    title: "Bluth Company ISV-84124",
-    icon: "/images/paypal.png",
-    time: "11 Aug, 24. 10:36 am",
-    type: "Credit",
-    invoice: "#521452",
-    status: TransactionStatus.Pending,
-    amount: 2141212,
-    isChecked: false,
-  },
-  {
-    id: 32,
-    title: "Salaries INR - 3423",
-    icon: "/images/paypal.png",
-    time: "11 Aug, 24. 10:36 am",
-    type: "Credit",
-    invoice: "#521452",
-    status: TransactionStatus.Successful,
-    amount: 2521212,
-    isChecked: false,
-  },
-  {
-    id: 33,
-    title: "Massive Dynamic PPV-001244",
-    icon: "/images/visa.png",
-    time: "11 Aug, 24. 10:36 am",
-    type: "Credit",
-    invoice: "#521452",
-    status: TransactionStatus.Pending,
-    amount: 554100,
-    isChecked: false,
-  },
-  {
-    id: 34,
-    title: "Jack Ma Card Renewal 23",
-    icon: "/images/payoneer.png",
-    time: "11 Aug, 24. 10:36 am",
-    type: "Debit",
-    invoice: "#521452",
-    status: TransactionStatus.Successful,
-    amount: 1420012,
-    isChecked: false,
-  },
-  {
-    id: 35,
-    title: "DOGE Monthly Invest 342",
-    icon: "/images/payoneer.png",
-    time: "11 Aug, 24. 10:36 am",
-    type: "Debit",
-    invoice: "#521452",
-    status: TransactionStatus.Cancelled,
-    amount: 782332,
-    isChecked: false,
-  },
-  {
-    id: 36,
-    title: "Globex Inc IAA-22201",
-    icon: "/images/paypal.png",
-    time: "11 Aug, 24. 10:36 am",
-    type: "Credit",
-    invoice: "#521452",
-    status: TransactionStatus.Successful,
-    amount: 8521212,
-    isChecked: false,
-  },
-  {
-    id: 37,
-    title: "Salaries IRF - 234",
-    icon: "/images/paypal.png",
-    time: "11 Aug, 24. 10:36 am",
-    type: "Credit",
-    invoice: "#521452",
-    status: TransactionStatus.Successful,
-    amount: 2521212,
-    isChecked: false,
-  },
-  {
-    id: 38,
-    title: "Massive Dynamic IFF-001244",
-    icon: "/images/visa.png",
-    time: "11 Aug, 24. 10:36 am",
-    type: "Credit",
-    invoice: "#521452",
-    status: TransactionStatus.Pending,
-    amount: 554100,
-    isChecked: false,
-  },
-  {
-    id: 39,
-    title: "Jack Ma RTR- 213",
-    icon: "/images/payoneer.png",
-    time: "11 Aug, 24. 10:36 am",
-    type: "Debit",
-    invoice: "#521452",
-    status: TransactionStatus.Successful,
-    amount: 1420012,
-    isChecked: false,
-  },
-  {
-    id: 40,
-    title: "DOGE Monthly Invest - 42F",
-    icon: "/images/payoneer.png",
-    time: "11 Aug, 24. 10:36 am",
-    type: "Debit",
-    invoice: "#521452",
-    status: TransactionStatus.Cancelled,
-    amount: 782332,
-    isChecked: false,
-  },
-  {
-    id: 41,
-    title: "Globex Inc ENV-23301",
-    icon: "/images/paypal.png",
-    time: "11 Aug, 24. 10:36 am",
-    type: "Credit",
-    invoice: "#521452",
-    status: TransactionStatus.Successful,
-    amount: 8521212,
-    isChecked: false,
-  },
-  {
-    id: 42,
-    title: "Hooli IRE-7980",
-    icon: "/images/paypal.png",
-    time: "11 Aug, 24. 10:36 am",
-    type: "Credit",
-    invoice: "#521452",
-    status: TransactionStatus.Successful,
-    amount: 1121212,
-    isChecked: false,
-  },
-  {
-    id: 43,
-    title: "Initech ENV-292",
-    icon: "/images/paypal.png",
-    time: "11 Aug, 24. 10:36 am",
-    type: "Credit",
-    invoice: "#521452",
-    status: TransactionStatus.Cancelled,
-    amount: 8921212,
-    isChecked: false,
-  },
-  {
-    id: 44,
-    title: "Bluth Company ANV-8472",
-    icon: "/images/paypal.png",
-    time: "11 Aug, 24. 10:36 am",
-    type: "Credit",
-    invoice: "#521452",
-    status: TransactionStatus.Pending,
-    amount: 2141212,
-    isChecked: false,
-  },
-  {
-    id: 45,
-    title: "Salaries Hero - 432",
-    icon: "/images/paypal.png",
-    time: "11 Aug, 24. 10:36 am",
-    type: "Credit",
-    invoice: "#521452",
-    status: TransactionStatus.Successful,
-    amount: 2521212,
-    isChecked: false,
-  },
-];
 const options = ["time", "title", "amount"];
 const LatestTransactions = () => {
   const [tableData, setTableData] = useState<Transaction[]>([]);
   const [order, setOrder] = useState<Order>("ASC");
   const [selected, setSelected] = useState(options[0]);
+  const [userData, setUserData] = useState({});
   const { open, toggleOpen } = useDropdown();
   const { currentUser } = useAuth();
   const itemsPerPage = 15;
@@ -559,10 +61,24 @@ const LatestTransactions = () => {
 
   const displayedData = tableData.slice(startIndex, endIndex + 1);
 
+  const getUserData = (user_uuid: string) => {
+    fetchHandler(`${USER_DATA}${user_uuid}`, "GET", null)
+      .then((res) => {
+        setUserData((prevData) => {
+          let val = { ...prevData, [user_uuid]: res.payload.user };
+          return val;
+        });
+      })
+      .catch((err) => {});
+  };
+
   useEffect(() => {
     fetchHandler(TRANSACTIONS_POST, "GET", null)
       .then((res) => {
         setTableData(res.payload.transactions);
+        res.payload.transactions.forEach((tran) => {
+          getUserData(tran.borrower_uuid);
+        });
       })
       .catch(function (error) {
         return toast.error(
@@ -628,18 +144,12 @@ const LatestTransactions = () => {
     const remained = tableData.filter((item) => item.title !== title);
     setTableData(remained);
   };
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const result = latestTransactions.filter((item) =>
-      item.title.toLowerCase().includes(e.target.value)
-    );
-    setTableData(result);
-  };
+
   return (
     <div className="box col-span-12 lg:col-span-6">
       <div className="flex flex-wrap gap-4  justify-between items-center bb-dashed mb-4 pb-4 lg:mb-6 lg:pb-6">
         <h4 className="h4">Latest Transaction</h4>
         <div className="flex items-center gap-4 flex-wrap grow sm:justify-end">
-          <SearchBar handleSearch={handleSearch} classes="bg-primary/5" />
           <div className="flex items-center gap-3 whitespace-nowrap">
             <span>Sort By : </span>
             <Dropdown
@@ -674,7 +184,7 @@ const LatestTransactions = () => {
                 className="text-start py-5 px-6 min-w-[310px] cursor-pointer"
               >
                 <div className="flex items-center gap-1">
-                  Payment <IconSelector size={18} />
+                  Borrower <IconSelector size={18} />
                 </div>
               </th>
               <th className="text-start py-5 min-w-[100px]">Invoice</th>
@@ -700,19 +210,20 @@ const LatestTransactions = () => {
             {displayedData.map(
               (
                 {
-                  id,
+                  uuid,
+                  borrower_uuid,
                   title,
                   amount,
-                  icon,
                   payer_type,
-                  time,
-                  invoice,
-                  status,
+                  date_offered,
                   isChecked,
                 },
                 index
               ) => (
-                <tr key={id} className="even:bg-secondary1/5 dark:even:bg-bg3">
+                <tr
+                  key={uuid}
+                  className="even:bg-secondary1/5 dark:even:bg-bg3"
+                >
                   <td className="text-start px-6">
                     <input
                       type="checkbox"
@@ -731,13 +242,13 @@ const LatestTransactions = () => {
                         className="rounded-full"
                         alt="payment type icon"
                       />
-                      <div>
-                        <p className="font-type mb-1">{title}</p>
-                        <span className="text-xs">{time}</span>
+                      <div className="flex flex-col">
+                        <p className="font-type mb-1">{userData?.[borrower_uuid]?.name}</p>
+                        <span className="text-xs">{date_offered}</span>
                       </div>
                     </div>
                   </td>
-                  <td className="py-2">#{getRandomInt(1000000,9999999)}</td>
+                  <td className="py-2">#{getRandomInt(1000000, 9999999)}</td>
                   <td className="py-2">
                     {currentUser.primary_role.toLowerCase() === payer_type
                       ? "Debit"
