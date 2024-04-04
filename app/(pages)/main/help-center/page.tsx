@@ -1,4 +1,4 @@
-import Banner from "@/components/shared/Banner";
+import Banner from "@/components/shared/BannerProposal";
 import HelpArticles from "@/components/support/help-center/HelpArticles";
 import Hero from "@/components/support/help-center/Hero";
 import ProductInfo from "@/components/support/help-center/ProductInfo";

@@ -1,4 +1,4 @@
-import Banner from "@/components/shared/Banner";
+import Banner from "@/components/shared/BannerProposal";
 import GetInTouch from "@/components/support/contact/GetInTouch";
 import Map from "@/components/support/contact/Map";
 import MoreHelp from "@/components/support/contact/MoreHelp";

@@ -1,4 +1,4 @@
-import { REQUESTS_GET_LINK } from "@/utils/constants";
+import { PROPOSAL_POST_LINK } from "@/utils/constants";
 import { useRef, useState } from "react";
 const durations = ["6 Months", "1 Year", "1 Year 6 Months", "2 Years"];
 import Swal from "sweetalert2";
@@ -41,7 +41,7 @@ const AddLoan = ({
       description: desc.current.value,
     };
 
-    fetchHandler(REQUESTS_GET_LINK, "POST", js)
+    fetchHandler(PROPOSAL_POST_LINK, "POST", js)
       .then(() => {
         Swal.fire({
           title: "Successfully Submitted",
@@ -80,7 +80,7 @@ const AddLoan = ({
   return (
     <Modal open={open} toggleOpen={toggleOpen} height="min-h-[1200px]">
       <div className="flex justify-between items-center mb-4 pb-4 bb-dashed lg:mb-6 lg:pb-6">
-        <h4 className="h4">Create A New Loan Request</h4>
+        <h4 className="h4">Create A New Loan Reqeust</h4>
       </div>
       <form>
         <div className="mt-6 xl:mt-8 grid grid-cols-2 gap-4 xxxl:gap-6">

@@ -3,8 +3,16 @@ image: node:latest
 pipelines:
   default:
     - step:
-        caches:
-          - node
         script:
-          - npm install
-          - npm run build
+          - echo ""
+
+  branches:
+    release/SIT:
+      - step:
+          name : Deploy
+          deployment: test
+          script:
+            - echo "Deployment Starting"
+            - scp -o StrictHostKeyChecking=no ./deploy.sh ubuntu@172.172.160.6:~/deploy.sh
+            - ssh -tt -o StrictHostKeyChecking=no ubuntu@172.172.160.6 "bash ~/deploy.sh"
+            - echo "Deploying finished"

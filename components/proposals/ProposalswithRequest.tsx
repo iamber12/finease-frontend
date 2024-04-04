@@ -5,18 +5,25 @@ import Link from "next/link";
 import { toast } from "react-toastify";
 import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
-import { PROPOSALWITHREQUEST,PROPOSAL_POST_LINK } from "@/utils/constants";
+import {
+  PROPOSALWITHREQUEST,
+  REQUESTS_UNDER_PROPOSAL,
+  REQUESTS_CONTROL,
+} from "@/utils/constants";
 import { fetchHandler } from "@/utils/utils";
-import Action from "./Action";
+import Action from "@/components/dashboardLender/Action";
+import RequestsForPropModal from "./RequestsForPropModal";
+import useDropdown from "@/utils/useDropdown";
+import { useSearchParams } from "next/navigation";
+import Swal from "sweetalert2";
 enum TransactionStatus {
   Available = "Available",
   Unavailable = "Unavailable",
 }
 
-type Proposal = {
+type ProposalWRequest = {
   uuid: string;
-  amount_start: number;
-  amount_end: number;
+  amount: number;
   min_interest: number;
   max_interest: number;
   min_return_duration: number;
@@ -30,9 +37,14 @@ type Order = "ASC" | "DSC";
 type SortDataFunction = (col: keyof Transaction) => void;
 
 const options = ["Recent", "Name", "Amount"];
-const LatestTransactions = ({ open }: { open: boolean }) => {
-  const [forceRefresh, setForceRefresh] = useState(false);
+const LatestTransactions = () => {
+  const searchParams = useSearchParams();
+  const success_stripe = searchParams.get("success");
+  const cancel_stripe = searchParams.get("canceled");
+  const req_uuid = searchParams.get("req_uuid");
 
+  const [forceRefresh, setForceRefresh] = useState(false);
+  const [requestsForProp, setRequestsForProp] = useState(null);
   const toggleRefresh = () => {
     setForceRefresh((prev) => !prev);
   };
@@ -44,7 +56,7 @@ const LatestTransactions = ({ open }: { open: boolean }) => {
   };
 
   const onDelete = (id: string) => {
-    fetchHandler(`${PROPOSAL_POST_LINK}${id}`, "DELETE", null)
+    fetchHandler(`${PROPOSAL_GET_LINK}${id}`, "DELETE", null)
       .then((res) => {
         toggleRefresh();
       })
@@ -64,9 +76,35 @@ const LatestTransactions = ({ open }: { open: boolean }) => {
       });
   };
 
-  const { theme } = useTheme();
+  const getRequests = (prop_id: string) => {
+    fetchHandler(
+      `${REQUESTS_UNDER_PROPOSAL}?loan_proposal_uuid=${prop_id}`,
+      "GET",
+      null
+    )
+      .then((res) =>
+        setRequestsForProp({ [prop_id]: [...res.payload.loan_requests] })
+      )
+      .catch(function (error) {
+        return toast.error(
+          `There was an error fetching proposals. Error: ${error}`,
+          {
+            position: "bottom-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            theme: theme,
+          }
+        );
+      });
+  };
 
-  const [tableData, setTableData] = useState<Proposal[]>([]);
+  const { theme } = useTheme();
+  const { open, toggleOpen } = useDropdown();
+
+  const [tableData, setTableData] = useState<ProposalWRequest[]>([]);
 
   const [order, setOrder] = useState<Order>("ASC");
   const [selected, setSelected] = useState(options[0]);
@@ -104,6 +142,9 @@ const LatestTransactions = ({ open }: { open: boolean }) => {
     fetchHandler(PROPOSALWITHREQUEST, "GET", null)
       .then((res) => {
         setTableData(res.payload.loan_proposals);
+        res.payload.loan_proposals.forEach((ele) => {
+          getRequests(ele.uuid);
+        });
       })
       .catch(function (error) {
         return toast.error(
@@ -119,12 +160,36 @@ const LatestTransactions = ({ open }: { open: boolean }) => {
           }
         );
       });
-  }, [open, forceRefresh]);
+  }, []);
+
+  useEffect(() => {
+    if (success_stripe && success_stripe == "true") {
+      if (req_uuid) {
+        fetchHandler(`${REQUESTS_CONTROL}${req_uuid}/accept`, "PUT", null)
+          .then((res) => {
+            Swal.fire({
+              title: "Payment Successful",
+              text: "Congratulations ! Your payment was successful.",
+              icon: "success",
+            });
+          })
+          .catch((err) => {});
+      }
+    }
+
+    if (cancel_stripe && cancel_stripe == "true") {
+      Swal.fire({
+        title: "Payment Failed",
+        text: "There was an error processing the payment. Please try again !!",
+        icon: "error",
+      });
+    }
+  }, []);
 
   return (
     <div className="box col-span-12 lg:col-span-6">
       <div className="flex flex-wrap gap-4  justify-between items-center bb-dashed mb-4 pb-4 lg:mb-6 lg:pb-6">
-        <h4 className="h4">Recent Proposals</h4>
+        <h4 className="h4">Proposal Dashboard</h4>
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-3 whitespace-nowrap">
             <span>Sort By : </span>
@@ -206,6 +271,14 @@ const LatestTransactions = ({ open }: { open: boolean }) => {
                   Status <IconSelector size={18} />
                 </div>
               </th>
+              <th
+                onClick={() => sortData("status")}
+                className="text-start py-5 cursor-pointer"
+              >
+                <div className="flex items-center gap-1">
+                  Requests <IconSelector size={18} />
+                </div>
+              </th>
               <th className="text-start py-5 min-w-[120px] cursor-pointer">
                 <div className="flex items-center gap-1">Action</div>
               </th>
@@ -217,7 +290,7 @@ const LatestTransactions = ({ open }: { open: boolean }) => {
                 key={ele.description}
                 className="even:bg-secondary1/5 dark:even:bg-bg3"
               >
-                <td className="py-2 px-6">
+                <td onClick={toggleOpen} className="py-2 px-6">
                   <div className="flex items-center gap-3">
                     <div>
                       <p className="font-medium mb-1">{ele.description}</p>
@@ -243,6 +316,23 @@ const LatestTransactions = ({ open }: { open: boolean }) => {
                   >
                     {ele.status}
                   </span>
+                </td>
+                <td
+                  onClick={toggleOpen}
+                  className="py-2 text-center cursor-pointer"
+                >
+                  {requestsForProp?.[ele.uuid]?.length}
+                  <>
+                    <RequestsForPropModal
+                      open={open}
+                      toggleOpen={toggleOpen}
+                      propData={
+                        requestsForProp?.[ele.uuid]
+                          ? requestsForProp?.[ele.uuid]
+                          : []
+                      }
+                    />
+                  </>
                 </td>
                 <td className="py-2">
                   <div className="flex justify-center">
@@ -277,18 +367,6 @@ const LatestTransactions = ({ open }: { open: boolean }) => {
           </div>
         )}
       </div>
-      {tableData.length > 0 && (
-        <div className="flex items-center gap-1">
-          <div className="mt-6">Showing top 10 entries. Click to</div>
-          <Link
-            className="text-primary font-semibold inline-flex gap-1 items-center mt-6 group"
-            href="/main/proposals"
-          >
-            See More{" "}
-            <i className="las la-arrow-right group-hover:pl-2 duration-300"></i>
-          </Link>
-        </div>
-      )}
     </div>
   );
 };

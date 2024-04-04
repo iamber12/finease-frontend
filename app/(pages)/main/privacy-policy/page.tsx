@@ -1,4 +1,4 @@
-import Banner from "@/components/shared/Banner";
+import Banner from "@/components/shared/BannerProposal";
 import PrivacyPolicy from "@/components/support/privacy/PrivacyPolicy";
 
 const PrivacyPolicyPage = () => {

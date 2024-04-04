@@ -3,6 +3,7 @@ import { IconDotsVertical } from "@tabler/icons-react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Swal from "sweetalert2";
+import Stripe from "@/components/stripe"
 
 const Action = ({
   fromBottom,

@@ -10,9 +10,8 @@ import Action from "./Action";
 import { fetchHandler } from "@/utils/utils";
 
 enum TransactionStatus {
-  Granted = "Granted",
-  Rejected = "Rejected",
-  Process = "In Process"
+  Accepted = "accepted",
+  Rejected = "rejected",
 }
 
 type LoanRequests = {
@@ -148,8 +147,16 @@ const LatestTransactions = ({ open }: { open: boolean }) => {
                 </div>
               </th>
               <th
+                onClick={() => sortData("description")}
+                className="text-start py-5 px-6 cursor-pointer"
+              >
+                <div className="flex items-center gap-1 text-center ">
+                  Proposal <IconSelector size={18} />
+                </div>
+              </th>
+              <th
                 onClick={() => sortData("amount")}
-                className="text-start py-5 px-6 cursor-pointer min-w-[330px]"
+                className="text-start py-5 px-6 cursor-pointer"
               >
                 <div className="flex items-center gap-1 text-center ">
                   Amount <IconSelector size={18} />
@@ -157,7 +164,7 @@ const LatestTransactions = ({ open }: { open: boolean }) => {
               </th>
               <th
                 onClick={() => sortData("min_interest")}
-                className="text-start py-5 min-w-[120px] cursor-pointer"
+                className="text-start py-5  cursor-pointer"
               >
                 <div className="flex items-center gap-1">
                   Min. Interest Rate <IconSelector size={18} />
@@ -165,15 +172,15 @@ const LatestTransactions = ({ open }: { open: boolean }) => {
               </th>
               <th
                 onClick={() => sortData("max_interest")}
-                className="text-start py-5 min-w-[120px] cursor-pointer"
+                className="text-start py-5  cursor-pointer"
               >
                 <div className="flex items-center gap-1">
                   Max. Interest Rate <IconSelector size={18} />
                 </div>
               </th>
               <th
-                onClick={() => sortData("status")}
-                className="text-start py-5 cursor-pointer"
+                onClick={() => sortData("max_interest")}
+                className="text-start py-5  cursor-pointer"
               >
                 <div className="flex items-center gap-1">
                   Status <IconSelector size={18} />
@@ -193,22 +200,31 @@ const LatestTransactions = ({ open }: { open: boolean }) => {
                 <td className="py-2 px-6">
                   <p className="font-medium mb-1">{ele.description}</p>
                 </td>
+                <td className="py-2 px-2">
+                  {Object.hasOwn(ele, "proposal_uuid") ? (
+                    <button className="btn btn-secondary text-xs px-4 py-2">
+                      Proposal
+                    </button>
+                  ) : (
+                    "-"
+                  )}
+                </td>
                 <td className="py-2 px-2">${ele.amount}</td>
                 <td className="py-2">{ele.min_interest}</td>
                 <td className="py-2">{ele.max_interest}</td>
-                <td className="py-2">
-                  <span
-                    className={`block text-xs w-28 xxl:w-36 text-center rounded-[30px] dark:border-n500 border border-n30 py-2 ${
-                      ele.status === TransactionStatus.Granted &&
-                      "bg-primary/10 dark:bg-bg3 text-primary"
-                    } ${
-                      ele.status === TransactionStatus.Rejected &&
-                      "bg-secondary2/10 dark:bg-bg3 text-secondary2"
-                    }`}
-                  >
-                    {ele.status}
-                  </span>
-                </td>
+                <td className="py-2 flex gap-2">
+                    <span
+                      className={`block text-xs w-28 xxl:w-36 text-center rounded-[30px] dark:border-n500 border border-n30 py-2 ${
+                        ele.status === TransactionStatus.Accepted &&
+                        "bg-primary/10 dark:bg-bg3 text-primary"
+                      } ${
+                        ele.status === TransactionStatus.Rejected &&
+                        "bg-secondary2/10 dark:bg-bg3 text-secondary2"
+                      }`}
+                    >
+                      {ele.status}
+                    </span>
+                  </td>
                 <td className="py-2">
                   <div className="flex justify-center">
                     <Action
