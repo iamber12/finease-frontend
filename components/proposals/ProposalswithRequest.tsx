@@ -8,6 +8,7 @@ import { useTheme } from "next-themes";
 import {
   PROPOSALWITHREQUEST,
   REQUESTS_UNDER_PROPOSAL,
+  REQUESTS_CONTROL,
 } from "@/utils/constants";
 import { fetchHandler } from "@/utils/utils";
 import Action from "@/components/dashboardLender/Action";
@@ -40,6 +41,7 @@ const LatestTransactions = () => {
   const searchParams = useSearchParams();
   const success_stripe = searchParams.get("success");
   const cancel_stripe = searchParams.get("canceled");
+  const req_uuid = searchParams.get("req_uuid");
 
   const [forceRefresh, setForceRefresh] = useState(false);
   const [requestsForProp, setRequestsForProp] = useState(null);
@@ -162,11 +164,17 @@ const LatestTransactions = () => {
 
   useEffect(() => {
     if (success_stripe && success_stripe == "true") {
-      Swal.fire({
-        title: "Payment Successful",
-        text: "Congratulations ! Your payment was successful.",
-        icon: "success",
-      });
+      if (req_uuid) {
+        fetchHandler(`${REQUESTS_CONTROL}${req_uuid}/accept`, "PUT", null)
+          .then((res) => {
+            Swal.fire({
+              title: "Payment Successful",
+              text: "Congratulations ! Your payment was successful.",
+              icon: "success",
+            });
+          })
+          .catch((err) => {});
+      }
     }
 
     if (cancel_stripe && cancel_stripe == "true") {

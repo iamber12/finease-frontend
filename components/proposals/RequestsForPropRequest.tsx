@@ -1,7 +1,7 @@
 "use client";
 import Dropdown from "@/components/shared/Dropdown";
 import Pagination from "@/components/shared/Pagination";
-import { USER_DATA } from "@/utils/constants";
+import { USER_DATA, REQUESTS_CONTROL } from "@/utils/constants";
 import usePagination from "@/utils/usePagination";
 import { fetchHandler } from "@/utils/utils";
 import { IconSelector } from "@tabler/icons-react";
@@ -71,6 +71,16 @@ const RecentPayments = ({ propData }) => {
     if (result.error) {
       alert(result.error.message);
     }
+  };
+
+  const RejectHandler = async (req_uuid: string) => {
+    try {
+      const res = await fetchHandler(
+        `${REQUESTS_CONTROL}${req_uuid}/reject`,
+        "PUT",
+        null
+      );
+    } catch (error) {}
   };
 
   const sortData: SortDataFunction = (col) => {
@@ -231,7 +241,12 @@ const RecentPayments = ({ propData }) => {
                   >
                     Accept
                   </button>
-                  <button className="btn bg-transparent px-4 py-2">
+                  <button
+                    onClick={async () => {
+                      await RejectHandler(ele.uuid);
+                    }}
+                    className="btn bg-transparent px-4 py-2"
+                  >
                     Reject
                   </button>
                 </td>
