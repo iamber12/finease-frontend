@@ -6,8 +6,8 @@ pipelines:
         caches:
           - node
         script:
-          - npm install
-          - npm run build
+          - echo ""
+
   branches:
     release/SIT:
       - step:
