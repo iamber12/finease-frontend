@@ -29,7 +29,7 @@ type Order = "ASC" | "DSC";
 
 type SortDataFunction = (col: keyof Deposit) => void;
 
-const RecentPayments = ({ propData,toggleOpen }) => {
+const RecentPayments = ({ propData, toggleOpen }) => {
   const [tableData, setTableData] = useState([]);
   const [userData, setUserData] = useState({});
   const [order, setOrder] = useState<Order>("ASC");
@@ -55,7 +55,7 @@ const RecentPayments = ({ propData,toggleOpen }) => {
     description: string,
     req_uuid: string,
     loan_prop_uuid: string,
-    borrower_uuid: string,
+    borrower_uuid: string
   ) => {
     setLoading(true);
     const publishableKey =
@@ -255,7 +255,16 @@ const RecentPayments = ({ propData,toggleOpen }) => {
                     </span>
                   </td>
                 ) : loading ? (
-                  <Loading />
+                  <td className="py-5 flex items-center justify-center">
+                    <div className="flex gap-2 items-center ">
+                      <div>Redirecting...</div>
+                      <div className="loader">
+                        <svg viewBox="25 25 50 50">
+                          <circle r="20" cy="50" cx="50"></circle>
+                        </svg>
+                      </div>
+                    </div>
+                  </td>
                 ) : (
                   <td className="py-5 flex gap-2">
                     <button
@@ -264,7 +273,9 @@ const RecentPayments = ({ propData,toggleOpen }) => {
                           userData?.[ele.user_uuid]?.name,
                           ele.amount,
                           ele.description,
-                          ele.uuid,ele.proposal_uuid,ele.user_uuid,
+                          ele.uuid,
+                          ele.proposal_uuid,
+                          ele.user_uuid
                         );
                       }}
                       className="btn bg-primary px-4 py-2"
