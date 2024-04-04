@@ -4,8 +4,9 @@ const stripe = require("stripe")(
   "sk_test_51P1GVmRu5bi6eCdLyhmgFRUtNm6gmmAB97Jiu6JvdaWNliZzsc9NedUIyxL7MhDq0GGFEsIPb4f3ZaIEElAcKGHk00BAFrdMK7"
 );
 
-export async function POST(rqeuest) {
-  const { item } = await rqeuest.json();
+export async function POST(request) {
+  let url = request.url.replace("api","")
+  const { item } = await request.json();
 
   const transformedItem = {
     price_data: {
@@ -26,14 +27,12 @@ export async function POST(rqeuest) {
       line_items: [transformedItem],
       mode: "payment",
       payment_method_types: ["card"],
-
-      success_url: `http://localhost:3000/main/dashboard?success=true`,
-      cancel_url: `http://localhost:3000/main/dashboard?canceled=true`,
+      success_url: `${url}/main/proposals?success=true`,
+      cancel_url: `${url}/main/proposals?canceled=true`,
     });
 
     return NextResponse.json({ id: session.id });
   } catch (err) {
-    console.log(err);
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500 }

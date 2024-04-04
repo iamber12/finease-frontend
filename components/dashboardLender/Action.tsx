@@ -62,7 +62,6 @@ const Action = ({
         onClick={toggleOpen}
         className="cursor-pointer w-5 h-5 lg:w-6 lg:h-6"
       />
-      <Stripe />
       <div
         className={`${
           open ? "opacity-100 scale-100 visible" : "opacity-0 invisible scale-0"

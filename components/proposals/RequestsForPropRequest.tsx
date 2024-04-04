@@ -6,6 +6,8 @@ import usePagination from "@/utils/usePagination";
 import { fetchHandler } from "@/utils/utils";
 import { IconSelector } from "@tabler/icons-react";
 import { useState, useEffect } from "react";
+import { loadStripe } from "@stripe/stripe-js";
+import axios from "axios";
 enum TransactionStatus {
   active = "Active",
   paused = "Paused",
@@ -43,6 +45,32 @@ const RecentPayments = ({ propData }) => {
   } = usePagination(tableData.length, itemsPerPage);
 
   const displayedData = tableData.slice(startIndex, endIndex + 1);
+
+  const AcceptHandler = async (
+    name: string,
+    amount: string,
+    description: string
+  ) => {
+    const publishableKey =
+      "pk_test_51P1GVmRu5bi6eCdLTKJqtLUT8kl23lKNtXgRPZWMArIttwBQiedFpUDchJqsDdCcXf61SAYCLfwxPSzUoJ5XqZWx00TIPZtS0E";
+    const stripePromise = loadStripe(publishableKey);
+    const stripe = await stripePromise;
+    const checkoutSession = await axios.post("/api", {
+      item: {
+        name: "Paying to : " + name,
+        description: "Loan Description : " + description,
+        image: "",
+        quantity: 1,
+        price: amount,
+      },
+    });
+    const result = await stripe.redirectToCheckout({
+      sessionId: checkoutSession.data.id,
+    });
+    if (result.error) {
+      alert(result.error.message);
+    }
+  };
 
   const sortData: SortDataFunction = (col) => {
     const [parentCol, childCol] = col.split(".");
@@ -189,12 +217,19 @@ const RecentPayments = ({ propData }) => {
                 </td>
                 <td className="py-5">{ele.min_interest}</td>
                 <td className="py-5">
-                  <button className="btn bg-primary">
+                  <button
+                    onClick={async () => {
+                      await AcceptHandler(
+                        userData?.[ele.user_uuid]?.name,
+                        ele.amount,
+                        ele.description
+                      );
+                    }}
+                    className="btn bg-primary"
+                  >
                     Accept
                   </button>
-                  <button className="btn bg-transparent">
-                    Reject
-                  </button>
+                  <button className="btn bg-transparent">Reject</button>
                 </td>
               </tr>
             ))}

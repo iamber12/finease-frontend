@@ -5,11 +5,15 @@ import Link from "next/link";
 import { toast } from "react-toastify";
 import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
-import { PROPOSALWITHREQUEST, REQUESTS_UNDER_PROPOSAL } from "@/utils/constants";
+import {
+  PROPOSALWITHREQUEST,
+  REQUESTS_UNDER_PROPOSAL,
+} from "@/utils/constants";
 import { fetchHandler } from "@/utils/utils";
 import Action from "@/components/dashboardLender/Action";
 import RequestsForPropModal from "./RequestsForPropModal";
 import useDropdown from "@/utils/useDropdown";
+import { useSearchParams } from "next/navigation";
 enum TransactionStatus {
   Available = "Available",
   Unavailable = "Unavailable",
@@ -32,6 +36,11 @@ type SortDataFunction = (col: keyof Transaction) => void;
 
 const options = ["Recent", "Name", "Amount"];
 const LatestTransactions = () => {
+
+  const searchParams = useSearchParams();
+  const success_stripe = searchParams.get("success");
+  const cancel_stripe = searchParams.get("canceled");
+
   const [forceRefresh, setForceRefresh] = useState(false);
   const [requestsForProp, setRequestsForProp] = useState(null);
   const toggleRefresh = () => {
@@ -91,7 +100,7 @@ const LatestTransactions = () => {
   };
 
   const { theme } = useTheme();
-  const {open,toggleOpen} = useDropdown();
+  const { open, toggleOpen } = useDropdown();
 
   const [tableData, setTableData] = useState<ProposalWRequest[]>([]);
 
@@ -150,6 +159,8 @@ const LatestTransactions = () => {
         );
       });
   }, [open, forceRefresh]);
+
+  useEffect(() => {}, [status]);
 
   return (
     <div className="box col-span-12 lg:col-span-6">
@@ -253,10 +264,10 @@ const LatestTransactions = () => {
             {tableData.slice(0, 10).map((ele, index) => (
               <tr
                 key={ele.description}
-                onClick={toggleOpen}
                 className="even:bg-secondary1/5 dark:even:bg-bg3"
               >
-                <td className="py-2 px-6">
+                
+                <td onClick={toggleOpen} className="py-2 px-6">
                   <div className="flex items-center gap-3">
                     <div>
                       <p className="font-medium mb-1">{ele.description}</p>
@@ -283,10 +294,18 @@ const LatestTransactions = () => {
                     {ele.status}
                   </span>
                 </td>
-                <td className="py-2 text-center cursor-pointer">
+                <td onClick={toggleOpen} className="py-2 text-center cursor-pointer">
                   {requestsForProp?.[ele.uuid]?.length}
                   <>
-                    <RequestsForPropModal open={open} toggleOpen={toggleOpen} propData={requestsForProp?.[ele.uuid] ? requestsForProp?.[ele.uuid] : []}/>
+                    <RequestsForPropModal
+                      open={open}
+                      toggleOpen={toggleOpen}
+                      propData={
+                        requestsForProp?.[ele.uuid]
+                          ? requestsForProp?.[ele.uuid]
+                          : []
+                      }
+                    />
                   </>
                 </td>
                 <td className="py-2">
