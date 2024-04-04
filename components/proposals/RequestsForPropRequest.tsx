@@ -28,7 +28,6 @@ type Order = "ASC" | "DSC";
 
 type SortDataFunction = (col: keyof Deposit) => void;
 
-const options = ["Recent", "Name", "Amount"];
 const RecentPayments = ({ propData }) => {
   const [tableData, setTableData] = useState([]);
   const [userData, setUserData] = useState({});

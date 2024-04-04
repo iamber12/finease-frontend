@@ -14,6 +14,7 @@ import Action from "@/components/dashboardLender/Action";
 import RequestsForPropModal from "./RequestsForPropModal";
 import useDropdown from "@/utils/useDropdown";
 import { useSearchParams } from "next/navigation";
+import Swal from "sweetalert2";
 enum TransactionStatus {
   Available = "Available",
   Unavailable = "Unavailable",
@@ -36,7 +37,6 @@ type SortDataFunction = (col: keyof Transaction) => void;
 
 const options = ["Recent", "Name", "Amount"];
 const LatestTransactions = () => {
-
   const searchParams = useSearchParams();
   const success_stripe = searchParams.get("success");
   const cancel_stripe = searchParams.get("canceled");
@@ -158,9 +158,23 @@ const LatestTransactions = () => {
           }
         );
       });
-  }, [open, forceRefresh]);
 
-  useEffect(() => {}, [status]);
+    if (success_stripe && success_stripe == "true") {
+      Swal.fire({
+        title: "Payment Successful",
+        text: "Congratulations ! Your payment was successful.",
+        icon: "success",
+      });
+    }
+
+    if (cancel_stripe && cancel_stripe == "true") {
+      Swal.fire({
+        title: "Payment Failed",
+        text: "There was an error processing the payment. Please try again !!",
+        icon: "error",
+      });
+    }
+  }, []);
 
   return (
     <div className="box col-span-12 lg:col-span-6">
@@ -266,7 +280,6 @@ const LatestTransactions = () => {
                 key={ele.description}
                 className="even:bg-secondary1/5 dark:even:bg-bg3"
               >
-                
                 <td onClick={toggleOpen} className="py-2 px-6">
                   <div className="flex items-center gap-3">
                     <div>
@@ -294,7 +307,10 @@ const LatestTransactions = () => {
                     {ele.status}
                   </span>
                 </td>
-                <td onClick={toggleOpen} className="py-2 text-center cursor-pointer">
+                <td
+                  onClick={toggleOpen}
+                  className="py-2 text-center cursor-pointer"
+                >
                   {requestsForProp?.[ele.uuid]?.length}
                   <>
                     <RequestsForPropModal
