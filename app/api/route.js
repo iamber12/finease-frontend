@@ -6,7 +6,7 @@ const stripe = require("stripe")(
 
 export async function POST(request) {
   let url = request.url.replace("api","")
-  const { item } = await request.json();
+  const { item,req_uuid } = await request.json();
 
   const transformedItem = {
     price_data: {
@@ -27,8 +27,8 @@ export async function POST(request) {
       line_items: [transformedItem],
       mode: "payment",
       payment_method_types: ["card"],
-      success_url: `${url}/main/proposals?success=true`,
-      cancel_url: `${url}/main/proposals?canceled=true`,
+      success_url: `${url}/main/proposals?success=true&req_uuid=${req_uuid}`,
+      cancel_url: `${url}/main/proposals?canceled=true&req_uuid=${req_uuid}`,
     });
 
     return NextResponse.json({ id: session.id });

@@ -48,7 +48,8 @@ const RecentPayments = ({ propData }) => {
   const AcceptHandler = async (
     name: string,
     amount: string,
-    description: string
+    description: string,
+    req_uuid: string
   ) => {
     const publishableKey =
       "pk_test_51P1GVmRu5bi6eCdLTKJqtLUT8kl23lKNtXgRPZWMArIttwBQiedFpUDchJqsDdCcXf61SAYCLfwxPSzUoJ5XqZWx00TIPZtS0E";
@@ -62,6 +63,7 @@ const RecentPayments = ({ propData }) => {
         quantity: 1,
         price: amount,
       },
+      req_uuid: req_uuid,
     });
     const result = await stripe.redirectToCheckout({
       sessionId: checkoutSession.data.id,
@@ -221,14 +223,17 @@ const RecentPayments = ({ propData }) => {
                       await AcceptHandler(
                         userData?.[ele.user_uuid]?.name,
                         ele.amount,
-                        ele.description
+                        ele.description,
+                        ele.uuid
                       );
                     }}
                     className="btn bg-primary px-4 py-2"
                   >
                     Accept
                   </button>
-                  <button className="btn bg-transparent px-4 py-2">Reject</button>
+                  <button className="btn bg-transparent px-4 py-2">
+                    Reject
+                  </button>
                 </td>
               </tr>
             ))}
