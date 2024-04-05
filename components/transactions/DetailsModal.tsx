@@ -20,7 +20,8 @@ const DetailsModal = ({ open, toggleOpen }: DetailsType) => {
       open={open}
       toggleOpen={toggleOpen}
       width="max-w-[496px]"
-      height="min-h-[980px]">
+      height="min-h-[980px]"
+    >
       <div className="bb-dashed border-secondary1/20 pb-4 mb-4 lg:mb-6 lg:pb-6">
         <h4 className="h4">Transaction Details</h4>
       </div>
@@ -43,16 +44,6 @@ const DetailsModal = ({ open, toggleOpen }: DetailsType) => {
           </li>
         ))}
       </ul>
-      <div className=" bb-dashed border-secondary1/20 pb-4 mb-4 lg:mb-6 lg:pb-6">
-        <iframe
-          src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d2141.544710579929!2d90.39140680797202!3d23.87599993653183!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sbd!4v1702184930477!5m2!1sen!2sbd"
-          width="100%"
-          height="200"
-          style={{ border: 0 }}
-          allowFullScreen={true}
-          loading="lazy"
-          referrerPolicy="no-referrer-when-downgrade"></iframe>
-      </div>
       <div className="flex justify-center gap-4 flex-wrap lg:gap-6">
         <button className="flex items-center gap-2">
           <i className="las la-download border border-n30 dark:border-n500 rounded-full bg-primary/5 p-2"></i>

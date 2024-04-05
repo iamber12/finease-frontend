@@ -36,7 +36,7 @@ const Hero = () => {
                 Welcome to FinEase, where we connect creditworthy Canadians looking for a loan with everyday Canadians looking to invest.
               </p>
               <div className="flex gap-4 justify-center lg:gap-6">
-                <Link href="#" className="btn">
+                <Link href="/borrow" className="btn">
                   Borrow
                 </Link>
                 <Link href="/invest" className="btn-outline">

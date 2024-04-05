@@ -257,7 +257,7 @@ const RecentPayments = ({ propData, toggleOpen }) => {
                 ) : loading ? (
                   <td className="py-5 flex items-center justify-center">
                     <div className="flex gap-2 items-center ">
-                      <div>Redirecting...</div>
+                      <div className="text-sm">Redirecting...</div>
                       <div className="loader">
                         <svg viewBox="25 25 50 50">
                           <circle r="20" cy="50" cx="50"></circle>

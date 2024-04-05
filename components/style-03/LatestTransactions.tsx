@@ -7,7 +7,7 @@ import { IconSelector } from "@tabler/icons-react";
 import Image from "next/image";
 import Visa from "@/public/images/visa.png";
 import { useState, useEffect } from "react";
-import DetailsModal from "./DetailsModal";
+import DetailsModal from "@/components/transactions/DetailsModal";
 import { fetchHandler, getRandomInt } from "@/utils/utils";
 import { toast } from "react-toastify";
 import { TRANSACTIONS_POST, USER_DATA } from "@/utils/constants";
@@ -37,8 +37,8 @@ const options = ["time", "title", "amount"];
 const LatestTransactions = () => {
   const [tableData, setTableData] = useState<Transaction[]>([]);
   const [order, setOrder] = useState<Order>("ASC");
+  const [selected, setSelected] = useState(options[0]);
   const [userData, setUserData] = useState({});
-  const [modalData, setModalData] = useState(null);
   const { open, toggleOpen } = useDropdown();
   const { currentUser } = useAuth();
   const itemsPerPage = 15;
@@ -139,12 +139,28 @@ const LatestTransactions = () => {
       setTableData(tempData);
     }
   };
+  const onDelete = (title: string) => {
+    const remained = tableData.filter((item) => item.title !== title);
+    setTableData(remained);
+  };
 
   return (
     <div className="box col-span-12 lg:col-span-6">
       <div className="flex flex-wrap gap-4  justify-between items-center bb-dashed mb-4 pb-4 lg:mb-6 lg:pb-6">
         <h4 className="h4">Latest Transaction</h4>
-        <div className="flex items-center gap-4 flex-wrap grow sm:justify-end"></div>
+        <div className="flex items-center gap-4 flex-wrap grow sm:justify-end">
+          <div className="flex items-center gap-3 whitespace-nowrap">
+            <span>Sort By : </span>
+            <Dropdown
+              sortFn={sortData}
+              setSelected={setSelected}
+              selected={selected}
+              items={options}
+              btnClass="rounded-[32px] lg:py-2.5"
+              contentClass="w-full"
+            />
+          </div>
+        </div>
       </div>
       <div className="overflow-x-auto mb-4 lg:mb-6">
         <table className="w-full whitespace-nowrap">
@@ -196,8 +212,6 @@ const LatestTransactions = () => {
               (
                 {
                   uuid,
-                  loan_proposal_uuid,
-                  loan_request_uuid,
                   borrower_uuid,
                   title,
                   amount,
@@ -241,34 +255,16 @@ const LatestTransactions = () => {
                     </div>
                   </td>
                   <td className="py-2">
-                    <button
-                      onClick={(e) => {
-                        setModalData({
-                          type: "prop",
-                          uuid: loan_proposal_uuid,
-                        });
-                        toggleOpen(e);
-                      }}
-                      className="btn btn-secondary text-xs px-4 py-2"
-                    >
+                    <button className="btn btn-secondary text-xs px-4 py-2">
                       Proposal
                     </button>
                   </td>
                   <td className="py-2">
-                    <button
-                      onClick={(e) => {
-                        setModalData({
-                          type: "req",
-                          uuid: loan_request_uuid,
-                        });
-                        toggleOpen(e);
-                      }}
-                      className="btn btn-secondary text-xs px-4 py-2"
-                    >
+                    <button className="btn btn-secondary text-xs px-4 py-2">
                       Request
                     </button>
                   </td>
-                  <td className="py-2">#9999999</td>
+                  <td className="py-2">#{getRandomInt(1000000, 9999999)}</td>
                   <td className="py-2">
                     {currentUser.primary_role.toLowerCase() === payer_type
                       ? "Debit"
@@ -281,7 +277,6 @@ const LatestTransactions = () => {
           </tbody>
         </table>
       </div>
-      <DetailsModal open={open} toggleOpen={toggleOpen} />
       {tableData.length < 1 && (
         <div className="text-center py-10">
           <div className="text-center mx-auto max-w-[500px] max-md:flex flex-col items-center">
