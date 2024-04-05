@@ -1,7 +1,11 @@
 "use client";
 import Dropdown from "@/components/shared/Dropdown";
 import Pagination from "@/components/shared/Pagination";
-import { USER_DATA, REQUESTS_CONTROL } from "@/utils/constants";
+import {
+  USER_DATA,
+  REQUESTS_CONTROL,
+  TRANSACTIONS_POST,
+} from "@/utils/constants";
 import usePagination from "@/utils/usePagination";
 import { fetchHandler } from "@/utils/utils";
 import { IconSelector } from "@tabler/icons-react";
@@ -29,12 +33,12 @@ type Order = "ASC" | "DSC";
 
 type SortDataFunction = (col: keyof Deposit) => void;
 
-const RecentPayments = ({ propData, toggleOpen }) => {
+const RecentPayments = ({ propData, toggleOpen, propStatus }) => {
   const [tableData, setTableData] = useState([]);
   const [userData, setUserData] = useState({});
   const [order, setOrder] = useState<Order>("ASC");
   const [loading, setLoading] = useState(false);
-  const { getUser } = useAuth();
+  const { currentUser } = useAuth();
 
   const itemsPerPage = 8;
   const {
@@ -62,8 +66,6 @@ const RecentPayments = ({ propData, toggleOpen }) => {
       "pk_test_51P1GVmRu5bi6eCdLTKJqtLUT8kl23lKNtXgRPZWMArIttwBQiedFpUDchJqsDdCcXf61SAYCLfwxPSzUoJ5XqZWx00TIPZtS0E";
     const stripePromise = loadStripe(publishableKey);
     const stripe = await stripePromise;
-    const getCurrUser = await getUser();
-    console.log(getCurrUser);
     const checkoutSession = await axios.post("/api", {
       item: {
         name: "Paying to : " + name,
@@ -75,9 +77,9 @@ const RecentPayments = ({ propData, toggleOpen }) => {
       req_uuid: req_uuid,
       loan_prop_uuid: loan_prop_uuid,
       borrower_uuid: borrower_uuid,
-      lender_uuid: getCurrUser.uuid,
-      payer_type: getCurrUser.primary_role.toLowerCase(),
-      from:"proposals"
+      lender_uuid: currentUser.uuid,
+      payer_type: currentUser.primary_role.toLowerCase(),
+      from: "proposals",
     });
     const result = await stripe.redirectToCheckout({
       sessionId: checkoutSession.data.id,
@@ -146,12 +148,37 @@ const RecentPayments = ({ propData, toggleOpen }) => {
 
   useEffect(() => {
     if (propData.length) {
-      setTableData(propData);
-      propData.forEach((user) => {
-        if (Object.hasOwn(user, "user_uuid")) {
-          getUserData(user.user_uuid);
-        }
-      });
+      async function func() {
+        const txData = await fetchHandler(TRANSACTIONS_POST, "GET", null);
+        const data = txData.payload.transactions;
+        console.log(data);
+        const finalRequestData = propData.map((req) => {
+          let temp = { ...req };
+          const d = data.filter((ele) => ele.loan_request_uuid == req.uuid);
+          if (d.length) {
+            let val = 0;
+            d.forEach((transac) => {
+              if (
+                transac.lender_uuid === currentUser.uuid &&
+                transac.payer_type !== currentUser.primary_role.toLowerCase()
+              ) {
+                val = val + transac.amount;
+              }
+            });
+            temp["amt_paid"] = val;
+            temp["amt_pending"] = req.amount - val;
+          }
+          return temp;
+        });
+
+        setTableData(finalRequestData);
+        finalRequestData.forEach((user) => {
+          if (Object.hasOwn(user, "user_uuid")) {
+            getUserData(user.user_uuid);
+          }
+        });
+      }
+      func();
     }
   }, [propData]);
 
@@ -189,21 +216,30 @@ const RecentPayments = ({ propData, toggleOpen }) => {
                 </div>
               </th>
               <th
+                onClick={() => sortData("medium")}
+                className="text-start py-5 min-w-[120px] cursor-pointer"
+              >
+                <div className="flex items-center gap-1">
+                  Amount Repaid <IconSelector size={18} />
+                </div>
+              </th>
+              <th
+                onClick={() => sortData("medium")}
+                className="text-start py-5 min-w-[120px] cursor-pointer"
+              >
+                <div className="flex items-center gap-1">
+                  Amount Pending <IconSelector size={18} />
+                </div>
+              </th>
+              <th
                 onClick={() => sortData("money")}
                 className="text-start py-5 min-w-[130px] cursor-pointer"
               >
                 <div className="flex items-center gap-1">
-                  Max Interest <IconSelector size={18} />
+                  Interest <IconSelector size={18} />
                 </div>
               </th>
-              <th
-                onClick={() => sortData("status")}
-                className="text-start py-5 cursor-pointer"
-              >
-                <div className="flex items-center gap-1">
-                  Min Interest <IconSelector size={18} />
-                </div>
-              </th>
+
               <th
                 onClick={() => sortData("status")}
                 className="text-start py-5 cursor-pointer"
@@ -238,7 +274,10 @@ const RecentPayments = ({ propData, toggleOpen }) => {
                   <p className="font-medium">{ele.amount}</p>
                 </td>
                 <td className="py-5">
-                  <span>{ele.max_interest}</span>
+                  <p className="font-medium">{ele.amt_paid}</p>
+                </td>
+                <td className="py-5">
+                  <p className="font-medium">{ele.amt_pending}</p>
                 </td>
                 <td className="py-5">{ele.min_interest}</td>
                 {ele.status.length ? (
@@ -253,6 +292,14 @@ const RecentPayments = ({ propData, toggleOpen }) => {
                       }`}
                     >
                       {ele.status}
+                    </span>
+                  </td>
+                ) : propStatus == "offered" ? (
+                  <td className="py-5 flex gap-2">
+                    <span
+                      className={`block text-xs w-28 xxl:w-36 text-center rounded-[30px] dark:border-n500 border border-n30 py-2 "bg-secondary2/10 dark:bg-bg3 text-secondary2`}
+                    >
+                      Rejected
                     </span>
                   </td>
                 ) : loading ? (
