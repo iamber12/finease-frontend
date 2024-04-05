@@ -27,8 +27,13 @@ const useDropdown = () => {
     };
   }, []); // Empty dependency array to run only once when the component mounts
 
-  const toggleOpen = () => {
-    setOpen((prevOpen) => !prevOpen);
+  const toggleOpen = (e, val?: boolean) => {
+    console.log();
+    if (val === undefined) {
+      setOpen((prevOpen) => !prevOpen);
+    } else {
+      setOpen(val);
+    }
   };
 
   return { open, toggleOpen, ref };
