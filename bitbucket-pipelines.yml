@@ -7,7 +7,7 @@ pipelines:
           - echo ""
 
   branches:
-    release/SIT:
+    SIT:
       - step:
           name : Deploy
           deployment: test
