@@ -17,7 +17,6 @@ const AddLoan = ({
   const [duration, setDuration] = useState(durations[0]);
   const amount = useRef<HTMLInputElement>(null);
   const minInterest = useRef(null);
-  const maxInterest = useRef(null);
   const desc = useRef(null);
   const { theme } = useTheme();
 
@@ -34,7 +33,7 @@ const AddLoan = ({
     const js = {
       amount: parseInt(amount.current.value),
       min_interest: parseInt(minInterest.current.value),
-      max_interest: parseInt(maxInterest.current.value),
+      max_interest: parseInt(minInterest.current.value),
       status: "In Process",
       min_return_duration: dur[duration],
       max_return_duration: dur[duration],
@@ -97,7 +96,7 @@ const AddLoan = ({
               required
             />
           </div>
-          <div className="col-span-2 md:col-span-1">
+          <div className="col-span-2">
             <label htmlFor="rate" className="md:text-lg font-medium block mb-4">
               Min. Interest Rate
             </label>
@@ -108,19 +107,6 @@ const AddLoan = ({
               id="rate"
               required
               ref={minInterest}
-            />
-          </div>
-          <div className="col-span-2 md:col-span-1">
-            <label htmlFor="rate" className="md:text-lg font-medium block mb-4">
-              Max. Interest Rate
-            </label>
-            <input
-              type="number"
-              className="w-full  bg-secondary1/5 dark:bg-bg3 border border-n30 dark:border-n500 rounded-3xl px-6 py-2.5 md:py-3"
-              placeholder="Max Interest Rate %"
-              id="rate"
-              required
-              ref={maxInterest}
             />
           </div>
           <div className="col-span-2">
