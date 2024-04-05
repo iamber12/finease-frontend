@@ -98,12 +98,12 @@ const AddLoan = ({
           </div>
           <div className="col-span-2">
             <label htmlFor="rate" className="md:text-lg font-medium block mb-4">
-              Min. Interest Rate
+              Interest Rate
             </label>
             <input
               type="number"
               className="w-full  bg-secondary1/5 dark:bg-bg3 border border-n30 dark:border-n500 rounded-3xl px-6 py-2.5 md:py-3"
-              placeholder="Min Interest Rate %"
+              placeholder="Interest Rate %"
               id="rate"
               required
               ref={minInterest}

@@ -77,6 +77,7 @@ const RecentPayments = ({ propData, toggleOpen }) => {
       borrower_uuid: borrower_uuid,
       lender_uuid: getCurrUser.uuid,
       payer_type: getCurrUser.primary_role.toLowerCase(),
+      from:"proposals"
     });
     const result = await stripe.redirectToCheckout({
       sessionId: checkoutSession.data.id,

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { toast } from "react-toastify";
 import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
-import { PROPOSAL_GET_LINK } from "@/utils/constants";
+import { PROPOSAL_GET_LINK, TRANSACTIONS_POST } from "@/utils/constants";
 import { fetchHandler } from "@/utils/utils";
 import AddLoanRequest from "./AddLoanRequest";
 import useDropdown from "@/utils/useDropdown";
@@ -234,7 +234,11 @@ const LatestTransactions = () => {
                   <button className="btn" onClick={toggleOpen}>
                     Select
                   </button>
-                  <AddLoanRequest proposalID={ele.uuid} open={open} toggleOpen={toggleOpen}/>
+                  <AddLoanRequest
+                    proposalID={ele.uuid}
+                    open={open}
+                    toggleOpen={toggleOpen}
+                  />
                 </td>
               </tr>
             ))}

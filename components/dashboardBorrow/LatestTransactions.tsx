@@ -5,9 +5,13 @@ import Link from "next/link";
 import { toast } from "react-toastify";
 import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
-import { REQUESTS_DELETE_LINK, REQUESTS_GET_LINK } from "@/utils/constants";
+import { REQUESTS_DELETE_LINK, REQUESTS_GET_LINK,TRANSACTIONS_POST } from "@/utils/constants";
 import Action from "./Action";
 import { fetchHandler } from "@/utils/utils";
+import RepayLenderModal from "./RepayLenderModal";
+import useDropdown from "@/utils/useDropdown";
+import { useSearchParams } from "next/navigation";
+import Swal from "sweetalert2";
 
 enum TransactionStatus {
   Accepted = "accepted",
@@ -28,8 +32,20 @@ type Order = "ASC" | "DSC";
 type SortDataFunction = (col: keyof Transaction) => void;
 
 const options = ["Recent", "Name", "Amount"];
-const LatestTransactions = ({ open,limitRows }: { open: boolean,limitRows:boolean }) => {
+const LatestTransactions = ({ limitRows }: { limitRows: boolean }) => {
+  const { open, toggleOpen } = useDropdown();
   const [forceRefresh, setForceRefresh] = useState(false);
+  const [modalData, setModalData] = useState({});
+
+  const searchParams = useSearchParams();
+  const success_stripe = searchParams.get("success");
+  const cancel_stripe = searchParams.get("canceled");
+  const req_uuid = searchParams.get("req_uuid");
+  const loan_prop_uuid = searchParams.get("loan_prop_uuid");
+  const borrower_uuid = searchParams.get("borrower_uuid");
+  const lender_uuid = searchParams.get("lender_uuid");
+  const amount = searchParams.get("amount");
+  const payer_type = searchParams.get("payer_type");
 
   const toggleRefresh = () => {
     setForceRefresh((prev) => !prev);
@@ -117,6 +133,43 @@ const LatestTransactions = ({ open,limitRows }: { open: boolean,limitRows:boolea
       });
   }, [open, forceRefresh]);
 
+
+  useEffect(() => {
+    if (success_stripe && success_stripe == "true") {
+      if (req_uuid && loan_prop_uuid && borrower_uuid && lender_uuid) {
+        const date = new Date().toJSON();
+        fetchHandler(TRANSACTIONS_POST, "POST", {
+          loan_proposal_uuid: loan_prop_uuid,
+          loan_request_uuid: req_uuid,
+          borrower_uuid: borrower_uuid,
+          lender_uuid: lender_uuid,
+          payer_type: payer_type,
+          amount: parseFloat(amount),
+          date_offered: date,
+        })
+          .then((res) => {
+            Swal.fire({
+              title: "Payment Successful",
+              text: "Congratulations ! Your payment was successful.",
+              icon: "success",
+            });
+          })
+          .catch((err) => {
+            console.error(err);
+          });
+      }
+    }
+
+    if (cancel_stripe && cancel_stripe == "true") {
+      Swal.fire({
+        title: "Payment Failed",
+        text: "There was an error processing the payment. Please try again !!",
+        icon: "error",
+      });
+    }
+  }, []);
+
+
   return (
     <div className="box col-span-12 lg:col-span-6">
       <div className="flex flex-wrap gap-4  justify-between items-center bb-dashed mb-4 pb-4 lg:mb-6 lg:pb-6">
@@ -187,7 +240,7 @@ const LatestTransactions = ({ open,limitRows }: { open: boolean,limitRows:boolea
                 </div>
               </th>
               <th className="text-start py-5 cursor-pointer">
-                <div className="flex items-center gap-1">Action</div>
+                <div className="flex items-center gap-1"></div>
               </th>
             </tr>
           </thead>
@@ -198,7 +251,9 @@ const LatestTransactions = ({ open,limitRows }: { open: boolean,limitRows:boolea
                 className="even:bg-secondary1/5 dark:even:bg-bg3"
               >
                 <td className="py-2 px-6">
-                  <p className="font-medium mb-1">{ele.description}</p>
+                  <p className="font-medium mb-1">
+                    {ele.description ? ele.description : "-"}
+                  </p>
                 </td>
                 <td className="py-2 px-2">
                   {Object.hasOwn(ele, "proposal_uuid") ? (
@@ -212,7 +267,10 @@ const LatestTransactions = ({ open,limitRows }: { open: boolean,limitRows:boolea
                 <td className="py-2 px-2">${ele.amount}</td>
                 <td className="py-2">{ele.min_interest}</td>
                 <td className="py-2">{ele.max_interest}</td>
-                <td className="py-2 flex gap-2">
+                {!ele.status ? (
+                  <td className="py-2">-</td>
+                ) : (
+                  <td className="py-2 flex gap-2">
                     <span
                       className={`block text-xs w-28 xxl:w-36 text-center rounded-[30px] dark:border-n500 border border-n30 py-2 ${
                         ele.status === TransactionStatus.Accepted &&
@@ -225,24 +283,44 @@ const LatestTransactions = ({ open,limitRows }: { open: boolean,limitRows:boolea
                       {ele.status}
                     </span>
                   </td>
+                )}
                 <td className="py-2">
                   <div className="flex justify-center">
-                    <Action
-                      onDelete={() => {
-                        onDelete(ele.uuid);
-                      }}
-                      onEdit={() => {}}
-                      fromBottom={
-                        index == tableData.length - 1 ||
-                        index == tableData.length - 2
-                      }
-                    />
+                    {ele.status === TransactionStatus.Accepted ? (
+                      <button
+                        onClick={(e) => {
+                          setModalData({ ...ele });
+                          toggleOpen(e);
+                        }}
+                        className="btn btn-secondary text-xs px-4 py-2"
+                      >
+                        Repay Lender
+                      </button>
+                    ) : (
+                      <Action
+                        onDelete={() => {
+                          onDelete(ele.uuid);
+                        }}
+                        onEdit={() => {}}
+                        fromBottom={
+                          index == tableData.length - 1 ||
+                          index == tableData.length - 2
+                        }
+                      />
+                    )}
                   </div>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
+
+        <RepayLenderModal
+          open={open}
+          toggleOpen={toggleOpen}
+          modalData={modalData}
+        />
+
         {tableData.length < 1 && (
           <div className="text-center py-10">
             <div className="text-center mx-auto max-w-[500px] max-md:flex flex-col items-center">

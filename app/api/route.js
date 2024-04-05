@@ -20,6 +20,7 @@ export async function POST(request) {
     borrower_uuid,
     lender_uuid,
     payer_type,
+    from
   } = await request.json();
 
   console.log(
@@ -51,8 +52,8 @@ export async function POST(request) {
       line_items: [transformedItem],
       mode: "payment",
       payment_method_types: ["card"],
-      success_url: `${url}/main/proposals?success=true&req_uuid=${req_uuid}&loan_prop_uuid=${loan_prop_uuid}&borrower_uuid=${borrower_uuid}&lender_uuid=${lender_uuid}&payer_type=${payer_type}&amount=${amt}`,
-      cancel_url: `${url}/main/proposals?canceled=true&req_uuid=${req_uuid}&loan_prop_uuid=${loan_prop_uuid}&borrower_uuid=${borrower_uuid}&lender_uuid=${lender_uuid}&payer_type=${payer_type}&amount=${amt}`,
+      success_url: `${url}/main/${from}?success=true&req_uuid=${req_uuid}&loan_prop_uuid=${loan_prop_uuid}&borrower_uuid=${borrower_uuid}&lender_uuid=${lender_uuid}&payer_type=${payer_type}&amount=${amt}`,
+      cancel_url: `${url}/main/${from}?canceled=true&req_uuid=${req_uuid}&loan_prop_uuid=${loan_prop_uuid}&borrower_uuid=${borrower_uuid}&lender_uuid=${lender_uuid}&payer_type=${payer_type}&amount=${amt}`,
     });
 
     return NextResponse.json({ id: session.id });

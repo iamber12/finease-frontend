@@ -28,7 +28,7 @@ const DashboardBorrow = (props: Props) => {
           <IncomeExpences />
         </div>
         <div className="col-span-12 md:col-span-12 lg:col-span-12 flex flex-col gap-4 xxl:gap-6">
-          <LatestTransactions limitRows open={open} />
+          <LatestTransactions limitRows/>
           <TransactionAccount />
         </div>
       </div>
