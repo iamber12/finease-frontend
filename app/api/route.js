@@ -4,8 +4,15 @@ const stripe = require("stripe")(
   "sk_test_51P1GVmRu5bi6eCdLyhmgFRUtNm6gmmAB97Jiu6JvdaWNliZzsc9NedUIyxL7MhDq0GGFEsIPb4f3ZaIEElAcKGHk00BAFrdMK7"
 );
 
+const MOCK = 0
+
 export async function POST(request) {
-  let url = request.url.replace("api", "");
+  let url;
+  if (MOCK){
+    url = "http://localhost:3000";
+  }else{
+    url = "http://172.172.160.6:3000"
+  }
   const {
     item,
     req_uuid,
@@ -13,6 +20,7 @@ export async function POST(request) {
     borrower_uuid,
     lender_uuid,
     payer_type,
+    from
   } = await request.json();
 
   console.log(
@@ -44,8 +52,8 @@ export async function POST(request) {
       line_items: [transformedItem],
       mode: "payment",
       payment_method_types: ["card"],
-      success_url: `${url}/main/proposals?success=true&req_uuid=${req_uuid}&loan_prop_uuid=${loan_prop_uuid}&borrower_uuid=${borrower_uuid}&lender_uuid=${lender_uuid}&payer_type=${payer_type}&amount=${amt}`,
-      cancel_url: `${url}/main/proposals?canceled=true&req_uuid=${req_uuid}&loan_prop_uuid=${loan_prop_uuid}&borrower_uuid=${borrower_uuid}&lender_uuid=${lender_uuid}&payer_type=${payer_type}&amount=${amt}`,
+      success_url: `${url}/main/${from}?success=true&req_uuid=${req_uuid}&loan_prop_uuid=${loan_prop_uuid}&borrower_uuid=${borrower_uuid}&lender_uuid=${lender_uuid}&payer_type=${payer_type}&amount=${amt}`,
+      cancel_url: `${url}/main/${from}?canceled=true&req_uuid=${req_uuid}&loan_prop_uuid=${loan_prop_uuid}&borrower_uuid=${borrower_uuid}&lender_uuid=${lender_uuid}&payer_type=${payer_type}&amount=${amt}`,
     });
 
     return NextResponse.json({ id: session.id });

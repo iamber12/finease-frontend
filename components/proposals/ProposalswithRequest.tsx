@@ -53,6 +53,7 @@ const LatestTransactions = () => {
   const [forceRefresh, setForceRefresh] = useState(false);
   const [requestsForProp, setRequestsForProp] = useState(null);
   const [clicked, setClicked] = useState("");
+  const [status, setStatus] = useState("");
   const toggleRefresh = () => {
     setForceRefresh((prev) => !prev);
   };
@@ -317,6 +318,7 @@ const LatestTransactions = () => {
               <tr
                 onClick={() => {
                   setClicked(ele.uuid);
+                  setStatus(ele.status)
                   toggleOpen();
                 }}
                 key={ele.uuid}
@@ -372,6 +374,7 @@ const LatestTransactions = () => {
         </table>
         <RequestsForPropModal
           open={open}
+          propStatus={status ? status : "offered"}
           toggleOpen={toggleOpen}
           propData={
             requestsForProp?.[clicked] ? requestsForProp?.[clicked] : []

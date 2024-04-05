@@ -12,10 +12,12 @@ const AddLoan = ({
   toggleOpen,
   open,
   propData,
+  propStatus
 }: {
   toggleOpen: () => void;
   open: boolean;
   propData:{}
+  propStatus:string
 }) => {
   const [duration, setDuration] = useState(durations[0]);
   const amount = useRef<HTMLInputElement>(null);
@@ -81,7 +83,7 @@ const AddLoan = ({
 
   return (
     <Modal open={open} toggleOpen={toggleOpen} height="min-h-[1200px]" width="min-w-[1500px]">
-      <RequestsForPropRequest toggleOpen={toggleOpen} propData={propData}/>
+      <RequestsForPropRequest toggleOpen={toggleOpen} propData={propData} propStatus={propStatus}/>
     </Modal>
   );
 };
