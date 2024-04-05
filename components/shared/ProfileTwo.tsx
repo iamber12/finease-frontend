@@ -65,7 +65,13 @@ const ProfileTwo = () => {
         onClick={toggleOpen}
       >
         <Image
-          src="/images/user_test3.png"
+          src={
+            user
+              ? user.primary_role === "Borrower"
+                ? "/images/user_test4.png"
+                : "/images/user_test5.png"
+              : ""
+          }
           className="rounded-full shrink-0 w-10 md:w-12"
           width={48}
           height={48}
@@ -86,7 +92,13 @@ const ProfileTwo = () => {
       >
         <div className="flex flex-col text-center items-center lg:p-4 p-3 border-b dark:border-n500">
           <Image
-            src="/images/user_test3.png"
+            src={
+              user
+                ? user.primary_role === "Borrower"
+                  ? "/images/user_test4.png"
+                  : "/images/user_test5.png"
+                : ""
+            }
             width={60}
             height={60}
             className="rounded-full"

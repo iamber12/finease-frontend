@@ -1,32 +1,87 @@
 "use client";
+import { TRANSACTIONS_POST, REQUESTS_GET_LINK } from "@/utils/constants";
+import { fetchHandler } from "@/utils/utils";
 import { ApexOptions } from "apexcharts";
 import dynamic from "next/dynamic";
+import { useState, useEffect } from "react";
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
 });
-const statisticsData = [
-  {
-    title: "Total Amount Borrowed",
-    amount: "$85000",
-    growth: "50.8%",
-  },
-  {
-    title: "Total Amount Returned",
-    amount: "$67000",
-    growth: "50.8%",
-  },
-  {
-    title: "Number of Requests",
-    amount: "25",
-    growth: "20%",
-  },
-  {
-    title: "Net Interest Paid",
-    amount: "$5223",
-    growth: "50.8%",
-  },
-];
+
 const Statistics = () => {
+  const [statisticsData, setStatisticsData] = useState([
+    {
+      title: "Total Amount Borrowed",
+      amount: "-",
+      growth: "+23%",
+    },
+    {
+      title: "Total Amount Returned",
+      amount: "-",
+      growth: "+12%",
+    },
+    {
+      title: "Number of Requests",
+      amount: "-",
+      growth: "+12%",
+    },
+    {
+      title: "Amount Pending",
+      amount: "-",
+      growth: "+100%",
+    },
+  ]);
+
+  useEffect(() => {
+    async function func() {
+      const data = await fetchHandler(
+        `${TRANSACTIONS_POST}received`,
+        "GET",
+        null
+      );
+
+      const repaidD = await fetchHandler(
+        `${TRANSACTIONS_POST}sent`,
+        "GET",
+        null
+      );
+
+      const requests = await fetchHandler(REQUESTS_GET_LINK, "GET", null);
+      const tdata = data.payload.transactions;
+      const rdata = repaidD.payload.transactions;
+      const reqdata = requests.payload.loan_requests;
+      let tb = 0;
+      let tp = 0;
+      let rb = reqdata.length;
+
+      tdata.forEach((transac) => {
+        tb = tb + transac.amount;
+      });
+
+      rdata.forEach((transac) => {
+        tp = tp + transac.amount;
+      });
+
+      let fin_data = [...statisticsData];
+
+      fin_data[0].amount = tb;
+      fin_data[1].amount = tp;
+      fin_data[2].amount = rb;
+      fin_data[3].amount = tb - tp;
+
+      
+      fin_data[0].percent = (tb/tp*100).toFixed(2);
+      fin_data[1].percent = ((tb-tp/tp*100)/1000).toFixed(2);
+      fin_data[2].percent = 23.3;
+      fin_data[3].percent = 12.3;
+
+
+      setStatisticsData([...fin_data]);
+    }
+
+    func();
+  }, []);
+
   const chartData: ApexOptions = {
     chart: {
       height: "100%",
@@ -114,7 +169,8 @@ const Statistics = () => {
       {statisticsData.map(({ title, amount, growth }) => (
         <div
           key={title}
-          className="col-span-6 sm:col-span-3 md:col-span-6 lg:col-span-3 xxl:col-span-2 max-xxl:box flex justify-between items-center overflow-x-hidden xxl:px-4 xxl:ltr:first:pl-0 xxl:last:ltr:pr-0 gap-3">
+          className="col-span-6 sm:col-span-3 md:col-span-6 lg:col-span-3 xxl:col-span-2 max-xxl:box flex justify-between items-center overflow-x-hidden xxl:px-4 xxl:ltr:first:pl-0 xxl:last:ltr:pr-0 gap-3"
+        >
           <div>
             <p className="font-medium mb-4">{title}</p>
             <div className="flex gap-2 items-center">
