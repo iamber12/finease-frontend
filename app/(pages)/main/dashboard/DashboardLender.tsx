@@ -14,14 +14,17 @@ const page = () => {
   const { open, toggleOpen } = useDropdown();
 
   return (
-    <div className="flex flex-col items-end gap-2 p-2">
-      <BannerProposal
-        open={open}
-        toggleOpen={toggleOpen}
-        title=""
-        buttTitle="Quick Loan Proposal"
-        className="mb-0 lg:mb-0"
-      />
+    <div>
+      <div className="flex justify-between flex-wrap items-center gap-4 mb-6 xl:mb-8">
+        <div></div>
+        <BannerProposal
+          open={open}
+          toggleOpen={toggleOpen}
+          title=""
+          buttTitle="Quick Loan Proposal"
+          className="mb-0 lg:mb-0"
+        />
+      </div>
       <div className="grid grid-cols-12 gap-4 xxl:gap-6">
         <Statistics />
         <TransactionOverview />

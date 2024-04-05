@@ -4,8 +4,15 @@ const stripe = require("stripe")(
   "sk_test_51P1GVmRu5bi6eCdLyhmgFRUtNm6gmmAB97Jiu6JvdaWNliZzsc9NedUIyxL7MhDq0GGFEsIPb4f3ZaIEElAcKGHk00BAFrdMK7"
 );
 
+const MOCK = 0
+
 export async function POST(request) {
-  let url = request.url.replace("api", "");
+  let url;
+  if (MOCK){
+    url = "http://localhost:3000";
+  }else{
+    url = "http://172.172.160.6:3000"
+  }
   const {
     item,
     req_uuid,
