@@ -5,13 +5,18 @@ import Link from "next/link";
 import { toast } from "react-toastify";
 import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
-import { REQUESTS_DELETE_LINK, REQUESTS_GET_LINK,TRANSACTIONS_POST } from "@/utils/constants";
+import {
+  REQUESTS_DELETE_LINK,
+  REQUESTS_GET_LINK,
+  TRANSACTIONS_POST,
+} from "@/utils/constants";
 import Action from "./Action";
 import { fetchHandler } from "@/utils/utils";
 import RepayLenderModal from "./RepayLenderModal";
 import useDropdown from "@/utils/useDropdown";
 import { useSearchParams } from "next/navigation";
 import Swal from "sweetalert2";
+import { useAuth } from "../auth/UserContext";
 
 enum TransactionStatus {
   Accepted = "accepted",
@@ -77,6 +82,7 @@ const LatestTransactions = ({ limitRows }: { limitRows: boolean }) => {
   };
 
   const { theme } = useTheme();
+  const { currentUser } = useAuth();
 
   const [tableData, setTableData] = useState<LoanRequests[]>([]);
 
@@ -114,8 +120,30 @@ const LatestTransactions = ({ limitRows }: { limitRows: boolean }) => {
 
   useEffect(() => {
     fetchHandler(REQUESTS_GET_LINK, "GET", null)
-      .then((res) => {
-        setTableData(res.payload.loan_requests);
+      .then(async (res) => {
+        const txData = await fetchHandler(TRANSACTIONS_POST, "GET", null);
+        const data = txData.payload.transactions;
+
+        const finalRequestData = res.payload.loan_requests.map((req) => {
+          let temp = { ...req };
+          const d = data.filter((ele) => ele.loan_request_uuid == req.uuid);
+          if (d.length) {
+            let val = 0;
+            d.forEach((transac) => {
+              if (
+                transac.borrower_uuid === currentUser.uuid &&
+                transac.payer_type === currentUser.primary_role.toLowerCase()
+              ) {
+                val = val + transac.amount;
+              }
+            });
+            temp["amt_paid"] = val;
+            temp["amt_pending"] = req.amount - val;
+          }
+          return temp;
+        });
+
+        setTableData(finalRequestData);
       })
       .catch(function (error) {
         return toast.error(
@@ -131,32 +159,49 @@ const LatestTransactions = ({ limitRows }: { limitRows: boolean }) => {
           }
         );
       });
-  }, [open, forceRefresh]);
-
+  }, []);
 
   useEffect(() => {
+    function throttle(func, limit) {
+      let inThrottle;
+      return function () {
+        const args = arguments;
+        const context = this;
+        if (!inThrottle) {
+          func.apply(context, args);
+          inThrottle = true;
+          setTimeout(() => (inThrottle = false), limit);
+        }
+      };
+    }
+
     if (success_stripe && success_stripe == "true") {
       if (req_uuid && loan_prop_uuid && borrower_uuid && lender_uuid) {
         const date = new Date().toJSON();
-        fetchHandler(TRANSACTIONS_POST, "POST", {
-          loan_proposal_uuid: loan_prop_uuid,
-          loan_request_uuid: req_uuid,
-          borrower_uuid: borrower_uuid,
-          lender_uuid: lender_uuid,
-          payer_type: payer_type,
-          amount: parseFloat(amount),
-          date_offered: date,
-        })
-          .then((res) => {
-            Swal.fire({
-              title: "Payment Successful",
-              text: "Congratulations ! Your payment was successful.",
-              icon: "success",
-            });
+        const func = () => {
+          fetchHandler(TRANSACTIONS_POST, "POST", {
+            loan_proposal_uuid: loan_prop_uuid,
+            loan_request_uuid: req_uuid,
+            borrower_uuid: borrower_uuid,
+            lender_uuid: lender_uuid,
+            payer_type: payer_type,
+            amount: parseFloat(amount),
+            date_offered: date,
           })
-          .catch((err) => {
-            console.error(err);
-          });
+            .then((res) => {
+              Swal.fire({
+                title: "Payment Successful",
+                text: "Congratulations ! Your payment was successful.",
+                icon: "success",
+              });
+            })
+            .catch((err) => {
+              console.error(err);
+            });
+        };
+
+        const throttledFunc= throttle(func,1000);
+        throttledFunc()
       }
     }
 
@@ -168,7 +213,6 @@ const LatestTransactions = ({ limitRows }: { limitRows: boolean }) => {
       });
     }
   }, []);
-
 
   return (
     <div className="box col-span-12 lg:col-span-6">
@@ -216,19 +260,27 @@ const LatestTransactions = ({ limitRows }: { limitRows: boolean }) => {
                 </div>
               </th>
               <th
+                onClick={() => sortData("amount")}
+                className="text-start py-5 px-6 cursor-pointer"
+              >
+                <div className="flex items-center gap-1 text-center ">
+                  Amount Repaid <IconSelector size={18} />
+                </div>
+              </th>
+              <th
+                onClick={() => sortData("amount")}
+                className="text-start py-5 px-6 cursor-pointer"
+              >
+                <div className="flex items-center gap-1 text-center ">
+                  Amount Pending <IconSelector size={18} />
+                </div>
+              </th>
+              <th
                 onClick={() => sortData("min_interest")}
                 className="text-start py-5  cursor-pointer"
               >
                 <div className="flex items-center gap-1">
-                  Min. Interest Rate <IconSelector size={18} />
-                </div>
-              </th>
-              <th
-                onClick={() => sortData("max_interest")}
-                className="text-start py-5  cursor-pointer"
-              >
-                <div className="flex items-center gap-1">
-                  Max. Interest Rate <IconSelector size={18} />
+                  Interest Rate <IconSelector size={18} />
                 </div>
               </th>
               <th
@@ -265,8 +317,9 @@ const LatestTransactions = ({ limitRows }: { limitRows: boolean }) => {
                   )}
                 </td>
                 <td className="py-2 px-2">${ele.amount}</td>
+                <td className="py-2 px-2">${ele.amt_paid}</td>
+                <td className="py-2 px-2">${ele.amt_pending}</td>
                 <td className="py-2">{ele.min_interest}</td>
-                <td className="py-2">{ele.max_interest}</td>
                 {!ele.status ? (
                   <td className="py-2">-</td>
                 ) : (
