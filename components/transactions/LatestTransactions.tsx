@@ -37,8 +37,8 @@ const options = ["time", "title", "amount"];
 const LatestTransactions = () => {
   const [tableData, setTableData] = useState<Transaction[]>([]);
   const [order, setOrder] = useState<Order>("ASC");
-  const [selected, setSelected] = useState(options[0]);
   const [userData, setUserData] = useState({});
+  const [modalData, setModalData] = useState(null);
   const { open, toggleOpen } = useDropdown();
   const { currentUser } = useAuth();
   const itemsPerPage = 15;
@@ -139,28 +139,12 @@ const LatestTransactions = () => {
       setTableData(tempData);
     }
   };
-  const onDelete = (title: string) => {
-    const remained = tableData.filter((item) => item.title !== title);
-    setTableData(remained);
-  };
 
   return (
     <div className="box col-span-12 lg:col-span-6">
       <div className="flex flex-wrap gap-4  justify-between items-center bb-dashed mb-4 pb-4 lg:mb-6 lg:pb-6">
         <h4 className="h4">Latest Transaction</h4>
-        <div className="flex items-center gap-4 flex-wrap grow sm:justify-end">
-          <div className="flex items-center gap-3 whitespace-nowrap">
-            <span>Sort By : </span>
-            <Dropdown
-              sortFn={sortData}
-              setSelected={setSelected}
-              selected={selected}
-              items={options}
-              btnClass="rounded-[32px] lg:py-2.5"
-              contentClass="w-full"
-            />
-          </div>
-        </div>
+        <div className="flex items-center gap-4 flex-wrap grow sm:justify-end"></div>
       </div>
       <div className="overflow-x-auto mb-4 lg:mb-6">
         <table className="w-full whitespace-nowrap">
@@ -277,6 +261,7 @@ const LatestTransactions = () => {
           </tbody>
         </table>
       </div>
+      <DetailsModal open={open} toggleOpen={toggleOpen} />
       {tableData.length < 1 && (
         <div className="text-center py-10">
           <div className="text-center mx-auto max-w-[500px] max-md:flex flex-col items-center">
