@@ -196,6 +196,8 @@ const LatestTransactions = () => {
               (
                 {
                   uuid,
+                  loan_proposal_uuid,
+                  loan_request_uuid,
                   borrower_uuid,
                   title,
                   amount,
@@ -239,16 +241,34 @@ const LatestTransactions = () => {
                     </div>
                   </td>
                   <td className="py-2">
-                    <button className="btn btn-secondary text-xs px-4 py-2">
+                    <button
+                      onClick={(e) => {
+                        setModalData({
+                          type: "prop",
+                          uuid: loan_proposal_uuid,
+                        });
+                        toggleOpen(e);
+                      }}
+                      className="btn btn-secondary text-xs px-4 py-2"
+                    >
                       Proposal
                     </button>
                   </td>
                   <td className="py-2">
-                    <button className="btn btn-secondary text-xs px-4 py-2">
+                    <button
+                      onClick={(e) => {
+                        setModalData({
+                          type: "req",
+                          uuid: loan_request_uuid,
+                        });
+                        toggleOpen(e);
+                      }}
+                      className="btn btn-secondary text-xs px-4 py-2"
+                    >
                       Request
                     </button>
                   </td>
-                  <td className="py-2">#{getRandomInt(1000000, 9999999)}</td>
+                  <td className="py-2">#9999999</td>
                   <td className="py-2">
                     {currentUser.primary_role.toLowerCase() === payer_type
                       ? "Debit"
